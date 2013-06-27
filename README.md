@@ -27,7 +27,7 @@ chsh -s /bin/zsh
 Clone oh-my-zsh-psyrendust to your home folder
 
 ```shell
-git clone git@github.com:psyrendust/oh-my-zsh-psyrendust.git ~/.oh-my-zsh-psyrendust
+git clone https://github.com/psyrendust/oh-my-zsh-psyrendust.git ~/.oh-my-zsh-psyrendust
 ```
 
 Edit your `~/.zshrc` file with your favorite editor and edit the following:
