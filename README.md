@@ -66,6 +66,7 @@ Themes can be found in the `oh-my-zsh-psyrendust/themes` folder.
 Known Bugs
 -----
  - Having issues getting `subl` to work as the git `core.editor` on Mac
+ - Zsh prompt gets cut off for `scm_prompt_char` when using the font [`Inconsolata`](http://levien.com/type/myfonts/inconsolata.html) in CYGWIN
  
 Release History
 -----
