@@ -52,6 +52,7 @@ Plugins can be found in the `oh-my-zsh-psyrendust/plugins` folder.
 | Plugins | Description |
 |:--------|:------------|
 | **apache2.plugin.zsh** | Commands to control local apache2 server installation on Mac. |
+| **mkcd.plugin.zsh**    | Make a directory (recursively) and cd into it. |
 | **sever.plugin.zsh**   | Start an HTTP server from a directory, optionally specifying the port. |
 | **sublime.plugin.zsh** | Open path or files in Sublime Text 2. Uses a sleep command to fix a bug with ST2 opening with no files/folders showing in the sidebar. |
 
@@ -67,9 +68,10 @@ Known Bugs
 -----
  - Having issues getting `subl` to work as the git `core.editor` on Mac
  - Zsh prompt gets cut off for `scm_prompt_char` when using the font [`Inconsolata`](http://levien.com/type/myfonts/inconsolata.html) in CYGWIN
- 
+
 Release History
 -----
+ - 2013-07-02   v0.1.1   Added `mkcd` plugin. Bug fixes.
  - 2013-06-27   v0.1.0   Initial release.
 
 ## License
