@@ -66,9 +66,7 @@ function sbl ()
 
   elif  [[ $('uname') == 'CYGWIN_NT-6.1-WOW64' ]]; then
 
-    cygstart "$ST_APP"
-    sleep 0.8
-    "$ST_PATH" "$@"
+    "$ST_APP" `cygpath.exe -w "$@"`
 
   fi
 }
