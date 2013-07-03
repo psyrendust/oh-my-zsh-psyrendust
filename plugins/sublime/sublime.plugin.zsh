@@ -37,6 +37,10 @@ elif  [[ $('uname') == 'Darwin' ]]; then
     fi
   done
 
+  # Aliases that need to happen after plugins are loaded
+  ln -sf "$ST_PATH" /usr/local/bin/subl
+  export EDITOR="subl -n -w"
+
 elif  [[ $('uname') == 'CYGWIN_NT-6.1-WOW64' ]]; then
 
   for _sublime_path in $_sublime_win_paths; do
@@ -47,10 +51,6 @@ elif  [[ $('uname') == 'CYGWIN_NT-6.1-WOW64' ]]; then
   done
 
 fi
-
-# Aliases that need to happen after plugins are loaded
-ln -sf "$ST_PATH" /usr/local/bin/subl
-export EDITOR="subl -n -w"
 
 function sbl ()
 {
