@@ -73,6 +73,7 @@ Known Bugs
 
 Release History
 -----
+ - 2013-07-02   v0.1.3   Added `AutoHotkeys` config.
  - 2013-07-02   v0.1.2   Added `npp` plugin.
  - 2013-07-02   v0.1.1   Added `mkcd` plugin. Added `git-psyrendust` plugin. Bug fixes.
  - 2013-06-27   v0.1.0   Initial release.
