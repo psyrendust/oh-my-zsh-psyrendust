@@ -49,8 +49,8 @@ elif  [[ $('uname') == 'CYGWIN_NT-6.1-WOW64' ]]; then
 fi
 
 # Aliases that need to happen after plugins are loaded
-alias subl="\"$ST_PATH\""
-export EDITOR="subl -w"
+ln -sf "$ST_PATH" /usr/local/bin/subl
+export EDITOR="subl -n -w"
 
 function sbl ()
 {
