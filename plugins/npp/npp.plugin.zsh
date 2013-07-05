@@ -5,10 +5,11 @@ _npp_win_paths=(
 for _npp_path in $_npp_win_paths; do
   if [[ -a $_npp_path ]]; then
     NPP_APP="$_npp_path"
+    ln -sf $NPP_APP /usr/local/bin/npp
     break
   fi
 done
 
 function npp() {
-  "$NPP_APP" `cygpath.exe -w "$@"`
+  npp $1
 }
