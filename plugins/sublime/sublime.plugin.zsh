@@ -7,7 +7,6 @@
 # $ sbl .
 # $ sbl filename.txt
 # $ sbl file1.txt file2.txt
-echo "sublime plugin"
 local _sublime_darwin_paths > /dev/null 2>&1
 _sublime_darwin_paths=(
   "$HOME/Applications/Sublime Text 2.app"
@@ -27,7 +26,6 @@ if [[ $('uname') == 'Linux' ]]; then
   fi
 
 elif  [[ $('uname') == 'Darwin' ]]; then
-  echo "mac"
   for _sublime_path in $_sublime_darwin_paths; do
     if [[ -a $_sublime_path ]]; then
       ST_APP="$_sublime_path"
