@@ -34,7 +34,7 @@ Edit your `~/.zshrc` file with your favorite editor and edit the following:
 
 ```shell
 ZSH_THEME="psyrendust"
-ZSH_CUSTOM="$HOME/oh-my-zsh-psyrendust"
+ZSH_CUSTOM="$HOME/.oh-my-zsh-psyrendust"
 ```
 
 You can add the plugins that you would like to load:
