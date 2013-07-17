@@ -13,4 +13,7 @@ alias gt='git tag'
 compdef _git gt=git-tag
 
 alias gta='git tag -a'
-compdef _git gt=git-tag
+compdef _git gta=git-tag
+
+alias gindex='git rm --cached -r . && git clean -fdx && git reset --hard'
+compdef _git git=git-rm
