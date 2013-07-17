@@ -5,7 +5,7 @@ function _current_psyrendust_epoch() {
 }
 
 function _update_psyrendust_update() {
-  echo "LAST_PSYRENDUST_EPOCH=$(_current_psyrendust_epoch)" > $ZSH_CUSTOM/.psyrendust-update
+  echo "LAST_PSYRENDUST_EPOCH=$(_current_psyrendust_epoch)" > ~/.psyrendust-update
 }
 
 function _upgrade_psyrendust() {
@@ -20,9 +20,9 @@ if [[ -z "$epoch_psyrendust_target" ]]; then
   epoch_psyrendust_target=13
 fi
 
-if [ -f $ZSH_CUSTOM/.psyrendust-update ]
+if [ -f ~/.psyrendust-update ]
 then
-  . $ZSH_CUSTOM/.psyrendust-update
+  . ~/.psyrendust-update
 
   if [[ -z "$LAST_PSYRENDUST_EPOCH" ]]; then
     _update_psyrendust_update && return 0;
