@@ -9,7 +9,8 @@ function _update_psyrendust_update() {
 }
 
 function _upgrade_psyrendust() {
-  /usr/bin/env ZSH=$ZSH /bin/sh $ZSH_CUSTOM/plugins/psyrendust-auto-update/upgrade.sh
+  echo $ZSH_CUSTOM
+  /usr/bin/env ZSH=$ZSH ZSH_CUSTOM=$ZSH_CUSTOM /bin/sh $ZSH_CUSTOM/plugins/psyrendust-auto-update/upgrade.sh
   # update the psyrendust file
   _update_psyrendust_update
 }
