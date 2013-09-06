@@ -36,7 +36,7 @@ elif  [[ $('uname') == 'Darwin' ]]; then
     fi
   done
 
-elif  [[ $('uname') == 'CYGWIN_NT-6.1-WOW64' ]]; then
+elif  [[ $('uname') == *CYGWIN_NT* ]]; then
 
   for _sublime_path in $_sublime_win_paths; do
     if [[ -a $_sublime_path ]]; then
@@ -58,9 +58,9 @@ function sbl ()
 
     subl $1
 
-  elif  [[ $('uname') == 'CYGWIN_NT-6.1-WOW64' ]]; then
+  elif  [[ $('uname') == *CYGWIN_NT* ]]; then
 
-    subl $1
+    subl `cygpath -w $@` &
 
   fi
 }
