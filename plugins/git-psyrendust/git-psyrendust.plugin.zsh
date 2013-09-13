@@ -49,6 +49,11 @@ function gmfrom() {
   gm $targetbranch
 }
 
+# clean up and remove any *.orig files created from a merge conflict
+function gmclean() {
+  find ./ -type f -name \*.orig -exec rm -f {} \;
+}
+
 # # save a named stash
 # function gssave() {
 #   git stash save "$1"
