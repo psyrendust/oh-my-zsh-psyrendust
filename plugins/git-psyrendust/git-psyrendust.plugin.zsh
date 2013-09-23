@@ -16,7 +16,22 @@ alias gta='git tag -a'
 compdef _git gta=git-tag
 
 alias gindex='git rm --cached -r . && git reset --hard && git add .'
-compdef _git git=git-rm
+compdef _git gindex=git-rm
+
+alias gbfromhere='git_branch_from_here'
+compdef _git gbromhere=git-checkout-b
+
+alias gcob='git_checkout_branch'
+compdef _git gcob=git-checkout-b
+
+alias gmfrom='git_merge_from'
+compdef _git gmfrom=git-merge
+
+alias gmclean='git_merge_clean'
+compdef _git gmclean=git-rm
+
+alias gsdel='git_stash_delete'
+compdef _git gsdel=git-stash
 
 function git_branch_name() {
   ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
@@ -24,17 +39,17 @@ function git_branch_name() {
   echo "${ref#refs/heads/}"
 }
 
-function gbfromhere() {
+function git_branch_from_here() {
   git checkout -b $1 $(git_branch_name)
 }
 
 # git checkout remote branch and track it
-function gcob() {
+function git_checkout_branch() {
   git checkout -b $1 origin/$1
 }
 
 # update target branch and merge it into current branch
-function gmfrom() {
+function git_merge_from() {
   currentbranch=$(git_branch_name)
   targetbranch=$1
   echo "switching to branch $targetbranch"
@@ -50,32 +65,12 @@ function gmfrom() {
 }
 
 # clean up and remove any *.orig files created from a merge conflict
-function gmclean() {
+function git_merge_clean() {
   find ./ -type f -name \*.orig -exec rm -f {} \;
 }
 
-# # save a named stash
-# function gssave() {
-#   git stash save "$1"
-# }
-
-# # drop a stash by name using regex
-# function gsdrop() {
-#   git stash drop stash^{/$*};
-# }
-
-# # search for stash by name using regex
-# function gsshow() {
-#   git stash show stash^{/$*} -p;
-# }
-
-# # apply stash by name using regex
-# function gsapply() {
-#   git stash apply stash^{/$*};
-# }
-
 # create a stash and delete it
-function gsdel() {
+function git_stash_delete() {
   git stash save;
   git stash drop stash@{0};
 }

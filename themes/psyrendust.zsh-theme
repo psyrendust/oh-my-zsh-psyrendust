@@ -4,6 +4,46 @@ ZSH_THEME_GIT_PROMPT_SUFFIX="%{$fg[green]%}|"
 ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg[red]%}✗"
 ZSH_THEME_GIT_PROMPT_CLEAN=" %{$fg_bold[green]%}✓"
 
+# # get the name of the branch we are on
+# function psy_git_prompt_info() {
+#   ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
+#   ref=$(command git rev-parse --short HEAD 2> /dev/null) || return
+#   if [[ "$(command git config --get oh-my-zsh.hide-status)" != "1" ]]; then
+#     if [[ $POST_1_7_2_GIT -gt 0 ]]; then
+#       SUBMODULE_SYNTAX="--ignore-submodules=dirty"
+#     fi
+#     if [[ "$DISABLE_UNTRACKED_FILES_DIRTY" == "true" ]]; then
+#         GIT_STATUS=$(command git status -s ${SUBMODULE_SYNTAX} -uno 2> /dev/null | tail -n1)
+#     else
+#         GIT_STATUS=$(command git status -s ${SUBMODULE_SYNTAX} 2> /dev/null | tail -n1)
+#     fi
+#   fi
+#   # echo "$ZSH_THEME_GIT_PROMPT_PREFIX${ref#refs/heads/}$(psy_parse_git_dirty)$ZSH_THEME_GIT_PROMPT_SUFFIX"
+#   echo "$ZSH_THEME_GIT_PROMPT_PREFIX$(git_branch_name)$ZSH_THEME_GIT_PROMPT_SUFFIX"
+# }
+# # Checks if working tree is dirty
+# function psy_parse_git_dirty() {
+#   local SUBMODULE_SYNTAX=''
+#   local GIT_STATUS=''
+#   local CLEAN_MESSAGE='nothing to commit (working directory clean)'
+#   if [[ "$(command git config --get oh-my-zsh.hide-status)" != "1" ]]; then
+#     if [[ $POST_1_7_2_GIT -gt 0 ]]; then
+#           SUBMODULE_SYNTAX="--ignore-submodules=dirty"
+#     fi
+#     if [[ "$DISABLE_UNTRACKED_FILES_DIRTY" == "true" ]]; then
+#         GIT_STATUS=$(command git status -s ${SUBMODULE_SYNTAX} -uno 2> /dev/null | tail -n1)
+#     else
+#         GIT_STATUS=$(command git status -s ${SUBMODULE_SYNTAX} 2> /dev/null | tail -n1)
+#     fi
+#     if [[ -n $GIT_STATUS ]]; then
+#       echo "$ZSH_THEME_GIT_PROMPT_DIRTY"
+#     else
+#       echo "$ZSH_THEME_GIT_PROMPT_CLEAN"
+#     fi
+#   else
+#     echo "$ZSH_THEME_GIT_PROMPT_CLEAN"
+#   fi
+# }
 function ruby_version_prompt {
   # Grab the current version of ruby in use (via RVM): [ruby-1.8.7]
   if [ -e ~/.rvm/bin/rvm-prompt ]; then
@@ -52,6 +92,7 @@ function PSYRENDUST_PROMPT_LINE_1 {
 
 function PSYRENDUST_PROMPT_LINE_2 {
   echo "%{$fg_bold[cyan]%}\$(scm_prompt_char)%{$reset_color%}\$(git_prompt_info)%{$fg[green]%} →%{$reset_color%} "
+  # echo "%{$fg_bold[cyan]%}\$(scm_prompt_char)%{$reset_color%}\$(psy_git_prompt_info)%{$fg[green]%} →%{$reset_color%} "
 }
 
 PROMPT="
