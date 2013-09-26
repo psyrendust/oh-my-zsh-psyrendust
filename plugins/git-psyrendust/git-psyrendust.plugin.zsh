@@ -27,11 +27,23 @@ compdef _git gcob=git-checkout-b
 alias gmfrom='git_merge_from'
 compdef _git gmfrom=git-merge
 
+alias gmfromroot='git_merge_from_root_integration'
+compdef _git gmfromroot=git-merge
+
 alias gmclean='git_merge_clean'
 compdef _git gmclean=git-rm
 
 alias gsdel='git_stash_delete'
 compdef _git gsdel=git-stash
+
+alias gfo='git fetch origin'
+compdef _git gfd=git-fetch-origin
+
+alias gfr='git fetch root integration:integration'
+compdef _git gfd=git-fetch-root-integration-integration
+
+alias grpull='git pull root $(git_branch_name)'
+compdef _git grpull=git-pull-root
 
 function git_branch_name() {
   ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
@@ -62,6 +74,15 @@ function git_merge_from() {
   gsdel
   echo "merging $targetbranch into $currentbranch"
   gm $targetbranch
+}
+
+# update root integration branch and merge it into current branch
+function git_merge_from_root_integration() {
+  currentbranch=$(git_branch_name)
+  echo "fetching from root integration"
+  gfri
+  echo "merging root integration into $currentbranch"
+  gm integration
 }
 
 # clean up and remove any *.orig files created from a merge conflict
