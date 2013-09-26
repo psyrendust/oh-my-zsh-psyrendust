@@ -1,5 +1,8 @@
 # Aliases
 
+alias gs='git status'
+compdef _git gs=git-status
+
 alias gass='git update-index --assume-unchanged'
 compdef _git gass=git-update-index
 
