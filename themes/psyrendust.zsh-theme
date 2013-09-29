@@ -1,105 +1,202 @@
-# Default prompts for ZSH
-ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[green]%}|"
-ZSH_THEME_GIT_PROMPT_SUFFIX="%{$fg[green]%}|"
-ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg[red]%}✗"
-ZSH_THEME_GIT_PROMPT_CLEAN=" %{$fg_bold[green]%}✓"
+# psyrendust zsh theme [https://github.com/psyrendust/oh-my-zsh-psyrendust/]
+#
+# Credits: Thanks to Joshua Corbin [https://github.com/jcorbin/] for his git
+# helper functions.
 
-# # get the name of the branch we are on
-# function psy_git_prompt_info() {
-#   ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
-#   ref=$(command git rev-parse --short HEAD 2> /dev/null) || return
-#   if [[ "$(command git config --get oh-my-zsh.hide-status)" != "1" ]]; then
-#     if [[ $POST_1_7_2_GIT -gt 0 ]]; then
-#       SUBMODULE_SYNTAX="--ignore-submodules=dirty"
-#     fi
-#     if [[ "$DISABLE_UNTRACKED_FILES_DIRTY" == "true" ]]; then
-#         GIT_STATUS=$(command git status -s ${SUBMODULE_SYNTAX} -uno 2> /dev/null | tail -n1)
-#     else
-#         GIT_STATUS=$(command git status -s ${SUBMODULE_SYNTAX} 2> /dev/null | tail -n1)
-#     fi
-#   fi
-#   # echo "$ZSH_THEME_GIT_PROMPT_PREFIX${ref#refs/heads/}$(psy_parse_git_dirty)$ZSH_THEME_GIT_PROMPT_SUFFIX"
-#   echo "$ZSH_THEME_GIT_PROMPT_PREFIX$(git_branch_name)$ZSH_THEME_GIT_PROMPT_SUFFIX"
-# }
-# # Checks if working tree is dirty
-# function psy_parse_git_dirty() {
-#   local SUBMODULE_SYNTAX=''
-#   local GIT_STATUS=''
-#   local CLEAN_MESSAGE='nothing to commit (working directory clean)'
-#   if [[ "$(command git config --get oh-my-zsh.hide-status)" != "1" ]]; then
-#     if [[ $POST_1_7_2_GIT -gt 0 ]]; then
-#           SUBMODULE_SYNTAX="--ignore-submodules=dirty"
-#     fi
-#     if [[ "$DISABLE_UNTRACKED_FILES_DIRTY" == "true" ]]; then
-#         GIT_STATUS=$(command git status -s ${SUBMODULE_SYNTAX} -uno 2> /dev/null | tail -n1)
-#     else
-#         GIT_STATUS=$(command git status -s ${SUBMODULE_SYNTAX} 2> /dev/null | tail -n1)
-#     fi
-#     if [[ -n $GIT_STATUS ]]; then
-#       echo "$ZSH_THEME_GIT_PROMPT_DIRTY"
-#     else
-#       echo "$ZSH_THEME_GIT_PROMPT_CLEAN"
-#     fi
-#   else
-#     echo "$ZSH_THEME_GIT_PROMPT_CLEAN"
-#   fi
-# }
-function ruby_version_prompt {
-  # Grab the current version of ruby in use (via RVM): [ruby-1.8.7]
-  if [ -e ~/.rvm/bin/rvm-prompt ]; then
-    local CURRENT_RUBY="%{$fg[yellow]%}|\$(~/.rvm/bin/rvm-prompt)|%{$reset_color%}"
+# Default prompts for ZSH
+ZSH_THEME_GIT_PROMPT_PREFIX=" %{$fg[green]%}|"      # Prefix at the very beginning of the prompt, before the branch name
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{$fg[green]%}|"       # At the very end of the prompt
+ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg[red]%}✗"         # Text to display if the branch is dirty
+ZSH_THEME_GIT_PROMPT_CLEAN=" %{$fg_bold[green]%}✓"  # Text to display if the branch is clean
+# ZSH_THEME_GIT_PROMPT_ADDED="%{$FG[082]%}✚%{$reset_color%}"
+# ZSH_THEME_GIT_PROMPT_MODIFIED="%{$FG[166]%}✹%{$reset_color%}"
+# ZSH_THEME_GIT_PROMPT_DELETED="%{$FG[160]%}✖%{$reset_color%}"
+# ZSH_THEME_GIT_PROMPT_RENAMED="%{$FG[220]%}➜%{$reset_color%}"
+# ZSH_THEME_GIT_PROMPT_UNMERGED="%{$FG[082]%}═%{$reset_color%}"
+# ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$FG[190]%}✭%{$reset_color%}"
+# helper functions
+typeset -gA psy_git_info
+psy_git_info=()
+
+psy_git_init() {
+  typeset -ga chpwd_functions
+  typeset -ga preexec_functions
+  typeset -ga precmd_functions
+  chpwd_functions+='psy_git_chpwd_hook'
+  preexec_functions+='psy_git_preexec_hook'
+  precmd_functions+='psy_git_precmd_hook'
+}
+
+psy_git_chpwd_hook() {
+  psy_git_info_update
+}
+
+psy_git_preexec_hook() {
+  if [[ $2 == git\ * ]] || [[ $2 == *\ git\ * ]]; then
+    psy_git_precmd_do_update=1
+  fi
+}
+
+psy_git_precmd_hook() {
+  if [ $psy_git_precmd_do_update ]; then
+    unset psy_git_precmd_do_update
+    psy_git_info_update
+  fi
+}
+
+psy_git_info_update() {
+  psy_git_info=()
+
+  local gitdir="$(git rev-parse --git-dir 2>/dev/null)"
+  if [ $? -ne 0 ] || [ -z "$gitdir" ]; then
+    return
+  fi
+
+  psy_git_info[dir]=$gitdir
+  psy_git_info[bare]=$(git rev-parse --is-bare-repository)
+  psy_git_info[inwork]=$(git rev-parse --is-inside-work-tree)
+}
+psy_git_isgit() {
+  if [ -z "$psy_git_info[dir]" ]; then
+    return 1
   else
-    if which rbenv &> /dev/null; then
-      local CURRENT_RUBY="%{$fg[yellow]%}|\$(rbenv version | sed -e 's/ (set.*$//')|%{$reset_color%}"
+    return 0
+  fi
+}
+
+psy_git_inworktree() {
+  psy_git_isgit || return
+  if [ "$psy_git_info[inwork]" = "true" ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# psy_git_isindexclean() {
+#   psy_git_isgit || return 1
+#   if git diff --quiet --cached 2>/dev/null; then
+#     return 0
+#   else
+#     return 1
+#   fi
+# }
+
+psy_git_isworktreeclean() {
+  psy_git_isgit || return 1
+  if git diff --quiet 2>/dev/null; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# psy_git_hasunmerged() {
+#   psy_git_isgit || return 1
+#   local -a flist
+#   flist=($(git ls-files -u))
+#   if [ $#flist -gt 0 ]; then
+#     return 0
+#   else
+#     return 1
+#   fi
+# }
+
+# psy_git_hasuntracked() {
+#   psy_git_isgit || return 1
+#   local -a flist
+#   flist=($(git ls-files --others --exclude-standard))
+#   if [ $#flist -gt 0 ]; then
+#     return 0
+#   else
+#     return 1
+#   fi
+# }
+
+psy_git_head() {
+  psy_git_isgit || return 1
+
+  if [ -z "$psy_git_info[head]" ]; then
+    local name=''
+    name=$(git symbolic-ref -q HEAD)
+    if [ $? -eq 0 ]; then
+      if [[ $name == refs/(heads|tags)/* ]]; then
+        name=${name#refs/(heads|tags)/}
+      fi
+    else
+      name=$(git name-rev --name-only --no-undefined --always HEAD)
+      if [ $? -ne 0 ]; then
+        return 1
+      elif [[ $name == remotes/* ]]; then
+        name=${name#remotes/}
+      fi
+    fi
+    psy_git_info[head]=$name
+  fi
+
+  echo $psy_git_info[head]
+}
+
+# Checks if working tree is dirty
+psy_git_currentstatus() {
+  psy_git_isgit || return
+  if psy_git_inworktree; then
+    if ! psy_git_isworktreeclean; then
+      echo -n "$ZSH_THEME_GIT_PROMPT_DIRTY"
+    else
+      echo -n "$ZSH_THEME_GIT_PROMPT_CLEAN"
     fi
   fi
-  echo $CURRENT_RUBY
 }
-function scm_prompt_char {
+
+# get the name of the branch we are on
+psy_git_prompt_info() {
+  psy_git_isgit || return
+  echo -n "$ZSH_THEME_GIT_PROMPT_PREFIX"
+  echo -n "$(psy_git_head)"
+  echo -n "$(psy_git_currentstatus)"
+  echo -n "$ZSH_THEME_GIT_PROMPT_SUFFIX"
+}
+
+psy_ruby_version_prompt() {
+  # Grab the current version of ruby in use (via RVM): [ruby-1.8.7]
+  if [ -e ~/.rvm/bin/rvm-prompt ]; then
+    echo -n "%{$fg[yellow]%}|\$(~/.rvm/bin/rvm-prompt)|%{$reset_color%}"
+  else
+    if which rbenv &> /dev/null; then
+      echo -n "%{$fg[yellow]%}|\$(rbenv version | sed -e 's/ (set.*$//')|%{$reset_color%}"
+    fi
+  fi
+}
+
+psy_scm_prompt_char() {
   # Setup some SCM characters
-  local SCM=''
-  local SCM_GIT='git'
   local SCM_GIT_CHAR='±'
-  local SCM_HG='hg'
   local SCM_HG_CHAR='☿'
-  local SCM_SVN='svn'
   local SCM_SVN_CHAR='⑆'
-  local SCM_NONE='NONE'
   local SCM_NONE_CHAR='○'
+  echo -n "%{$fg_bold[cyan]%}"
   # Get the current SCM
-  if [[ -f .git/HEAD ]]; then SCM=$SCM_GIT
-  elif [[ -n "$(git symbolic-ref HEAD 2> /dev/null)" ]]; then SCM=$SCM_GIT
-  elif [[ -d .hg ]]; then SCM=$SCM_HG
-  elif [[ -n "$(hg root 2> /dev/null)" ]]; then SCM=$SCM_HG
-  elif [[ -d .svn ]]; then SCM=$SCM_SVN
-  else SCM=$SCM_NONE
+  if [[ -f .git/HEAD ]]; then echo -n $SCM_GIT_CHAR
+  elif [[ -n "$(git symbolic-ref HEAD 2> /dev/null)" ]]; then echo -n $SCM_GIT_CHAR
+  elif [[ -d .hg ]]; then echo -n $SCM_HG_CHAR
+  elif [[ -n "$(hg root 2> /dev/null)" ]]; then echo -n $SCM_HG_CHAR
+  elif [[ -d .svn ]]; then echo -n $SCM_SVN_CHAR
+  else echo -n $SCM_NONE_CHAR
   fi
-
-  # Get the SCM character
-  if [[ $SCM == $SCM_GIT ]]; then SCM_CHAR=$SCM_GIT_CHAR
-  elif [[ $SCM == $SCM_HG ]]; then SCM_CHAR=$SCM_HG_CHAR
-  elif [[ $SCM == $SCM_SVN ]]; then SCM_CHAR=$SCM_SVN_CHAR
-  else SCM_CHAR=$SCM_NONE_CHAR
-  fi
-  echo $SCM_CHAR
-}
-function PSYRENDUST_PROMPT_LINE_1 {
-  local CURRENT_USER="%{$fg[magenta]%}%m%{$reset_color%}"   # Grab the current machine name
-  local IN="%{$fg[white]%}in%{$reset_color%}"               # Just some text
-  local CURRENT_PATH="%{$fg[green]%}%~"                     # Grab the current file path
-  echo "$(ruby_version_prompt) $CURRENT_USER $IN $CURRENT_PATH"
+  echo -n "%{$reset_color%}"
 }
 
-function PSYRENDUST_PROMPT_LINE_2 {
-  echo "%{$fg_bold[cyan]%}\$(scm_prompt_char)%{$reset_color%}\$(git_prompt_info)%{$fg[green]%} →%{$reset_color%} "
-  # echo "%{$fg_bold[cyan]%}\$(scm_prompt_char)%{$reset_color%}\$(psy_git_prompt_info)%{$fg[green]%} →%{$reset_color%} "
-}
-
+psy_git_init
+psy_git_info_update
 PROMPT="
-$(PSYRENDUST_PROMPT_LINE_1)
-$(PSYRENDUST_PROMPT_LINE_2)"
-
-# Do some cleanup. We don't want these functions lingering
-unfunction ruby_version_prompt
-unfunction PSYRENDUST_PROMPT_LINE_1
-unfunction PSYRENDUST_PROMPT_LINE_2
+"                                                # Newline
+PROMPT+="$(psy_ruby_version_prompt) "            # Grab the current ruby version
+PROMPT+="%{$fg[magenta]%}%m%{$reset_color%} "    # Grab the current machine name
+PROMPT+="%{$fg[white]%}in%{$reset_color%} "      # Just some text
+PROMPT+="%{$fg[green]%}%~"                       # Grab the current file path
+PROMPT+="
+"                                                # Newline
+PROMPT+="\$(psy_scm_prompt_char)"                # Are we in a git|svn|hg repo
+PROMPT+="\$(psy_git_prompt_info) "               # Grab the current branch and display status
+PROMPT+="%{$fg[green]%}→%{$reset_color%} "       # Command prompt
