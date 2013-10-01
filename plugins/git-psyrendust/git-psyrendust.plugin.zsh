@@ -83,7 +83,7 @@ function git_merge_from() {
 function git_merge_from_root_integration() {
   currentbranch=$(git_branch_name)
   echo "fetching from root integration"
-  gfri
+  gfr
   echo "merging root integration into $currentbranch"
   gm integration
 }
