@@ -1,6 +1,6 @@
-# Sublime Text 2 plugin
-# Open path or files in Sublime Text 2
-# Uses a sleep command to fix a bug with ST2 opening
+# Sublime Text 2/3 plugin
+# Open path or files in Sublime Text 3 or Sublime Text 2
+# Uses a sleep command to fix a bug with ST opening
 # with no files/folders showing in the sidebar
 #
 # param: path or files to open
@@ -9,10 +9,10 @@
 # $ sbl file1.txt file2.txt
 local _sublime_darwin_paths > /dev/null 2>&1
 _sublime_darwin_paths=(
-  "$HOME/Applications/Sublime Text 2.app"
   "$HOME/Applications/Sublime Text.app"
-  "/Applications/Sublime Text 2.app"
+  "$HOME/Applications/Sublime Text 2.app"
   "/Applications/Sublime Text.app"
+  "/Applications/Sublime Text 2.app"
 )
 _sublime_win_paths=(
   "/cygdrive/c/Program Files/Sublime Text 2/sublime_text.exe"
