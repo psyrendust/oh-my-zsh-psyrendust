@@ -33,6 +33,12 @@ compdef _git gmfrom=git-merge
 alias gmfromroot='git_merge_from_root_integration'
 compdef _git gmfromroot=git-merge
 
+alias gmfromintegration='git_merge_from_origin_integration'
+compdef _git gmfromintegration=git-merge
+
+alias gmfromdevelop='git_merge_from_origin_develop'
+compdef _git gmfromdevelop=git-merge
+
 alias gmclean='git_merge_clean'
 compdef _git gmclean=git-rm
 
@@ -43,10 +49,19 @@ alias gfo='git fetch origin'
 compdef _git gfd=git-fetch-origin
 
 alias gfr='git fetch root integration:integration'
-compdef _git gfd=git-fetch-root-integration-integration
+compdef _git gfr=git-fetch-root-integration-integration
+
+alias gfi='git fetch origin integration:integration'
+compdef _git gfd=git-fetch-origin-integration-integration
+
+alias gfd='git fetch origin develop:develop'
+compdef _git gfd=git-fetch-origin-develop-develop
 
 alias grpull='git pull root $(git_branch_name)'
 compdef _git grpull=git-pull-root
+
+alias gcindex='git_clean_index'
+compdef _git gcindex=git-rm-cached-r
 
 function git_branch_name() {
   ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
@@ -79,6 +94,24 @@ function git_merge_from() {
   gm $targetbranch
 }
 
+# update origin develop branch and merge it into current branch
+function git_merge_from_origin_develop() {
+  currentbranch=$(git_branch_name)
+  echo "fetching from origin develop"
+  gfd
+  echo "merging origin develop into $currentbranch"
+  gm develop
+}
+
+# update origin integration branch and merge it into current branch
+function git_merge_from_origin_integration() {
+  currentbranch=$(git_branch_name)
+  echo "fetching from origin integration"
+  gfi
+  echo "merging origin integration into $currentbranch"
+  gm integration
+}
+
 # update root integration branch and merge it into current branch
 function git_merge_from_root_integration() {
   currentbranch=$(git_branch_name)
@@ -97,4 +130,16 @@ function git_merge_clean() {
 function git_stash_delete() {
   git stash save;
   git stash drop stash@{0};
+}
+
+# remove everything from the index and then write both the index and the
+# working directory from git's database.
+function git_clean_index() {
+  if [ $# -eq 0 ]; then
+    dir="."
+  else
+    dir=$1
+  fi
+  git rm --cached -r $dir
+  git reset --hard
 }
