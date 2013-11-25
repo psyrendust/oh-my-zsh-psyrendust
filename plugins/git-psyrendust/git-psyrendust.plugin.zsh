@@ -18,9 +18,6 @@ compdef _git gt=git-tag
 alias gta='git tag -a'
 compdef _git gta=git-tag
 
-alias gindex='git rm --cached -r . && git reset --hard && git add .'
-compdef _git gindex=git-rm
-
 alias gbfromhere='git_branch_from_here'
 compdef _git gbromhere=git-checkout-b
 
@@ -60,8 +57,23 @@ compdef _git gfd=git-fetch-origin-develop-develop
 alias grpull='git pull root $(git_branch_name)'
 compdef _git grpull=git-pull-root
 
+alias gindex='git_index'
+compdef _git gindex=git-rm-cached-r
+
 alias gcindex='git_clean_index'
 compdef _git gcindex=git-rm-cached-r
+
+# alias gfupdate='git_flow_update'
+
+function git_index() {
+  echo "Working, please be patient..."
+  local currentlocation=$PWD
+  cd $(git rev-parse --show-toplevel)
+  git rm --cached -r .
+  git reset HEAD --hard
+  git add .
+  cd "$currentlocation"
+}
 
 function git_branch_name() {
   ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
