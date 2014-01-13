@@ -18,23 +18,26 @@ compdef _git gt=git-tag
 alias gta='git tag -a'
 compdef _git gta=git-tag
 
+alias gbd='git branch -D'
+compdef _git gbd=git-branch-D
+
 alias gbfromhere='git_branch_from_here'
 compdef _git gbromhere=git-checkout-b
 
 alias gcob='git_checkout_branch'
 compdef _git gcob=git-checkout-b
 
+alias gcobu='git_checkout_branch upstream'
+compdef _git gcob=git-checkout-b
+
 alias gmfrom='git_merge_from'
 compdef _git gmfrom=git-merge
 
-alias gmfromroot='git_merge_from_root_integration'
-compdef _git gmfromroot=git-merge
+alias gmfromorigin='git_merge_from_origin'
+compdef _git gmfromorigin=git-merge-origin
 
-alias gmfromintegration='git_merge_from_origin_integration'
-compdef _git gmfromintegration=git-merge
-
-alias gmfromdevelop='git_merge_from_origin_develop'
-compdef _git gmfromdevelop=git-merge
+alias gmfromupstream='git_merge_from_upstream'
+compdef _git gmfromupstream=git-merge-upstream
 
 alias gmclean='git_merge_clean'
 compdef _git gmclean=git-rm
@@ -43,25 +46,37 @@ alias gsdel='git_stash_delete'
 compdef _git gsdel=git-stash
 
 alias gfo='git fetch origin'
-compdef _git gfd=git-fetch-origin
+compdef _git gfo=git-fetch-origin
 
-alias gfr='git fetch root integration:integration'
-compdef _git gfr=git-fetch-root-integration-integration
+alias gfu='git fetch upstream'
+compdef _git gfu=git-fetch-upstream
 
-alias gfi='git fetch origin integration:integration'
-compdef _git gfd=git-fetch-origin-integration-integration
+alias ggpullu='git pull upstream $(git_branch_name)'
+compdef _git ggpullu=git-pull-upstream
 
-alias gfd='git fetch origin develop:develop'
-compdef _git gfd=git-fetch-origin-develop-develop
+alias ggpullo='git pull origin $(git_branch_name)'
+compdef _git ggpullo=git-pull-origin
 
-alias grpull='git pull root $(git_branch_name)'
-compdef _git grpull=git-pull-root
+alias ggpushu='git push upstream $(git_branch_name)'
+compdef _git ggpushu=git-push-upstream
+
+alias ggpusho='git push origin $(git_branch_name)'
+compdef _git ggpusho=git-push-origin
 
 alias gindex='git_index'
 compdef _git gindex=git-rm-cached-r
 
 alias gcindex='git_clean_index'
 compdef _git gcindex=git-rm-cached-r
+
+alias gl='git_log_pretty_grep'
+compdef _git glg=git-log-pretty
+
+alias glb='git_log_pretty_grep_begin'
+compdef _git glg=git-log-pretty
+
+alias gls='git_log_pretty_grep_begin_sublime'
+compdef _git glg=git-log-pretty
 
 # alias gfupdate='git_flow_update'
 
@@ -87,7 +102,11 @@ function git_branch_from_here() {
 
 # git checkout remote branch and track it
 function git_checkout_branch() {
-  git checkout -b $1 origin/$1
+  if [[ "$#" -ne 2 ]]; then
+    git checkout -b $1 origin/$1
+  else
+    git checkout -b $2 $1/$2
+  fi
 }
 
 # update target branch and merge it into current branch
@@ -106,31 +125,22 @@ function git_merge_from() {
   gm $targetbranch
 }
 
-# update origin develop branch and merge it into current branch
-function git_merge_from_origin_develop() {
+# update branch from origin and merge it into current branch
+function git_merge_from_origin() {
   currentbranch=$(git_branch_name)
-  echo "fetching from origin develop"
-  gfd
-  echo "merging origin develop into $currentbranch"
-  gm develop
+  echo "fetching from origin $1"
+  gfo $1:$1
+  echo "merging origin $1 into $currentbranch"
+  gm $1
 }
 
-# update origin integration branch and merge it into current branch
-function git_merge_from_origin_integration() {
+# update branch from upstream and merge it into current branch
+function git_merge_from_upstream() {
   currentbranch=$(git_branch_name)
-  echo "fetching from origin integration"
-  gfi
-  echo "merging origin integration into $currentbranch"
-  gm integration
-}
-
-# update root integration branch and merge it into current branch
-function git_merge_from_root_integration() {
-  currentbranch=$(git_branch_name)
-  echo "fetching from root integration"
-  gfr
-  echo "merging root integration into $currentbranch"
-  gm integration
+  echo "fetching from upstream $1"
+  gfu $1:$1
+  echo "merging upstream $1 into $currentbranch"
+  gm $1
 }
 
 # clean up and remove any *.orig files created from a merge conflict
@@ -154,4 +164,16 @@ function git_clean_index() {
   fi
   git rm --cached -r $dir
   git reset --hard
+}
+
+function git_log_pretty_grep() {
+  git log --pretty=format:'%s' -i --grep='$(1)'
+}
+
+function git_log_pretty_grep_begin() {
+  git log --pretty=format:'%s' -i --grep='^$1'
+}
+
+function git_log_pretty_grep_begin_sublime() {
+  git log --pretty=format:'%s' -i --grep='^$1'
 }
