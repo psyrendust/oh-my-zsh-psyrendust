@@ -112,8 +112,8 @@ local PATH_LOCAL="/usr/local/bin";
 local PATH_BREW_COREUTILS="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin";
 local PATH_BREW_COREUTILS_MAN="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnuman";
 export SSL_CERT_FILE="$(/usr/local/bin/brew --prefix curl-ca-bundle)/share/ca-bundle.crt";
-export PATH=$LOCAL:$BREW_COREUTILS:$PATH:$BASHSCRIPTS;
-export MANPATH=$BREW_COREUTILS_MAN:$MANPATH;
+export PATH=$PATH_LOCAL:$PATH_BREW_COREUTILS:$PATH;
+export MANPATH=$PATH_BREW_COREUTILS_MAN:$MANPATH;
 
 # load custom zshrc config for personal and work
 [[ -s "$ZSHRC_PERSONAL/.zshrc" ]] && source "$ZSHRC_PERSONAL/.zshrc";
