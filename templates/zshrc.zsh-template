@@ -22,11 +22,12 @@ alias chownapps="find /Applications -maxdepth 1 -user root -exec sudo chown -R $
 alias chownusrlocal="find /usr/local -maxdepth 2 -user root -exec sudo chown -R $USER:admin {} + -print"
 alias npmlist="npm -g ls --depth=0 2>NUL"
 
+alias ohmyzshpsyrendustversion="echo Running oh-my-zsh-psyrendust version $(cat $ZSH_CUSTOM/.version)"
+
 # Update all global npm packages except for npm, because updating npm using npm
 # always breaks. Running npm -g update will result in having to reinstall node.
 # This little script will update all global npm packages except for npm.
 alias npmupdate="npm -g ls --depth=0 2>NUL | awk -F'@' '{print $1}' | awk '{print $2}' | awk  '!/npm/'> ~/.npm-g-ls && xargs -0 -n 1 npm -g update < <(tr \\n \\0 <~/.npm-g-ls) && rm ~/.npm-g-ls"
-
 
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
@@ -120,3 +121,5 @@ export MANPATH=$BREW_COREUTILS_MAN:$MANPATH;
 
 # load fasd
 eval "$(fasd --init zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install)";
+
+ohmyzshpsyrendustversion
