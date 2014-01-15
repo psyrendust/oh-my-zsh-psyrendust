@@ -1,3 +1,50 @@
+# Configure $PATH variable
+# ----------------------------
+
+PATH=""
+
+# Add locally installed binaries first
+if [[ -d "/usr/local/bin" ]]; then
+  PATH="${PATH}:/usr/local/bin"
+fi
+
+if [[ -d "/usr/local/sbin" ]]; then
+  PATH="${PATH}:/usr/local/sbin"
+fi
+
+# Add homebrew Core Utilities
+if [[ -s "$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin" ]]; then
+  PATH="${PATH}:$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin"
+fi
+
+# Zsh & RVM woes (rvm-prompt doesn't resolve)
+# http://stackoverflow.com/questions/6636066/zsh-rvm-woes-rvm-prompt-doesnt-resolve
+# Load RVM into a shell session *as a function*
+if [[ -s "${HOME}/.rvm/scripts/rvm" ]]; then
+  source "$HOME/.rvm/scripts/rvm";
+fi
+
+# Add RVM to PATH
+if [[ -s "${HOME}/.rvm/bin" ]]; then
+  PATH="${PATH}:${HOME}/.rvm/bin";
+fi
+
+# ADD NVM's version of NPM
+if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
+  source "$HOME/.nvm/nvm.sh";
+fi
+
+# Set default PATH's
+PATH="${PATH}:/usr/bin:/bin:/usr/sbin:/sbin"
+
+export PATH
+
+local PATH_BREW_COREUTILS="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin";
+local PATH_BREW_COREUTILS_MAN="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnuman";
+export SSL_CERT_FILE="$(/usr/local/bin/brew --prefix curl-ca-bundle)/share/ca-bundle.crt";
+export PATH=$PATH_LOCAL:$PATH_BREW_COREUTILS:$PATH;
+export MANPATH=$PATH_BREW_COREUTILS_MAN:$MANPATH;
+
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
 
@@ -11,7 +58,7 @@ ZSHRC_WORK="$HOME/.zshrc-work"
 ZSHRC_PERSONAL="$HOME/.zshrc-personal"
 ZSH_THEME="pure"
 ZSH_CUSTOM="$HOME/.oh-my-zsh-psyrendust"
-export UPDATE_PSYRENDUST_DAYS=7
+export UPDATE_PSYRENDUST_DAYS=1
 
 # Example aliases
 alias zshconfig="sbl ~/.zshrc"
@@ -22,7 +69,8 @@ alias chownapps="find /Applications -maxdepth 1 -user root -exec sudo chown -R $
 alias chownusrlocal="find /usr/local -maxdepth 2 -user root -exec sudo chown -R $USER:admin {} + -print"
 alias npmlist="npm -g ls --depth=0 2>NUL"
 
-alias ohmyzshpsyrendustversion="echo Running oh-my-zsh-psyrendust version $(cat $ZSH_CUSTOM/.version)"
+alias psyversion="echo Running oh-my-zsh-psyrendust version $(cat $ZSH_CUSTOM/.version)"
+
 
 # Update all global npm packages except for npm, because updating npm using npm
 # always breaks. Running npm -g update will result in having to reinstall node.
@@ -91,29 +139,7 @@ plugins=(
   sublime
 )
 
-# Zsh & RVM woes (rvm-prompt doesn't resolve)
-# http://stackoverflow.com/questions/6636066/zsh-rvm-woes-rvm-prompt-doesnt-resolve
-# Load RVM into a shell session *as a function*
-# and add RVM to path;
-if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
-  source "$HOME/.rvm/scripts/rvm";
-  export PATH=$PATH:$HOME/.rvm/bin;
-fi
-
-# If you are using NVM use that versions npm
-if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
-  source "$HOME/.nvm/nvm.sh";
-fi
-
 source $ZSH/oh-my-zsh.sh
-
-# Configure some default PATHS
-local PATH_LOCAL="/usr/local/bin";
-local PATH_BREW_COREUTILS="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin";
-local PATH_BREW_COREUTILS_MAN="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnuman";
-export SSL_CERT_FILE="$(/usr/local/bin/brew --prefix curl-ca-bundle)/share/ca-bundle.crt";
-export PATH=$PATH_LOCAL:$PATH_BREW_COREUTILS:$PATH;
-export MANPATH=$PATH_BREW_COREUTILS_MAN:$MANPATH;
 
 # load custom zshrc config for personal and work
 [[ -s "$ZSHRC_PERSONAL/.zshrc" ]] && source "$ZSHRC_PERSONAL/.zshrc";
@@ -122,4 +148,4 @@ export MANPATH=$PATH_BREW_COREUTILS_MAN:$MANPATH;
 # load fasd
 eval "$(fasd --init zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install)";
 
-ohmyzshpsyrendustversion
+psyversion
