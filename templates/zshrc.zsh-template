@@ -168,7 +168,7 @@ alias psyversion="echo Running oh-my-zsh-psyrendust version $(cat ${ZSH_CUSTOM}/
 alias npmupdate="npm -g ls --depth=0 2>NUL | awk -F'@' '{print $1}' | awk '{print $2}' | awk  '!/npm/'> ~/.npm-g-ls && xargs -0 -n 1 npm -g update < <(tr \\n \\0 <~/.npm-g-ls) && rm ~/.npm-g-ls"
 
 if [[ -s "${ZSH_CUSTOM}/plugins/psyrendust-auto-update/check_for_upgrade.sh" ]]; then
-  alias forceupdate="source ${ZSH_CUSTOM}/plugins/psyrendust-auto-update/check_for_upgrade.sh"
+  alias forceupdate="source ${ZSH_CUSTOM}/plugins/psyrendust-auto-update/upgrade.sh"
 fi
 
 source $ZSH/oh-my-zsh.sh

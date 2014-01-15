@@ -22,6 +22,8 @@ function updatepsyrendust() {
     if git pull --rebase origin master; then
       # Copy over any template updates
       cp $ZSH_CUSTOM/templates/zshrc.zsh-template ~/.zshrc
+      # Make upgrade.sh executable
+      chmod a+x $ZSH_CUSTOM/plugins/psyrendust-auto-update/upgrade.sh
     else
       echo 0
     fi
