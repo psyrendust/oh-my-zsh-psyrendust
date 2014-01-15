@@ -150,8 +150,9 @@ function git_merge_clean() {
 
 # create a stash and delete it
 function git_stash_delete() {
-  git stash save;
-  git stash drop stash@{0};
+  # Let's make sure there is something to stash
+  command git diff --quiet --ignore-submodules HEAD &>/dev/null;
+  (($? == 1)) && git stash save && git stash drop stash@{0};
 }
 
 # remove everything from the index and then write both the index and the
