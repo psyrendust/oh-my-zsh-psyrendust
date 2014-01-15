@@ -4,6 +4,7 @@ function isgitrepoandcanupdate() {
   # check if it's dirty
   command git diff --quiet --ignore-submodules HEAD &>/dev/null
   if [[ $? == 1 ]]; then
+    git reset HEAD --hard;
     return 1
   else
     return 0
@@ -14,12 +15,15 @@ function updatepsyrendust() {
   printf '\033[0;34m%s\033[0m\n' "Upgrading Oh My Zsh Psyrendust"
   cd "$ZSH_CUSTOM"
   # Cleanup our repo with a stash save in case someone was mucking around
-  isgitrepoandcanupdate
-  if git pull --rebase origin master; then
-    # Copy over any template updates
-    cp $ZSH_CUSTOM/templates/zshrc.zsh-template ~/.zshrc
-    printf '\033[0;34m%s\033[0m\n' 'Oh My Zsh Psyrendust update successful!'
-    return 1
+  if [[ isgitrepoandcanupdate == 1 ]]; then
+    if git pull --rebase origin master; then
+      # Copy over any template updates
+      cp $ZSH_CUSTOM/templates/zshrc.zsh-template ~/.zshrc
+      printf '\033[0;34m%s\033[0m\n' 'Oh My Zsh Psyrendust update successful!'
+      return 1
+    else
+      return 0
+    fi
   else
     return 0
   fi
@@ -48,10 +52,13 @@ function updatezshrcpersonal() {
   if [[ -s "${ZSHRC_PERSONAL}/.zshrc" ]]; then
     printf '\033[0;34m%s\033[0m\n' "Upgrading personal zshrc"
     cd "${ZSHRC_PERSONAL}"
-    isgitrepoandcanupdate
-    if git pull --rebase origin master; then
-      printf '\033[0;34m%s\033[0m\n' 'Personal zshrc update successful!'
-      return 1
+    if [[ isgitrepoandcanupdate == 1 ]]; then
+      if git pull --rebase origin master; then
+        printf '\033[0;34m%s\033[0m\n' 'Personal zshrc update successful!'
+        return 1
+      else
+        return 0
+      fi
     else
       return 0
     fi
@@ -65,10 +72,13 @@ function updatezshrcwork() {
   if [[ -s "${ZSHRC_WORK}/.zshrc" ]]; then
     printf '\033[0;34m%s\033[0m\n' "Upgrading work zshrc"
     cd "${ZSHRC_WORK}"
-    isgitrepoandcanupdate
-    if git pull --rebase origin master; then
-      printf '\033[0;34m%s\033[0m\n' 'Work zshrc update successful!'
-      return 1
+    if [[ isgitrepoandcanupdate == 1 ]]; then
+      if git pull --rebase origin master; then
+        printf '\033[0;34m%s\033[0m\n' 'Work zshrc update successful!'
+        return 1
+      else
+        return 0
+      fi
     else
       return 0
     fi
