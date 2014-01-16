@@ -83,6 +83,8 @@ chsh -s /usr/local/bin/zsh;
 git clone https://github.com/psyrendust/oh-my-zsh-psyrendust.git ~/.oh-my-zsh-psyrendust;
 cp ~/.oh-my-zsh-psyrendust/templates/zshrc.zsh-template ~/.zshrc;
 cp ~/.oh-my-zsh-psyrendust/templates/gemrc.zsh-template ~/.gemrc;
+cp ~/.oh-my-zsh-psyrendust/templates/gitconfig.template ~/.gitconfig;
+cp ~/.oh-my-zsh-psyrendust/templates/gitignore_global.template ~/.gitignore_global;
 
 # install the pure theme
 git clone https://github.com/sindresorhus/pure.git ~/.pure-theme;
