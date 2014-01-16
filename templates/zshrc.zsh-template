@@ -1,37 +1,18 @@
 # Configure $PATH variable
 # ----------------------------
 
-MYPATH=""
-
 # Add locally installed binaries first
 if [[ -d "/usr/local/bin" ]]; then
-  MYPATH="${MYPATH}:/usr/local/bin"
+  PATH="/usr/local/bin:${PATH}"
 fi
 
 if [[ -d "/usr/local/sbin" ]]; then
-  MYPATH="${MYPATH}:/usr/local/sbin"
-fi
-
-# Zsh & RVM woes (rvm-prompt doesn't resolve)
-# http://stackoverflow.com/questions/6636066/zsh-rvm-woes-rvm-prompt-doesnt-resolve
-# Load RVM into a shell session *as a function*
-if [[ -s "${HOME}/.rvm/scripts/rvm" ]]; then
-  source "$HOME/.rvm/scripts/rvm";
-fi
-
-# Add RVM to PATH
-if [[ -d "${HOME}/.rvm/bin" ]]; then
-  MYPATH="${MYPATH}:${HOME}/.rvm/bin";
-fi
-
-# ADD NVM's version of NPM
-if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
-  source "$HOME/.nvm/nvm.sh";
+  PATH="/usr/local/sbin:${PATH}"
 fi
 
 # Add homebrew Core Utilities
 if [[ -s "$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin" ]]; then
-  MYPATH="${MYPATH}:$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin"
+  PATH="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin:${PATH}"
 fi
 
 # Add homebrew Core Utilities man
@@ -85,8 +66,21 @@ fi
 export UPDATE_PSYRENDUST_DAYS=1
 
 # Set PATH
-export PATH="${MYPATH}:${PATH}"
-unset MYPATH
+# export PATH="${PATH}:${PATH}"
+
+# ADD NVM's version of NPM
+if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
+  source "$HOME/.nvm/nvm.sh";
+fi
+
+# Zsh & RVM woes (rvm-prompt doesn't resolve)
+# http://stackoverflow.com/questions/6636066/zsh-rvm-woes-rvm-prompt-doesnt-resolve
+# Load RVM into a shell session *as a function*
+if [[ -s "${HOME}/.rvm/scripts/rvm" ]]; then
+  source "$HOME/.rvm/scripts/rvm";
+fi
+
+export PATH;
 
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
@@ -171,8 +165,10 @@ if [[ -s "${ZSH_CUSTOM}/plugins/psyrendust-auto-update/check_for_upgrade.sh" ]];
   alias forceupdate="source ${ZSH_CUSTOM}/plugins/psyrendust-auto-update/upgrade.sh"
 fi
 
-source $ZSH/oh-my-zsh.sh
-
+# Custom .zshrc files that get sourced if they exist. Things
+# place in these files will override any settings found in
+# this file.
+# ----------------------------------------------------------
 # Load custom personal zshrc
 if [[ -s "${ZSHRC_PERSONAL}/.zshrc" ]]; then
   source "${ZSHRC_PERSONAL}/.zshrc"
@@ -182,6 +178,8 @@ fi
 if [[ -s "${ZSHRC_WORK}/.zshrc" ]]; then
   source "${ZSHRC_WORK}/.zshrc"
 fi
+
+source $ZSH/oh-my-zsh.sh
 
 # load fasd
 eval "$(fasd --init zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install)";
