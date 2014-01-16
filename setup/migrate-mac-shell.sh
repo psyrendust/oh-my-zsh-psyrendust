@@ -53,12 +53,21 @@ mkdir -p "${HOME}/.zshrc-personal/backup"
 printf '\033[0;34m%s\033[0m\n' 'Cleanup homebrew'
 if [[ -s $(which brew) ]]; then
   cd `brew --prefix`
+  local brewfiles=$(git ls-files -z)
   rm -rf Cellar
-  brew prune
-  rm `git ls-files`
-  rm -r Library/Homebrew Library/Aliases Library/Formula Library/Contributions
-  rm -rf .git
-  rm -rf ~/Library/Caches/Homebrew
+  bin/brew prune
+  rm $($brewfiles | awk '{print $1}')
+  [[ -d Library/Homebrew ]] && rm -r Library/Homebrew
+  [[ -d Library/Aliases ]] && rm -r Library/Aliases
+  [[ -d Library/Formula ]] && rm -r Library/Formula
+  [[ -d Library/Contributions ]] && rm -r Library/Contributions
+  test -d Library/LinkedKegs && rm -r Library/LinkedKegs
+  rmdir -p bin Library share/man/man1 2> /dev/null
+  [[ -d .git ]] && rm -rf .git
+  [[ -d ~/Library/Caches/Homebrew ]] && rm -rf ~/Library/Caches/Homebrew
+  [[ -d ~/Library/Logs/Homebrew ]] && rm -rf ~/Library/Logs/Homebrew
+  [[ -d /Library/Caches/Homebrew ]] && rm -rf /Library/Caches/Homebrew
+  unset brewfiles
 fi
 
 # Install homebrew and all of it's dependencies again
