@@ -149,8 +149,8 @@ alias zshconfig="sbl ~/.zshrc"
 alias ohmyzsh="sbl ~/.oh-my-zsh"
 alias sourceohmyzsh="source ~/.zshrc"
 
-alias chownapps="find /Applications -maxdepth 1 -user root -exec sudo chown -R $(echo $USER):admin {} + -print"
-alias chownusrlocal="find /usr/local -maxdepth 2 -user root -exec sudo chown -R $(echo $USER):admin {} + -print"
+alias chownapps="find /Applications -maxdepth 1 -user root -exec sudo chown -R $(echo $USER):staff {} + -print"
+alias chownusrlocal="find /usr/local -maxdepth 2 -user root -exec sudo chown -R $(echo $USER):staff {} + -print"
 alias npmlist="npm -g ls --depth=0 2>NUL"
 
 alias psyversion="echo Running oh-my-zsh-psyrendust version $(cat ${ZSH_CUSTOM}/.version)"

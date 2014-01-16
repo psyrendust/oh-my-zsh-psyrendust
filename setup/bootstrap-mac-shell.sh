@@ -140,7 +140,7 @@ source "${HOME}/.zshrc";
 sudo dseditgroup -o edit -a $(echo $USER) -t user wheel;
 
 # Change ownership of /usr/local
-sudo chown -R $(echo $USER):admin /usr/local;
+sudo chown -R $(echo $USER):staff /usr/local;
 
 # https://rvm.io
 # rvm for the rubiess
