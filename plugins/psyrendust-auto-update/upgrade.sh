@@ -132,6 +132,8 @@ function processupdate() {
   unset successupdatepuretheme;
   unset successupdatezshrcpersonal;
   unset successupdatezshrcwork;
+
+  source ~/.zshrc
 }
 
 processupdate
