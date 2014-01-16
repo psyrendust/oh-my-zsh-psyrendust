@@ -1,7 +1,11 @@
 function isgitrepo() {
   # check if we're in a git repo
-  if [[ $(git rev-parse --is-inside-work-tree) == "true" ]]; then
-    echo 1;
+  if [[ -d "./.git" ]]; then
+    if [[ $(git rev-parse --is-inside-work-tree) == "true" ]]; then
+      echo 1;
+    else
+      echo 0;
+    fi
   else
     echo 0;
   fi
@@ -11,6 +15,16 @@ function cleanup() {
   # check if it's dirty and reset it back to HEAD
   if [[ -n $(git diff --ignore-submodules HEAD) ]]; then
     git reset HEAD --hard
+  fi
+}
+
+function updaterepo() {
+  cd $1
+  cleanup
+  if git pull --rebase origin master; then
+    echo 1
+  else
+    echo 0
   fi
 }
 
