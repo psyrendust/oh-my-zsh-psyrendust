@@ -131,6 +131,7 @@ plugins=(
   history
   history-substring-search
   npm
+  osx
   # Custom plugins from oh-my-zsh-psyrendust
   alias-grep
   apache2
@@ -154,6 +155,9 @@ alias chownusrlocal="find /usr/local -maxdepth 2 -user root -exec sudo chown -R 
 alias npmlist="npm -g ls --depth=0 2>NUL"
 
 alias psyversion="echo Running oh-my-zsh-psyrendust version $(cat ${ZSH_CUSTOM}/.version)"
+
+alias manp="man-preview"
+alias ql="quick-look"
 
 
 # Update all global npm packages except for npm, because updating npm using npm
