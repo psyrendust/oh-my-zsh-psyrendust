@@ -25,9 +25,9 @@ fi
 
 # Grab some user info
 echo "Please enter your first and last name [First Last]: ";
-read gitusername;
+read git-user-name-first git-user-name-last;
 echo "Please enter your work email address [first.last@xero.com]: ";
-read gituseremail;
+read git-user-email;
 
 echo "Checking for homebrew..."
 # Install Homebrew
@@ -61,6 +61,7 @@ if [[ -z $(cat /private/etc/shells | grep "/usr/local/bin/zsh") ]]; then
 fi
 # Change root shell to the new zsh
 sudo chsh -s /usr/local/bin/zsh;
+chsh -s /usr/local/bin/zsh;
 
 # Make sure that everything went well
 echo "SHELL: $SHELL";
@@ -86,6 +87,8 @@ rm "${HOME}/.zlogin";
 rm "${HOME}/.zsh-update";
 rm "${HOME}/.zsh_history";
 
+source "${HOME}/.zshrc";
+
 # install oh-my-zsh
 git clone https://github.com/robbyrussell/oh-my-zsh.git "${HOME}/.oh-my-zsh";
 chsh -s /usr/local/bin/zsh;
@@ -93,17 +96,18 @@ chsh -s /usr/local/bin/zsh;
 # install some oh-my-zsh extras
 git clone https://github.com/psyrendust/oh-my-zsh-psyrendust.git "${HOME}/.oh-my-zsh-psyrendust";
 cp "${HOME}/.oh-my-zsh-psyrendust/templates/zshrc.zsh-template" "${HOME}/.zshrc";
-cp "${HOME}/.oh-my-zsh-psyrendust/templates/gemrc.zsh-template" "${HOME}/.gemrc";
-cp "${HOME}/.oh-my-zsh-psyrendust/templates/gitconfig.template" "${HOME}/.gitconfig";
-cp "${HOME}/.oh-my-zsh-psyrendust/templates/gitignore_global.template" "${HOME}/.gitignore_global";
+cp "${HOME}/.oh-my-zsh-psyrendust/templates/gemrc.gem-template" "${HOME}/.gemrc";
+cp "${HOME}/.oh-my-zsh-psyrendust/templates/gitconfig.git-template" "${HOME}/.gitconfig";
+cp "${HOME}/.oh-my-zsh-psyrendust/templates/gitignore_global.git-template" "${HOME}/.gitignore_global";
 
 # Set Git user info
-git config --global user.name $gitusername;
-git config --global user.email $gituseremail;
+git config --global user.name ${git-user-name-first} ${git-user-name-last};
+git config --global user.email ${git-user-email};
 
 # Copy over fonts
-[[ -d "${HOME}/Library/Fonts" ]] || mkdir -p "${HOME}/Library/Fonts";
-cp "${HOME}/.oh-my-zsh-psyrendust/fonts/." "${HOME}/Library/Fonts/";
+[[ -d "${HOME}/Library/Fonts" ]] || mkdir -p "${HOME}/Library/Fonts"
+cp "${HOME}/.oh-my-zsh-psyrendust/fonts/DroidSansMono.ttf" "${HOME}/Library/Fonts/DroidSansMono.ttf"
+cp "${HOME}/.oh-my-zsh-psyrendust/fonts/Inconsolata.otf" "${HOME}/Library/Fonts/Inconsolata.otf"
 
 # install the pure theme
 git clone https://github.com/sindresorhus/pure.git "${HOME}/.pure-theme";

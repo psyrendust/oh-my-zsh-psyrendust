@@ -27,9 +27,9 @@ function updaterepo() {
 # ----------------------------------------------------------
 printf '\033[0;34m%s\033[0m\n' 'Grab some user info'
 echo "Please enter your first and last name [First Last]: "
-read gitusername
+read git-user-name-first git-user-name-last
 echo "Please enter your work email address [first.last@xero.com]: "
-read gituseremail
+read git-user-email
 echo "Would you like to replace your hosts file with a new one [y/n]: "
 read replacehostsfile
 
@@ -53,7 +53,7 @@ mkdir -p "${HOME}/.zshrc-personal/backup"
 printf '\033[0;34m%s\033[0m\n' 'Cleanup homebrew'
 if [[ -s $(which brew) ]]; then
   cd `brew --prefix`
-  local brewfiles=$(git ls-files -z)
+  brewfiles=$(git ls-files -z)
   rm -rf Cellar
   bin/brew prune
   rm $($brewfiles | awk '{print $1}')
@@ -67,18 +67,17 @@ if [[ -s $(which brew) ]]; then
   [[ -d ~/Library/Caches/Homebrew ]] && rm -rf ~/Library/Caches/Homebrew
   [[ -d ~/Library/Logs/Homebrew ]] && rm -rf ~/Library/Logs/Homebrew
   [[ -d /Library/Caches/Homebrew ]] && rm -rf /Library/Caches/Homebrew
-  unset brewfiles
 fi
 
 # Install homebrew and all of it's dependencies again
 # ----------------------------------------------------------
 printf '\033[0;34m%s\033[0m\n' 'Install homebrew'
-ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
-brew install coreutils findutils bash zsh ack automake curl-ca-bundle fasd git optipng phantomjs rename tree
-brew install wget --enable-iri
-brew tap homebrew/dupes
-brew install homebrew/dupes/grep --default-names
-brew cleanup
+ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)";
+brew install coreutils findutils bash zsh ack automake curl-ca-bundle fasd git optipng phantomjs rename tree python;
+brew install wget --enable-iri;
+brew tap homebrew/dupes;
+brew install homebrew/dupes/grep --default-names;
+brew cleanup;
 
 # Change root and user shell to the new zsh
 # ----------------------------------------------------------
@@ -109,21 +108,22 @@ updaterepo "${HOME}/.oh-my-zsh-psyrendust"
 # ----------------------------------------------------------
 printf '\033[0;34m%s\033[0m\n' 'Copy over template files to your home folder'
 cp "${HOME}/.oh-my-zsh-psyrendust/templates/zshrc.zsh-template" "${HOME}/.zshrc";
-cp "${HOME}/.oh-my-zsh-psyrendust/templates/gemrc.zsh-template" "${HOME}/.gemrc";
-cp "${HOME}/.oh-my-zsh-psyrendust/templates/gitconfig.template" "${HOME}/.gitconfig";
-cp "${HOME}/.oh-my-zsh-psyrendust/templates/gitignore_global.template" "${HOME}/.gitignore_global";
+cp "${HOME}/.oh-my-zsh-psyrendust/templates/gemrc.gem-template" "${HOME}/.gemrc";
+cp "${HOME}/.oh-my-zsh-psyrendust/templates/gitconfig.git-template" "${HOME}/.gitconfig";
+cp "${HOME}/.oh-my-zsh-psyrendust/templates/gitignore_global.git-template" "${HOME}/.gitignore_global";
 
 # Set Git user info
 # ----------------------------------------------------------
 printf '\033[0;34m%s\033[0m\n' 'Set Git user info'
-git config --global user.name $gitusername
-git config --global user.email $gituseremail
+git config --global user.name "${git-user-name-first} ${git-user-name-last}"
+git config --global user.email "${git-user-email}"
 
 # Copy over fonts
 # ----------------------------------------------------------
 printf '\033[0;34m%s\033[0m\n' 'Copy over fonts'
 [[ -d "${HOME}/Library/Fonts" ]] || mkdir -p "${HOME}/Library/Fonts"
-cp "${HOME}/.oh-my-zsh-psyrendust/fonts/." "${HOME}/Library/Fonts/"
+cp "${HOME}/.oh-my-zsh-psyrendust/fonts/DroidSansMono.ttf" "${HOME}/Library/Fonts/DroidSansMono.ttf"
+cp "${HOME}/.oh-my-zsh-psyrendust/fonts/Inconsolata.otf" "${HOME}/Library/Fonts/Inconsolata.otf"
 
 # install the pure theme
 # ----------------------------------------------------------
@@ -186,7 +186,7 @@ sudo chown -R $(echo $USER):staff /usr/local;
 
 # install a default hosts file
 # ----------------------------------------------------------
-if [[ $replacehostsfile == "y" || $replacehostsfile == "Y" ]]; then
+if [[ $replacehostsfile = [Yy] ]]; then
   printf '\033[0;34m%s\033[0m\n' 'install a default hosts file'
   sudo cp "${HOME}/.zshrc-work/templates/hosts" "/etc/hosts";
 fi
