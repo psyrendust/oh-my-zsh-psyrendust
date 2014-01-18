@@ -12,14 +12,14 @@ compdef _git gaa=git-add
 alias gun='git reset && git checkout . && git clean -fdx'
 compdef _git gun=git-reset
 
-alias gt='git tag'
-compdef _git gt=git-tag
+alias gtag='git tag'
+compdef _git gtag=git-tag
 
-alias gta='git tag -a'
-compdef _git gta=git-tag
+alias gtaga='git tag -a'
+compdef _git gtaga=git-tag
 
-alias gbd='git branch -D'
-compdef _git gbd=git-branch-D
+alias gbdel='git branch -D'
+compdef _git gbdel=git-branch-D
 
 alias gbfromhere='git_branch_from_here'
 compdef _git gbromhere=git-checkout-b
