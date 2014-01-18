@@ -25,7 +25,7 @@ function updaterepo() {
 
 # Grab some user info
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'Grab some user info'
+printf '\033[0;32m%s\033[0m\n' 'Grab some user info'
 echo "Please enter your first and last name [First Last]: "
 read git-user-name-first git-user-name-last
 echo "Please enter your work email address [first.last@xero.com]: "
@@ -36,7 +36,7 @@ read replacehostsfile
 # Backup your current configuration stuff in
 # "${HOME}/.zshrc-personal/backup/".
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'Backup your current configuration stuff'
+printf '\033[0;32m%s\033[0m\n' 'Backup your current configuration stuff'
 mkdir -p "${HOME}/.zshrc-personal/backup"
 [[ -s "${HOME}/.gemrc" ]] && cp "${HOME}/.gemrc" "${HOME}/.zshrc-personal/backup/.gemrc"
 [[ -s "${HOME}/.gitconfig" ]] && cp "${HOME}/.gitconfig" "${HOME}/.zshrc-personal/backup/.gitconfig"
@@ -50,7 +50,7 @@ mkdir -p "${HOME}/.zshrc-personal/backup"
 # Let's cleanup our homebrew install and clear out
 # the Cellar
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'Cleanup homebrew'
+printf '\033[0;32m%s\033[0m\n' 'Cleanup homebrew'
 if [[ -s $(which brew) ]]; then
   cd `brew --prefix`
   brewfiles=$(git ls-files -z)
@@ -71,7 +71,7 @@ fi
 
 # Install homebrew and all of it's dependencies again
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'Install homebrew'
+printf '\033[0;32m%s\033[0m\n' 'Install homebrew'
 ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)";
 brew install coreutils findutils bash zsh ack automake curl-ca-bundle fasd git optipng phantomjs rename tree python;
 brew install wget --enable-iri;
@@ -81,13 +81,13 @@ brew cleanup;
 
 # Change root and user shell to the new zsh
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'Changing shell'
+printf '\033[0;32m%s\033[0m\n' 'Changing shell'
 sudo chsh -s /usr/local/bin/zsh
 chsh -s /usr/local/bin/zsh
 
 # a little cleanup
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'A little cleanup'
+printf '\033[0;32m%s\033[0m\n' 'A little cleanup'
 rm ~/.zcompdump*;
 rm ~/.zlogin;
 rm ~/.zsh-update;
@@ -96,17 +96,17 @@ rm ~/NUL;
 
 # Update oh-my-zsh
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'Update oh-my-zsh'
+printf '\033[0;32m%s\033[0m\n' 'Update oh-my-zsh'
 updaterepo "${HOME}/.oh-my-zsh"
 
 # Update oh-my-zsh-psyrendust
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'Update oh-my-zsh-psyrendust'
+printf '\033[0;32m%s\033[0m\n' 'Update oh-my-zsh-psyrendust'
 updaterepo "${HOME}/.oh-my-zsh-psyrendust"
 
 # Copy over template files to your home folder
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'Copy over template files to your home folder'
+printf '\033[0;32m%s\033[0m\n' 'Copy over template files to your home folder'
 cp "${HOME}/.oh-my-zsh-psyrendust/templates/zshrc.zsh-template" "${HOME}/.zshrc";
 cp "${HOME}/.oh-my-zsh-psyrendust/templates/gemrc.gem-template" "${HOME}/.gemrc";
 cp "${HOME}/.oh-my-zsh-psyrendust/templates/gitconfig.git-template" "${HOME}/.gitconfig";
@@ -114,38 +114,38 @@ cp "${HOME}/.oh-my-zsh-psyrendust/templates/gitignore_global.git-template" "${HO
 
 # Set Git user info
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'Set Git user info'
+printf '\033[0;32m%s\033[0m\n' 'Set Git user info'
 git config --global user.name "${git-user-name-first} ${git-user-name-last}"
 git config --global user.email "${git-user-email}"
 
 # Copy over fonts
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'Copy over fonts'
+printf '\033[0;32m%s\033[0m\n' 'Copy over fonts'
 [[ -d "${HOME}/Library/Fonts" ]] || mkdir -p "${HOME}/Library/Fonts"
 cp "${HOME}/.oh-my-zsh-psyrendust/fonts/DroidSansMono.ttf" "${HOME}/Library/Fonts/DroidSansMono.ttf"
 cp "${HOME}/.oh-my-zsh-psyrendust/fonts/Inconsolata.otf" "${HOME}/Library/Fonts/Inconsolata.otf"
 
 # install the pure theme
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'Install the pure theme'
+printf '\033[0;32m%s\033[0m\n' 'Install the pure theme'
 git clone https://github.com/sindresorhus/pure.git ~/.pure-theme;
 
 # symlink the pure theme to our oh-my-zsh-psyrendust custom theme folder
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'symlink the pure theme to our oh-my-zsh-psyrendust custom theme folder'
+printf '\033[0;32m%s\033[0m\n' 'symlink the pure theme to our oh-my-zsh-psyrendust custom theme folder'
 ln -sf ~/.pure-theme/pure.zsh ~/.oh-my-zsh-psyrendust/themes/pure.zsh-theme;
 
 # install zshrc-work
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'install zshrc-work'
+printf '\033[0;32m%s\033[0m\n' 'install zshrc-work'
 git clone https://github.dev.xero.com/dev-larryg/zshrc-xero.git ~/.zshrc-work;
 
-printf '\033[0;34m%s\033[0m\n' 'sourcing .zshrc'
+printf '\033[0;32m%s\033[0m\n' 'sourcing .zshrc'
 source ~/.zshrc
 
 # Remove all grunt-init plugins and start over
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'Remove all grunt-init plugins and start over'
+printf '\033[0;32m%s\033[0m\n' 'Remove all grunt-init plugins and start over'
 if [[ -d "${HOME}/.grunt-init" ]]; then
   gruntinitplugins=$(ls "${HOME}/.grunt-init");
   for i in ${gruntinitplugins[@]}
@@ -161,54 +161,54 @@ git clone https://github.com/gruntjs/grunt-init-node.git "${HOME}/.grunt-init/no
 
 # install zshrc-personal starter template
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'install zshrc-personal starter template'
+printf '\033[0;32m%s\033[0m\n' 'install zshrc-personal starter template'
 cp "${HOME}/.oh-my-zsh-psyrendust/templates/zshrc-personal.zsh-template" "${HOME}/.zshrc-personal/.zshrc";
 
 # add some automount sugar for Parallels
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'add some automount sugar for Parallels'
+printf '\033[0;32m%s\033[0m\n' 'add some automount sugar for Parallels'
 sudo cp "${HOME}/.zshrc-work/templates/auto_master" "/private/etc/auto_master";
 sudo cp "${HOME}/.zshrc-work/templates/auto_smb" "/private/etc/auto_smb";
 
-printf '\033[0;34m%s\033[0m\n' 'sourcing .zshrc'
+printf '\033[0;32m%s\033[0m\n' 'sourcing .zshrc'
 source "${HOME}/.zshrc";
 
 # let's do some admin type stuff
 # add myself to wheel group
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'add myself to wheel group'
+printf '\033[0;32m%s\033[0m\n' 'add myself to wheel group'
 sudo dseditgroup -o edit -a $(echo $USER) -t user wheel;
 
 # Change ownership of /usr/local
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'Change ownership of /usr/local'
+printf '\033[0;32m%s\033[0m\n' 'Change ownership of /usr/local'
 sudo chown -R $(echo $USER):staff /usr/local;
 
 # install a default hosts file
 # ----------------------------------------------------------
 if [[ $replacehostsfile = [Yy] ]]; then
-  printf '\033[0;34m%s\033[0m\n' 'install a default hosts file'
+  printf '\033[0;32m%s\033[0m\n' 'install a default hosts file'
   sudo cp "${HOME}/.zshrc-work/templates/hosts" "/etc/hosts";
 fi
 
 # for the c alias (syntax highlighted cat)
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'Installing Pygments'
+printf '\033[0;32m%s\033[0m\n' 'Installing Pygments'
 sudo easy_install Pygments;
 
 # source .zshrc file and reap the benefits
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'sourcing .zshrc'
+printf '\033[0;32m%s\033[0m\n' 'sourcing .zshrc'
 source "${HOME}/.zshrc";
 
 # run some of our update scripts
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'Run some of our update scripts'
+printf '\033[0;32m%s\033[0m\n' 'Run some of our update scripts'
 forceupdate && npmupdate;
 
 # Update Ruby and Gems
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'Update Ruby and Gems'
+printf '\033[0;32m%s\033[0m\n' 'Update Ruby and Gems'
 # If we are using ruby 2.0.0pxxx skip it
 rvm get stable;               # Update rvm
 rvm reload;                   # Reload the updated version of rvm
@@ -226,7 +226,7 @@ rvm cleanup all;
 
 # All done
 # ----------------------------------------------------------
-printf '\033[0;34m%s\033[0m\n' 'All done'
+printf '\033[0;32m%s\033[0m\n' 'All done'
 source "${HOME}/.zshrc";
 
 printf '\033[0;32m%s\033[0m\n' 'We are all done.'
