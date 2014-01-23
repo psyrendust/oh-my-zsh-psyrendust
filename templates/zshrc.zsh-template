@@ -10,19 +10,22 @@ if [[ -d "/usr/local/sbin" ]]; then
   PATH="/usr/local/sbin:${PATH}"
 fi
 
-# Add homebrew Core Utilities
-if [[ -s "$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin" ]]; then
-  PATH="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin:${PATH}"
-fi
+# Check if homebrew is installed
+if [[ -s "/usr/local/bin/brew" ]]; then
+  # Add homebrew Core Utilities
+  if [[ -s "$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin" ]]; then
+    PATH="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin:${PATH}"
+  fi
 
-# Add homebrew Core Utilities man
-if [[ -s "$(/usr/local/bin/brew --prefix coreutils)/libexec/gnuman" ]]; then
-  export MANPATH="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnuman:${MANPATH}"
-fi
+  # Add homebrew Core Utilities man
+  if [[ -s "$(/usr/local/bin/brew --prefix coreutils)/libexec/gnuman" ]]; then
+    export MANPATH="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnuman:${MANPATH}"
+  fi
 
-# Add SSL Cert
-if [[ -s "$(/usr/local/bin/brew --prefix curl-ca-bundle)/share/ca-bundle.crt" ]]; then
-  export SSL_CERT_FILE="$(/usr/local/bin/brew --prefix curl-ca-bundle)/share/ca-bundle.crt"
+  # Add SSL Cert
+  if [[ -s "$(/usr/local/bin/brew --prefix curl-ca-bundle)/share/ca-bundle.crt" ]]; then
+    export SSL_CERT_FILE="$(/usr/local/bin/brew --prefix curl-ca-bundle)/share/ca-bundle.crt"
+  fi
 fi
 
 # Path to your oh-my-zsh configuration
@@ -106,7 +109,7 @@ COMPLETION_WAITING_DOTS="true"
 # Uncomment following line if you want to disable marking untracked files under
 # VCS as dirty. This makes repository status check for large repositories much,
 # much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
+DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
@@ -114,7 +117,6 @@ COMPLETION_WAITING_DOTS="true"
 plugins=(
   # Default plugins from oh-my-zsh
   bower
-  brew
   colored-man
   colorize
   compleat
@@ -131,7 +133,6 @@ plugins=(
   history
   history-substring-search
   npm
-  osx
   # Custom plugins from oh-my-zsh-psyrendust
   alias-grep
   apache2
@@ -145,19 +146,26 @@ plugins=(
   sublime
 )
 
+# Add some plugins if we are not using cygwin
+[[ $('uname') == *CYGWIN_NT* ]] || plugins=("${plugins[@]}" brew)
+[[ $('uname') == *CYGWIN_NT* ]] || plugins=("${plugins[@]}" osx)
+
 # Helper aliases
 alias zshconfig="sbl ~/.zshrc"
 alias ohmyzsh="sbl ~/.oh-my-zsh"
 alias sourceohmyzsh="source ~/.zshrc"
 
-alias chownapps="find /Applications -maxdepth 1 -user root -exec sudo chown -R $(echo $USER):staff {} + -print"
 alias chownusrlocal="find /usr/local -maxdepth 2 -user root -exec sudo chown -R $(echo $USER):staff {} + -print"
 alias npmlist="npm -g ls --depth=0 2>NUL"
 
 alias psyversion="echo Running oh-my-zsh-psyrendust version $(cat ${ZSH_CUSTOM}/.version)"
 
-alias manp="man-preview"
-alias ql="quick-look"
+# Don't create this alias if we are not using OS X
+if [[ $('uname') == 'Darwin' ]]; then
+  alias chownapps="find /Applications -maxdepth 1 -user root -exec sudo chown -R $(echo $USER):staff {} + -print"
+  alias manp="man-preview"
+  alias ql="quick-look"
+fi
 
 
 # Update all global npm packages except for npm, because updating npm using npm

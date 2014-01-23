@@ -67,15 +67,15 @@ printf '\033[0;32m%s\033[0m\n' '    ...';
 printf '\033[0;32m%s\033[0m\n' '    microsoft-ds    445/udp     # Microsoft-DS';
 printf '\033[0;32m%s\033[0m\n' '    microsoft-ds    445/tcp     # Microsoft-DS';
 printf '\033[0;32m%s\033[0m\n' '\nResults should look like the following:';
-printf '\033[0;32m%s\033[0m\n' '    netbios-ns      137/udp     # NETBIOS Name Service';
-printf '\033[0;32m%s\033[0m\n' '    netbios-ns      137/tcp     # NETBIOS Name Service';
-printf '\033[0;32m%s\033[0m\n' '    netbios-dgm     138/udp     # NETBIOS Datagram Service';
-printf '\033[0;32m%s\033[0m\n' '    netbios-dgm     138/tcp     # NETBIOS Datagram Service';
-printf '\033[0;32m%s\033[0m\n' '    netbios-ssn     139/udp     # NETBIOS Session Service';
-printf '\033[0;32m%s\033[0m\n' '    netbios-ssn     139/tcp     # NETBIOS Session Service';
+printf '\033[0;32m%s\033[0m\n' '    netbios-ns      19137/udp     # NETBIOS Name Service';
+printf '\033[0;32m%s\033[0m\n' '    netbios-ns      19137/tcp     # NETBIOS Name Service';
+printf '\033[0;32m%s\033[0m\n' '    netbios-dgm     19138/udp     # NETBIOS Datagram Service';
+printf '\033[0;32m%s\033[0m\n' '    netbios-dgm     19138/tcp     # NETBIOS Datagram Service';
+printf '\033[0;32m%s\033[0m\n' '    netbios-ssn     19139/udp     # NETBIOS Session Service';
+printf '\033[0;32m%s\033[0m\n' '    netbios-ssn     19139/tcp     # NETBIOS Session Service';
 printf '\033[0;32m%s\033[0m\n' '    ...';
-printf '\033[0;32m%s\033[0m\n' '    microsoft-ds    445/udp     # Microsoft-DS';
-printf '\033[0;32m%s\033[0m\n' '    microsoft-ds    445/tcp     # Microsoft-DS';
+printf '\033[0;32m%s\033[0m\n' '    microsoft-ds    19445/udp     # Microsoft-DS';
+printf '\033[0;32m%s\033[0m\n' '    microsoft-ds    19445/tcp     # Microsoft-DS';
 printf '\033[0;32m%s\033[0m\n' 'Press enter to edit /etc/services [Enter]: ';
 sudo nano /etc/services;
 
@@ -208,5 +208,5 @@ ln -sf "/usr/local/etc/smb_custom.conf" "/usr/local/Cellar/samba/${smbversion}/e
 # starts.
 # ----------------------------------------------------------
 printf '\033[0;32m%s\033[0m\n' '9. Set our new Samba service to launch when the computer starts';
-sudo launchctl load /Library/LaunchDaemons/org.samba.smbd.plist;
-sudo launchctl load /Library/LaunchDaemons/org.samba.nmbd.plist;
+sudo launchctl load -w /Library/LaunchDaemons/org.samba.smbd.plist;
+sudo launchctl load -w /Library/LaunchDaemons/org.samba.nmbd.plist;
