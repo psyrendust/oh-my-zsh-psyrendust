@@ -29,6 +29,10 @@ function check_for_upgrade() {
     if [[ -f "$HOME/.psyrendust-update" ]]; then
       source ~/.psyrendust-update
 
+      if [[ -z "$LAST_PSYRENDUST_REMOTE_SHA" ]]; then
+        upgrade_psyrendust && return 0;
+      fi
+
       if [[ $LAST_PSYRENDUST_REMOTE_SHA != $(current_psyrendust_local_sha) ]]; then
         echo "[Oh My Zsh Psyrendust] Updates found..."
         upgrade_psyrendust
