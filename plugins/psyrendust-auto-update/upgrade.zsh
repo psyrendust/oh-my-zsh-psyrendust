@@ -88,8 +88,6 @@ function processupdate() {
     printf '\033[0;32m%s\033[0m\n' '\___/_//_/  /_/_/_/\_, /   /__/___/_//_/  / .__/___/\_, /_/  \__/_//_/\_,_/\_,_/___/\__/  '
     printf '\033[0;32m%s\033[0m\n' '                  /___/                  /_/       /___/                                  '
     printf '\033[0;32m%s\033[0m\n' 'Hooray!'
-    # restart environment
-    /usr/bin/env zsh
   else
     printf '\033[0;31m%s\033[0m\n' 'Please try again later.'
   fi
