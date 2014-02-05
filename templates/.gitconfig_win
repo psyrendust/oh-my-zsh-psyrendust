@@ -1,0 +1,6 @@
+#-----------------------------------------------------------
+[include]
+  path = ~/.oh-my-zsh-psyrendust/gitconfig/user.inc
+  path = ~/.oh-my-zsh-psyrendust/gitconfig/core.inc
+  path = ~/.oh-my-zsh-psyrendust/gitconfig/diff.inc
+  path = ~/.zshrc-work/gitconfig/work.inc

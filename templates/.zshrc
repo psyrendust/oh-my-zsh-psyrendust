@@ -35,7 +35,7 @@ fi
 
 # Set the location of oh-my-zsh-psyrendust
 if [[ -d "${HOME}/.oh-my-zsh-psyrendust" ]]; then
-  ZSH_CUSTOM="${HOME}/.oh-my-zsh-psyrendust"
+  export ZSH_CUSTOM="${HOME}/.oh-my-zsh-psyrendust"
 fi
 
 # Set the location of the PURE Theme and symlink pure.zsh
@@ -65,27 +65,50 @@ if [[ -d "${HOME}/.zshrc-personal" ]]; then
   export ZSHRC_PERSONAL="${HOME}/.zshrc-personal"
 fi
 
-# Auto update duration
-export UPDATE_PSYRENDUST_DAYS=1
-
-# Set PATH
-# export PATH="${PATH}:${PATH}"
-
 # ADD NVM's version of NPM
 if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
-  source "$HOME/.nvm/nvm.sh";
+  source "$HOME/.nvm/nvm.sh"
 fi
 
 # Zsh & RVM woes (rvm-prompt doesn't resolve)
 # http://stackoverflow.com/questions/6636066/zsh-rvm-woes-rvm-prompt-doesnt-resolve
 # Load RVM into a shell session *as a function*
 if [[ -s "${HOME}/.rvm/scripts/rvm" ]]; then
-  source "$HOME/.rvm/scripts/rvm";
+  source "$HOME/.rvm/scripts/rvm"
 fi
 
-export PATH;
+# Check to see if user.inc has been created
+[[ -s "${ZSH_CUSTOM}/gitconfig/user.inc" ]] || echo "[user]" > "${ZSH_CUSTOM}/gitconfig/user.inc"
 
-# Set to this to use case-sensitive completion
+# Check to see if a Git global user.name has been set
+if [[ -n $(git config user.name) == "" ]]; then
+  echo "You haven't configured your Git user name."
+  echo "Please enter your first and last name [First Last]: "
+  read git-user-name-first git-user-name-last
+  echo "  name = ${git-user-name-first} ${git-user-name-last}" >> "${ZSH_CUSTOM}/gitconfig/user.inc"
+fi
+
+# Check to see if a Git global user.email has been set
+if [[ -n $(git config user.email) == "" ]]; then
+  echo "Please enter your work email address [first.last@xero.com]: "
+  read git-user-email
+  echo "  email = ${git-user-email}" >> "${ZSH_CUSTOM}/gitconfig/user.inc"
+fi
+
+export PATH
+
+# Auto update duration for oh-my-zsh-psyrendust
+export UPDATE_PSYRENDUST_DAYS=1
+
+# Do some system checks so we don't have to keep doing it later
+[[ $('uname') == *CYGWIN* ]] && export SYSTEM_IS_CYGWIN=1
+[[ $('uname') == *Linux* ]] && export SYSTEM_IS_LINUX=1
+[[ $('uname') == *DARWIN* ]] && export SYSTEM_IS_MAC=1
+
+# Comment this out to disable auto-update checks for oh-my-zsy-psyrendust
+# DISABLE_PSYRENDUST_AUTO_UPDATE="true"
+
+# Set to this to use case-se;nsitive completion
 # CASE_SENSITIVE="true"
 
 # Comment this out to disable bi-weekly auto-update checks
@@ -146,9 +169,14 @@ plugins=(
   sublime
 )
 
+
+# Add some cygwin related configuration
+if [[ -n $SYSTEM_IS_CYGWIN ]]; then
+  plugins=("${plugins[@]}" kaleidoscope)
+fi
+
 # Add some plugins if we are not using cygwin
-[[ $('uname') == *CYGWIN_NT* ]] || plugins=("${plugins[@]}" brew)
-[[ $('uname') == *CYGWIN_NT* ]] || plugins=("${plugins[@]}" osx)
+[[ -n $SYSTEM_IS_CYGWIN ]] || plugins=("${plugins[@]}" brew osx)
 
 # Helper aliases
 alias zshconfig="sbl ~/.zshrc"
@@ -158,7 +186,7 @@ alias sourceohmyzsh="source ~/.zshrc"
 alias chownusrlocal="find /usr/local -maxdepth 2 -user root -exec sudo chown -R $(echo $USER):staff {} + -print"
 alias npmlist="npm -g ls --depth=0 2>NUL"
 
-alias psyversion="echo Running oh-my-zsh-psyrendust version $(cat ${ZSH_CUSTOM}/.version)"
+alias psyversion="printf '\033[0;35m%s\033[0;31m%s\033[0m\n' 'Running oh-my-zsh-psyrendust version ' '$(cat ${ZSH_CUSTOM}/.version)'"
 
 # Don't create this alias if we are not using OS X
 if [[ $('uname') == 'Darwin' ]]; then
@@ -194,6 +222,6 @@ fi
 source $ZSH/oh-my-zsh.sh
 
 # load fasd
-eval "$(fasd --init zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install)";
+eval "$(fasd --init zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install)"
 
 psyversion
