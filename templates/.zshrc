@@ -78,21 +78,25 @@ if [[ -s "${HOME}/.rvm/scripts/rvm" ]]; then
 fi
 
 # Check to see if user.inc has been created
-[[ -s "${ZSH_CUSTOM}/gitconfig/user.inc" ]] || echo "[user]" > "${ZSH_CUSTOM}/gitconfig/user.inc"
+if [[ ! -s "${ZSH_CUSTOM}/gitconfig/user.inc" ]]; then
+  echo "#-----------------------------------------------------------" > "${ZSH_CUSTOM}/gitconfig/user.inc"
+  echo "# Setup username and email" >> "${ZSH_CUSTOM}/gitconfig/user.inc"
+  echo "[user]" >> "${ZSH_CUSTOM}/gitconfig/user.inc"
+fi
 
 # Check to see if a Git global user.name has been set
 if [[ $(git config user.name) == "" ]]; then
   echo "You haven't configured your Git user name."
   echo "Please enter your first and last name [First Last]: "
-  read git-user-name-first git-user-name-last
-  echo "  name = ${git-user-name-first} ${git-user-name-last}" >> "${ZSH_CUSTOM}/gitconfig/user.inc"
+  read GIT_USER_NAME_FIRST GIT_USER_NAME_LAST
+  echo "  name = ${GIT_USER_NAME_FIRST} ${GIT_USER_NAME_LAST}" >> "${ZSH_CUSTOM}/gitconfig/user.inc"
 fi
 
 # Check to see if a Git global user.email has been set
 if [[ $(git config user.email) == "" ]]; then
-  echo "Please enter your work email address [first.last@xero.com]: "
-  read git-user-email
-  echo "  email = ${git-user-email}" >> "${ZSH_CUSTOM}/gitconfig/user.inc"
+  echo "Please enter your work email address [first.last@domain.com]: "
+  read GIT_USER_EMAIL
+  echo "  email = ${GIT_USER_EMAIL}" >> "${ZSH_CUSTOM}/gitconfig/user.inc"
 fi
 
 export PATH
