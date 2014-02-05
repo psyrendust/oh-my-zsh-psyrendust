@@ -14,7 +14,7 @@ function get_current_psyrendust_remote_sha() {
 
 function update_psyrendust_local_sha() {
   echo "CURRENT_PSYRENDUST_LOCAL_SHA=$(get_current_psyrendust_local_sha)" > "$HOME/.psyrendust-update"
-  printf '\033[0;35m%s \033[0;31m%s\033[0m\n' "[Oh My Zsh Psyrendust] Updated: " "$HOME/.psyrendust-update"
+  printf '\033[0;35m%s \033[0;31m%s\033[0m\n' "[$HOME/.psyrendust-update] " "Updated"
 }
 
 function upgrade_psyrendust() {
@@ -35,10 +35,8 @@ function check_for_upgrade() {
       fi
 
       if [[ $CURRENT_PSYRENDUST_LOCAL_SHA != $(get_current_psyrendust_remote_sha) ]]; then
-        printf '\033[0;35m%s \033[0;31m%s\033[0m\n' "[Oh My Zsh Psyrendust]" "Updates found..."
+        printf '\033[0;35m%s \033[0;33m%s\033[0m\n' "[Oh My Zsh Psyrendust]" "Updates found..."
         upgrade_psyrendust
-      else
-        update_psyrendust_local_sha
       fi
     else
       # create the psyrendust file

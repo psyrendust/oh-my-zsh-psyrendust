@@ -196,7 +196,7 @@ alias sourceohmyzsh="source ~/.zshrc"
 alias chownusrlocal="find /usr/local -maxdepth 2 -user root -exec sudo chown -R $(echo $USER):staff {} + -print"
 alias npmlist="npm -g ls --depth=0 2>NUL"
 
-alias psyversion="printf '\033[0;35m%s\033[0;31m%s\033[0m\n' 'Running oh-my-zsh-psyrendust version ' '$(cat ${ZSH_CUSTOM}/.version)'"
+alias psyversion="printf '\033[0;35m%s\033[0;33m%s\033[0m\n' 'Running oh-my-zsh-psyrendust version ' '$(cat ${ZSH_CUSTOM}/.version)'"
 
 # Only create alias if we are on OS X
 if [[ -n $SYSTEM_IS_MAC ]]; then
