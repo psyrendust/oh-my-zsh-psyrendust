@@ -14,10 +14,11 @@ function get_current_psyrendust_remote_sha() {
 
 function update_psyrendust_local_sha() {
   echo "CURRENT_PSYRENDUST_LOCAL_SHA=$(get_current_psyrendust_local_sha)" > "$HOME/.psyrendust-update"
+  printf '\033[0;35m%s \033[0;31m%s\033[0m\n' "[Oh My Zsh Psyrendust] Updated: " "$HOME/.psyrendust-update"
 }
 
 function upgrade_psyrendust() {
-  /usr/bin/env ZSH=$ZSH ZSH_CUSTOM=$ZSH_CUSTOM /bin/sh $ZSH_CUSTOM/plugins/psyrendust-auto-update/upgrade.zsh
+  /usr/bin/env ZSH=$ZSH ZSH_CUSTOM=$ZSH_CUSTOM zsh $ZSH_CUSTOM/plugins/psyrendust-auto-update/upgrade.zsh
   # update the psyrendust file
   update_psyrendust_local_sha
 }
