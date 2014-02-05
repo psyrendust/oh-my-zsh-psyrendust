@@ -63,16 +63,16 @@ function updatezshrcwork() {
 function processupdate() {
   printf '\033[0;34m%s\033[0m\n' "Processing updates..."
 
-  [[ -d "$ZSH_CUSTOM" ]] && printf '\033[0;34m%s\033[0m\n' "[ Oh My Zsh Psyrendust ]"
+  [[ -d "$ZSH_CUSTOM" ]] && printf '\033[0;34m%s\033[0m\n' "Oh My Zsh Psyrendust"
   successupdatepsyrendust=$(updaterepo "$ZSH_CUSTOM" updatepsyrendust)
 
-  [[ -d "$PURE_THEME" ]] && printf '\033[0;34m%s\033[0m\n' "[ Pure Theme ]"
+  [[ -d "$PURE_THEME" ]] && printf '\033[0;34m%s\033[0m\n' "Pure Theme"
   successupdatepuretheme=$(updaterepo "$PURE_THEME" updatepuretheme)
 
-  [[ -d "$ZSHRC_PERSONAL" ]] && printf '\033[0;34m%s\033[0m\n' "[ Personal zshrc ]"
+  [[ -d "$ZSHRC_PERSONAL" ]] && printf '\033[0;34m%s\033[0m\n' "Personal zshrc"
   successupdatezshrcpersonal=$(updaterepo "$ZSHRC_PERSONAL" updatezshrcpersonal)
 
-  [[ -d "$ZSHRC_WORK" ]] && printf '\033[0;34m%s\033[0m\n' "[ Work zshrc ]"
+  [[ -d "$ZSHRC_WORK" ]] && printf '\033[0;34m%s\033[0m\n' "Work zshrc"
   successupdatezshrcwork=$(updaterepo "$ZSHRC_WORK" updatezshrcwork)
 
   [[ -n $successupdatepsyrendust ]]    || printf '\033[0;31m%s\033[0m\n' ' - There was an error updating Oh My Zsh Psyrendust.'
