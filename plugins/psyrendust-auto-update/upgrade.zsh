@@ -99,4 +99,14 @@ function processupdate() {
   unset successupdatezshrcwork;
 }
 
-processupdate
+if [[ -n $SYSTEM_IS_CYGWIN ]] && [[ -d "/cygdrive/z/.oh-my-zsh-psyrendust" ]]; then
+  # Don't process updates for CYGWIN because we are in
+  # Parallels and symlinking those folders to the this
+  # users home directory
+  updatepsyrendust
+  updatepuretheme
+  updatezshrcpersonal
+  updatezshrcwork
+else
+  processupdate
+fi
