@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Zsh tab completion for GruntJS
 
 # Usage:
