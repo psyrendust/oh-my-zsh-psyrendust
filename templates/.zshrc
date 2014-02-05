@@ -188,8 +188,8 @@ alias npmlist="npm -g ls --depth=0 2>NUL"
 
 alias psyversion="printf '\033[0;35m%s\033[0;31m%s\033[0m\n' 'Running oh-my-zsh-psyrendust version ' '$(cat ${ZSH_CUSTOM}/.version)'"
 
-# Don't create this alias if we are not using OS X
-if [[ $('uname') == 'Darwin' ]]; then
+# Only create alias if we are on OS X
+if [[ -n $SYSTEM_IS_MAC ]]; then
   alias chownapps="find /Applications -maxdepth 1 -user root -exec sudo chown -R $(echo $USER):staff {} + -print"
   alias manp="man-preview"
   alias ql="quick-look"
@@ -201,8 +201,8 @@ fi
 # This little script will update all global npm packages except for npm.
 alias npmupdate="npm -g ls --depth=0 2>NUL | awk -F'@' '{print $1}' | awk '{print $2}' | awk  '!/npm/'> ~/.npm-g-ls && xargs -0 -n 1 npm -g update < <(tr \\n \\0 <~/.npm-g-ls) && rm ~/.npm-g-ls"
 
-if [[ -s "${ZSH_CUSTOM}/plugins/psyrendust-auto-update/check_for_upgrade.sh" ]]; then
-  alias forceupdate="source ${ZSH_CUSTOM}/plugins/psyrendust-auto-update/upgrade.sh"
+if [[ -s "${ZSH_CUSTOM}/plugins/psyrendust-auto-update/check_for_upgrade.zsh" ]]; then
+  alias forceupdate="source ${ZSH_CUSTOM}/plugins/psyrendust-auto-update/upgrade.zsh"
 fi
 
 # Custom .zshrc files that get sourced if they exist. Things
