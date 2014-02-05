@@ -61,18 +61,18 @@ function updatezshrcwork() {
 }
 
 function processupdate() {
-  printf '\033[0;34m%s\033[0m\n' "Processing updates..."
+  printf '\033[0;35m%s\033[0m\n' "Processing updates..."
 
-  [[ -d "$ZSH_CUSTOM" ]] && printf '\033[0;34m%s\033[0m\n' "Oh My Zsh Psyrendust"
+  [[ -d "$ZSH_CUSTOM" ]] && printf '\033[0;35m%s\033[0m\n' "Oh My Zsh Psyrendust"
   successupdatepsyrendust=$(updaterepo "$ZSH_CUSTOM" updatepsyrendust)
 
-  [[ -d "$PURE_THEME" ]] && printf '\033[0;34m%s\033[0m\n' "Pure Theme"
+  [[ -d "$PURE_THEME" ]] && printf '\033[0;35m%s\033[0m\n' "Pure Theme"
   successupdatepuretheme=$(updaterepo "$PURE_THEME" updatepuretheme)
 
-  [[ -d "$ZSHRC_PERSONAL" ]] && printf '\033[0;34m%s\033[0m\n' "Personal zshrc"
+  [[ -d "$ZSHRC_PERSONAL" ]] && printf '\033[0;35m%s\033[0m\n' "Personal zshrc"
   successupdatezshrcpersonal=$(updaterepo "$ZSHRC_PERSONAL" updatezshrcpersonal)
 
-  [[ -d "$ZSHRC_WORK" ]] && printf '\033[0;34m%s\033[0m\n' "Work zshrc"
+  [[ -d "$ZSHRC_WORK" ]] && printf '\033[0;35m%s\033[0m\n' "Work zshrc"
   successupdatezshrcwork=$(updaterepo "$ZSHRC_WORK" updatezshrcwork)
 
   [[ -n $successupdatepsyrendust ]]    || printf '\033[0;31m%s\033[0m\n' ' - There was an error updating Oh My Zsh Psyrendust.'
@@ -82,12 +82,12 @@ function processupdate() {
 
 
   if [[ -n $successupdatepsyrendust && -n $successupdatepuretheme && -n $successupdatezshrcpersonal && -n $successupdatezshrcwork ]]; then
-    printf '\033[0;32m%s\033[0m\n' '       __                            __                                    __         __  '
-    printf '\033[0;32m%s\033[0m\n' ' ___  / /     __ _  __ __   ___ ___ / /     ___  ___ __ _________ ___  ___/ /_ _____ / /_ '
-    printf '\033[0;32m%s\033[0m\n' '/ _ \/ _ \   /  ` \/ // /  /_ /(_-</ _ \   / _ \(_-</ // / __/ -_) _ \/ _  / // (_-</ __/ '
-    printf '\033[0;32m%s\033[0m\n' '\___/_//_/  /_/_/_/\_, /   /__/___/_//_/  / .__/___/\_, /_/  \__/_//_/\_,_/\_,_/___/\__/  '
-    printf '\033[0;32m%s\033[0m\n' '                  /___/                  /_/       /___/                                  '
-    printf '\033[0;32m%s\033[0m\n' 'Hooray!'
+    printf '\033[0;35m%s\033[0m\n' '       __                            __                                    __         __  '
+    printf '\033[0;35m%s\033[0m\n' ' ___  / /     __ _  __ __   ___ ___ / /     ___  ___ __ _________ ___  ___/ /_ _____ / /_ '
+    printf '\033[0;35m%s\033[0m\n' '/ _ \/ _ \   /  ` \/ // /  /_ /(_-</ _ \   / _ \(_-</ // / __/ -_) _ \/ _  / // (_-</ __/ '
+    printf '\033[0;35m%s\033[0m\n' '\___/_//_/  /_/_/_/\_, /   /__/___/_//_/  / .__/___/\_, /_/  \__/_//_/\_,_/\_,_/___/\__/  '
+    printf '\033[0;35m%s\033[0m\n' '                  /___/                  /_/       /___/                                  '
+    printf '\033[0;35m%s\033[0m\n' 'Hooray!'
   else
     printf '\033[0;31m%s\033[0m\n' 'Please try again later.'
   fi

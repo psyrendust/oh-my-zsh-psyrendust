@@ -34,7 +34,7 @@ function check_for_upgrade() {
       fi
 
       if [[ $LAST_PSYRENDUST_REMOTE_SHA != $(current_psyrendust_local_sha) ]]; then
-        printf '\033[0;35m%s \033[0;31m%s\033[0m\n' "[Oh My Zsh Psyrendust]" "Updates found..."
+        printf '\033[0;35m%s \033[0;31m%s\033[0m\n' "[Oh My Zsh Psyrendust]" "Updates found"
         upgrade_psyrendust
       fi
     else
