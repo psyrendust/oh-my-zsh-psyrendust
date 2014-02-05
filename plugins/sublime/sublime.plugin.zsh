@@ -8,59 +8,57 @@
 # $ sbl filename.txt
 # $ sbl file1.txt file2.txt
 local _sublime_darwin_paths > /dev/null 2>&1
+local _sublime_win_paths > /dev/null 2>&1
 _sublime_darwin_paths=(
   "$HOME/Applications/Sublime Text.app"
-  "$HOME/Applications/Sublime Text 2.app"
   "/Applications/Sublime Text.app"
+  "$HOME/Applications/Sublime Text 2.app"
   "/Applications/Sublime Text 2.app"
 )
 _sublime_win_paths=(
+  "/cygdrive/c/Program Files/Sublime Text 3/sublime_text.exe"
   "/cygdrive/c/Program Files/Sublime Text 2/sublime_text.exe"
 )
 
-if [[ $('uname') == 'Linux' ]]; then
-  if [ -f '/usr/bin/sublime_text' ]; then
-    ST_RUN() { nohup /usr/bin/sublime_text $@ > /dev/null & }
-  else
-    ST_RUN() { nohup /usr/bin/sublime-text $@ > /dev/null & }
-  fi
-
-elif  [[ $('uname') == 'Darwin' ]]; then
+if  [[ -n $SYSTEM_IS_MAC ]]; then
   for _sublime_path in $_sublime_darwin_paths; do
     if [[ -a $_sublime_path ]]; then
-      ST_APP="$_sublime_path"
-      ST_PATH="$ST_APP/Contents/SharedSupport/bin/subl"
       # Aliases that need to happen after plugins are loaded
-      ln -sf "$ST_PATH" /usr/local/bin/subl
+      ln -sf "$_sublime_path/Contents/SharedSupport/bin/subl" /usr/local/bin/subl
       break
     fi
   done
+  unset _sublime_path
 
-elif  [[ $('uname') == *CYGWIN_NT* ]]; then
+elif  [[ -n $SYSTEM_IS_CYGWIN ]]; then
 
   for _sublime_path in $_sublime_win_paths; do
     if [[ -a $_sublime_path ]]; then
-      ST_APP="$_sublime_path"
-      ln -sf $ST_APP /usr/local/bin/subl
+      ln -sf "$_sublime_path" /usr/local/bin/subl
       break
     fi
   done
+  unset _sublime_path
 
 fi
 
-function sbl ()
-{
-  if [[ $('uname') == 'Linux' ]]; then
+function sbl {
 
-    ST_RUN() "$@"
-
-  elif  [[ $('uname') == 'Darwin' ]]; then
+  if  [[ -n $SYSTEM_IS_MAC ]]; then
 
     subl $1
 
-  elif  [[ $('uname') == *CYGWIN_NT* ]]; then
+  elif  [[ -n $SYSTEM_IS_CYGWIN ]]; then
 
     subl `cygpath -w $@` &
+
+  elif [[ -n $SYSTEM_IS_LINUX ]]; then
+
+    if [ -f '/usr/bin/sublime_text' ]; then
+      nohup /usr/bin/sublime_text $@ > /dev/null &
+    else
+      nohup /usr/bin/sublime-text $@ > /dev/null &
+    fi
 
   fi
 }
