@@ -90,7 +90,6 @@ function processupdate() {
     printf '\033[0;32m%s\033[0m\n' 'Hooray!'
     # restart environment
     /usr/bin/env zsh
-    source ~/.zshrc
   else
     printf '\033[0;31m%s\033[0m\n' 'Please try again later.'
   fi
