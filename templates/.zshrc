@@ -81,7 +81,7 @@ fi
 [[ -s "${ZSH_CUSTOM}/gitconfig/user.inc" ]] || echo "[user]" > "${ZSH_CUSTOM}/gitconfig/user.inc"
 
 # Check to see if a Git global user.name has been set
-if [[ -n $(git config user.name) == "" ]]; then
+if [[ $(git config user.name) == "" ]]; then
   echo "You haven't configured your Git user name."
   echo "Please enter your first and last name [First Last]: "
   read git-user-name-first git-user-name-last
@@ -89,7 +89,7 @@ if [[ -n $(git config user.name) == "" ]]; then
 fi
 
 # Check to see if a Git global user.email has been set
-if [[ -n $(git config user.email) == "" ]]; then
+if [[ $(git config user.email) == "" ]]; then
   echo "Please enter your work email address [first.last@xero.com]: "
   read git-user-email
   echo "  email = ${git-user-email}" >> "${ZSH_CUSTOM}/gitconfig/user.inc"
