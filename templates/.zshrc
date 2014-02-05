@@ -187,8 +187,13 @@ if [[ -n $SYSTEM_IS_CYGWIN ]]; then
   alias cygpackages="cygcheck -c -d | sed -e \"1,2d\" -e 's/ .*$//'"
 fi
 
-# Add some plugins if we are not using cygwin
-[[ -n $SYSTEM_IS_CYGWIN ]] || plugins=("${plugins[@]}" brew osx)
+# Add some OS X related configuration
+if [[ -n $SYSTEM_IS_MAC ]]; then
+  plugins=("${plugins[@]}" brew osx)
+  alias chownapps="find /Applications -maxdepth 1 -user root -exec sudo chown -R $(echo $USER):staff {} + -print"
+  alias manp="man-preview"
+  alias ql="quick-look"
+fi
 
 # Helper aliases
 alias zshconfig="sbl ~/.zshrc"
@@ -199,13 +204,6 @@ alias chownusrlocal="find /usr/local -maxdepth 2 -user root -exec sudo chown -R 
 alias npmlist="npm -g ls --depth=0 2>NUL"
 
 alias psyversion="printf '\033[0;35m%s\033[0;33m%s\033[0m\n' 'Running oh-my-zsh-psyrendust version ' '$(cat ${ZSH_CUSTOM}/.version)'"
-
-# Only create alias if we are on OS X
-if [[ -n $SYSTEM_IS_MAC ]]; then
-  alias chownapps="find /Applications -maxdepth 1 -user root -exec sudo chown -R $(echo $USER):staff {} + -print"
-  alias manp="man-preview"
-  alias ql="quick-look"
-fi
 
 
 # Update all global npm packages except for npm, because updating npm using npm
