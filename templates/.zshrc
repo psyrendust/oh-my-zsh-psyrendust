@@ -183,6 +183,8 @@ plugins=(
 # Add some cygwin related configuration
 if [[ -n $SYSTEM_IS_CYGWIN ]]; then
   plugins=("${plugins[@]}" kaleidoscope)
+  ZSH_THEME="blink"
+  alias cygpackages="cygcheck -c -d | sed -e \"1,2d\" -e 's/ .*$//'"
 fi
 
 # Add some plugins if we are not using cygwin
