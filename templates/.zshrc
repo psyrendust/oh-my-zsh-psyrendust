@@ -112,6 +112,9 @@ export UPDATE_PSYRENDUST_DAYS=1
 # Comment this out to disable auto-update checks for oh-my-zsy-psyrendust
 # DISABLE_PSYRENDUST_AUTO_UPDATE="true"
 
+# Comment this out to disable auto-update prompts for oh-my-zsh
+# DISABLE_UPDATE_PROMPT="true"
+
 # Set to this to use case-se;nsitive completion
 # CASE_SENSITIVE="true"
 
