@@ -46,4 +46,5 @@ build/buildinfo.properties
 build/config/buildinfo.properties
 
 .psyrendust-update
+user.inc
 pure.zsh-theme
