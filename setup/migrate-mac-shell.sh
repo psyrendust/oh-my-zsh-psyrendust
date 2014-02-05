@@ -107,10 +107,10 @@ updaterepo "${HOME}/.oh-my-zsh-psyrendust"
 # Copy over template files to your home folder
 # ----------------------------------------------------------
 printf '\033[0;32m%s\033[0m\n' 'Copy over template files to your home folder'
-cp "${HOME}/.oh-my-zsh-psyrendust/templates/zshrc.zsh-template" "${HOME}/.zshrc";
-cp "${HOME}/.oh-my-zsh-psyrendust/templates/gemrc.gem-template" "${HOME}/.gemrc";
-cp "${HOME}/.oh-my-zsh-psyrendust/templates/gitconfig.git-template" "${HOME}/.gitconfig";
-cp "${HOME}/.oh-my-zsh-psyrendust/templates/gitignore_global.git-template" "${HOME}/.gitignore_global";
+cp "${HOME}/.oh-my-zsh-psyrendust/templates/zshrc.template" "${HOME}/.zshrc";
+cp "${HOME}/.oh-my-zsh-psyrendust/templates/gemrc.template" "${HOME}/.gemrc";
+cp "${HOME}/.oh-my-zsh-psyrendust/templates/gitconfig.template" "${HOME}/.gitconfig";
+cp "${HOME}/.oh-my-zsh-psyrendust/templates/gitignore_global.template" "${HOME}/.gitignore_global";
 
 # Set Git user info
 # ----------------------------------------------------------

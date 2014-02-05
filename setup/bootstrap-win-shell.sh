@@ -22,12 +22,6 @@ else
   exit;
 fi
 
-# Grab some user info
-echo "Please enter your first and last name [First Last]: ";
-read git-user-name-first git-user-name-last;
-echo "Please enter your work email address [first.last@xero.com]: ";
-read git-user-email;
-
 # Setup your zsh prompt and plugins
 # a little cleanup
 rm "${HOME}/.zcompdump*";
@@ -43,14 +37,10 @@ chsh -s /usr/local/bin/zsh;
 
 # install some oh-my-zsh extras
 git clone https://github.com/psyrendust/oh-my-zsh-psyrendust.git "${HOME}/.oh-my-zsh-psyrendust";
-cp "${HOME}/.oh-my-zsh-psyrendust/templates/zshrc.zsh-template" "${HOME}/.zshrc";
-cp "${HOME}/.oh-my-zsh-psyrendust/templates/gemrc.gem-template" "${HOME}/.gemrc";
-cp "${HOME}/.oh-my-zsh-psyrendust/templates/gitconfig.git-template" "${HOME}/.gitconfig";
-cp "${HOME}/.oh-my-zsh-psyrendust/templates/gitignore_global.git-template" "${HOME}/.gitignore_global";
-
-# Set Git user info
-git config --global user.name ${git-user-name-first} ${git-user-name-last};
-git config --global user.email ${git-user-email};
+cp "${HOME}/.oh-my-zsh-psyrendust/templates/.zshrc" "${HOME}/.zshrc";
+cp "${HOME}/.oh-my-zsh-psyrendust/templates/.gemrc" "${HOME}/.gemrc";
+cp "${HOME}/.oh-my-zsh-psyrendust/templates/.gitconfig_win" "${HOME}/.gitconfig";
+cp "${HOME}/.oh-my-zsh-psyrendust/templates/.gitignore_global" "${HOME}/.gitignore_global";
 
 # Copy over fonts
 [[ -d "/cygdrive/c/Windows/Fonts" ]] || mkdir -p "${HOME}/Library/Fonts"
@@ -70,7 +60,7 @@ git clone https://github.dev.xero.com/dev-larryg/zshrc-xero.git "${HOME}/.zshrc-
 
 # install zshrc-personal starter template
 mkdir "${HOME}/.zshrc-personal";
-cp "${HOME}/.oh-my-zsh-psyrendust/templates/zshrc-personal.zsh-template" "${HOME}/.zshrc-personal/.zshrc";
+cp "${HOME}/.oh-my-zsh-psyrendust/templates/zshrc-personal.template" "${HOME}/.zshrc-personal/.zshrc";
 
 # install iTerm2
 #
