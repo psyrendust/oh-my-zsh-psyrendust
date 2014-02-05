@@ -1,3 +1,4 @@
+#!/usr/bin/env zsh
 # name: bootstrap-win-shell.sh
 # author: Larry Gordon
 #

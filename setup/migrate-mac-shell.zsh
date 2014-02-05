@@ -1,3 +1,4 @@
+#!/usr/bin/env zsh
 # Here is some bash kung-fu to try and get
 # your environment updated and migrated
 # ----------------------------------------------------------

@@ -1,4 +1,5 @@
-## name: bootstrap-mac-shell.zsh
+#!/usr/bin/env zsh
+# name: bootstrap-mac-shell.zsh
 # author: Larry Gordon
 #
 # My starter script for bootstraping your shell environment!

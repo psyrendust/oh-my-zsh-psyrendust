@@ -1,3 +1,4 @@
+#!/usr/bin/env zsh
 # -o sync,noatime,
 
 # maybe flags
