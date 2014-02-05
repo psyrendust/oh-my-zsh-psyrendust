@@ -86,17 +86,20 @@ fi
 
 # Check to see if a Git global user.name has been set
 if [[ $(git config user.name) == "" ]]; then
-  echo "You haven't configured your Git user name."
-  echo "Please enter your first and last name [First Last]: "
+  printf '\033[0;31m%s\033[0m\n' "You haven't configured your Git user name."
+  printf '\033[0;35m%s\033[0;31m%s\033[0m\n' "Please enter your first and last name " "[First Last]: "
   read GIT_USER_NAME_FIRST GIT_USER_NAME_LAST
   echo "  name = ${GIT_USER_NAME_FIRST} ${GIT_USER_NAME_LAST}" >> "${ZSH_CUSTOM}/gitconfig/user.inc"
+  printf '\033[0;35m%s\033[0;36m%s\033[0m\n' "Git config user.name saved to: " "${ZSH_CUSTOM}/gitconfig/user.inc"
 fi
 
 # Check to see if a Git global user.email has been set
 if [[ $(git config user.email) == "" ]]; then
-  echo "Please enter your work email address [first.last@domain.com]: "
+  printf '\033[0;31m%s\033[0m\n' "You haven't configured your Git user email."
+  printf '\033[0;35m%s\033[0;31m%s\033[0m\n' "Please enter your work email address " "[first.last@domain.com]: "
   read GIT_USER_EMAIL
   echo "  email = ${GIT_USER_EMAIL}" >> "${ZSH_CUSTOM}/gitconfig/user.inc"
+  printf '\033[0;35m%s\033[0;36m%s\033[0m\n' "Git config user.email saved to: " "${ZSH_CUSTOM}/gitconfig/user.inc"
 fi
 
 export PATH
