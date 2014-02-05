@@ -185,6 +185,7 @@ if [[ -n $SYSTEM_IS_CYGWIN ]]; then
   plugins=("${plugins[@]}" kaleidoscope)
   ZSH_THEME="blinks"
   alias cygpackages="cygcheck -c -d | sed -e \"1,2d\" -e 's/ .*$//'"
+  alias open="/bin/cygstart --explore \"${1:-.}\""
 fi
 
 # Add some OS X related configuration
