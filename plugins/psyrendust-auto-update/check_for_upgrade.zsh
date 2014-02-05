@@ -31,7 +31,7 @@ function check_for_upgrade() {
 
       if [[ $LAST_PSYRENDUST_REMOTE_SHA != $(current_psyrendust_local_sha) ]]; then
         echo "[Oh My Zsh Psyrendust] Updates found..."
-        _upgrade_psyrendust
+        upgrade_psyrendust
       fi
     else
       # create the psyrendust file
