@@ -1,53 +1,43 @@
-#!/bin/sh
-
-function _current_psyrendust_epoch() {
-  echo $(($(date +%s) / 60 / 60 / 24))
+#!/usr/bin/env zsh
+function check_internet() {
+  wget -q --tries=10 --timeout=5 http://www.google.com -O /tmp/index.google &> /dev/null && echo 1
 }
 
-function _update_psyrendust_update() {
-  echo "LAST_PSYRENDUST_EPOCH=$(_current_psyrendust_epoch)" > ~/.psyrendust-update
+function current_psyrendust_local_sha() {
+  cd "$ZSH_CUSTOM"
+  echo $(git rev-parse HEAD)
 }
 
-function _upgrade_psyrendust() {
-  echo $ZSH_CUSTOM
-  /usr/bin/env ZSH=$ZSH ZSH_CUSTOM=$ZSH_CUSTOM /bin/sh $ZSH_CUSTOM/plugins/psyrendust-auto-update/upgrade.sh
+function current_psyrendust_remote_sha() {
+  echo $(git ls-remote $(git config remote.origin.url) HEAD | awk '{print $1}')
+}
+
+function update_psyrendust_remote_sha() {
+  echo "LAST_PSYRENDUST_REMOTE_SHA=$(current_psyrendust_remote_sha)" > "$HOME/.psyrendust-update"
+}
+
+function upgrade_psyrendust() {
+  /usr/bin/env ZSH=$ZSH ZSH_CUSTOM=$ZSH_CUSTOM /bin/sh $ZSH_CUSTOM/plugins/psyrendust-auto-update/upgrade.zsh
   # update the psyrendust file
-  _update_psyrendust_update
+  update_psyrendust_remote_sha
 }
 
-epoch_psyrendust_target=$UPDATE_PSYRENDUST_DAYS
-if [[ -z "$epoch_psyrendust_target" ]]; then
-  # Default to old behavior
-  epoch_psyrendust_target=13
-fi
+function check_for_upgrade() {
+  # Check and see if we have internet first before continuing on
+  if [[ -n $(check_internet) ]]; then
 
-if [ -f ~/.psyrendust-update ]
-then
-  . ~/.psyrendust-update
+    if [[ -f "$HOME/.psyrendust-update" ]]; then
+      source ~/.psyrendust-update
 
-  if [[ -z "$LAST_PSYRENDUST_EPOCH" ]]; then
-    _update_psyrendust_update && return 0;
-  fi
-
-  epoch_psyrendust_diff=$(($(_current_psyrendust_epoch) - $LAST_PSYRENDUST_EPOCH))
-  if [ $epoch_psyrendust_diff -gt $epoch_psyrendust_target ]
-  then
-    if [ "$DISABLE_UPDATE_PROMPT" = "true" ]
-    then
-      _upgrade_psyrendust
-    else
-      echo "[Oh My Zsh Psyrendust] Would you like to check for updates?"
-      echo "Type Y to update oh-my-zsh-psyrendust: \c"
-      read line
-      if [ "$line" = Y ] || [ "$line" = y ]; then
+      if [[ $LAST_PSYRENDUST_REMOTE_SHA != $(current_psyrendust_local_sha) ]]; then
+        echo "[Oh My Zsh Psyrendust] Updates found..."
         _upgrade_psyrendust
-      else
-        _update_psyrendust_update
       fi
+    else
+      # create the psyrendust file
+      update_psyrendust_remote_sha
     fi
   fi
-else
-  # create the psyrendust file
-  _update_psyrendust_update
-fi
+}
 
+check_for_upgrade
