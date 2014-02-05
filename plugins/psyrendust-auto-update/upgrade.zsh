@@ -21,7 +21,7 @@ function updaterepo() {
     cd $1
     # Check if we're in a git repo
     if [[ -n $(isgitrepo) ]]; then
-      # cleanup
+      cleanup
       if git pull --rebase origin master; then
         # Run any repo specific updates
         local pattern="${2:-}"
