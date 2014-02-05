@@ -5,21 +5,8 @@ if [[ -n $SYSTEM_IS_CYGWIN ]]; then
   local me=$(whoami)
   local _kaleidoscope_path="/cygdrive/c/Users/$me/AppData/Roaming/Parallels/Shared Applications/Kaleidoscope (Mac).exe"
   if [[ -f $_kaleidoscope_path ]]; then
-    ln -sf "$_kaleidoscope_path" /usr/local/bin/kscope
+    if [[ -f "$ZSH_CUSTOM/plugins/kaleidoscope/ksdiff.sh" ]]; then
+      ln -sf "$ZSH_CUSTOM/plugins/kaleidoscope/ksdiff.sh" /usr/local/bin/ksdiff
+    fi
   fi
 fi
-
-function ksdiff {
-  for arg
-  do
-    if [[ "$arg" != "" ]] && [[ -e $arg ]]; then
-      arguments=`cygpath -wa $arg`
-    else
-      arguments=$arg
-      [[ $arg == -* ]] || arguments="'$arg'"
-    fi
-  done
-  if [[ -n $SYSTEM_IS_CYGWIN ]]; then
-    kscope $arguments
-  fi
-}
