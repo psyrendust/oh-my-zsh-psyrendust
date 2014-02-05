@@ -9,6 +9,7 @@ function get_current_psyrendust_local_sha() {
 }
 
 function get_current_psyrendust_remote_sha() {
+  cd "$ZSH_CUSTOM"
   echo $(git ls-remote $(git config remote.origin.url) HEAD | awk '{print $1}')
 }
 
