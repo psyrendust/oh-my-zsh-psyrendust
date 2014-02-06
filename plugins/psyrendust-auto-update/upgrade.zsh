@@ -53,7 +53,7 @@ function _update-psyrendust() {
       # Replace .gitconfig
       [[ -s "$ZSH_CUSTOM/templates/.gitconfig_win" ]] && cp "$ZSH_CUSTOM/templates/.gitconfig_win" "$HOME/.gitconfig"
       # Check to see if .gitconfig-includes has been symlinked in cygwin
-      [[ -d "$HOME/.gitconfig-includes" ]] && ln -sf "/cygdrive/z/.gitconfig-includes" "$HOME/.gitconfig-includes"
+      [[ -d "/cygdrive/z/.gitconfig-includes" ]] && ln -sf "/cygdrive/z/.gitconfig-includes" "$HOME/.gitconfig-includes"
     fi
 
     # Copy over gitconfig templates
