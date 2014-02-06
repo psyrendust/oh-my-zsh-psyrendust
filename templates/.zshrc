@@ -173,6 +173,7 @@ plugins=(
   grunt-autocomplete
   kill-process
   mkcd
+  pretty-print
   psyrendust-auto-update
   refresh
   server
@@ -220,14 +221,14 @@ fi
 # place in these files will override any settings found in
 # this file.
 # ----------------------------------------------------------
-# Load custom personal zshrc
-if [[ -s "${ZSHRC_PERSONAL}/.zshrc" ]]; then
-  source "${ZSHRC_PERSONAL}/.zshrc"
-fi
-
 # Load custom work zshrc
 if [[ -s "${ZSHRC_WORK}/.zshrc" ]]; then
   source "${ZSHRC_WORK}/.zshrc"
+fi
+
+# Load custom personal zshrc
+if [[ -s "${ZSHRC_PERSONAL}/.zshrc" ]]; then
+  source "${ZSHRC_PERSONAL}/.zshrc"
 fi
 
 source $ZSH/oh-my-zsh.sh
