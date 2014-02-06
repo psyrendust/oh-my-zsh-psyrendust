@@ -95,31 +95,6 @@ if [[ -s "${HOME}/.rvm/scripts/rvm" ]]; then
   source "$HOME/.rvm/scripts/rvm"
 fi
 
-# Check to see if user.inc has been created
-if [[ ! -s "${ZSH_CUSTOM}/gitconfig/user.inc" ]]; then
-  echo "#-----------------------------------------------------------" > "${ZSH_CUSTOM}/gitconfig/user.inc"
-  echo "# Setup username and email" >> "${ZSH_CUSTOM}/gitconfig/user.inc"
-  echo "[user]" >> "${ZSH_CUSTOM}/gitconfig/user.inc"
-fi
-
-# Check to see if a Git global user.name has been set
-if [[ $(git config user.name) == "" ]]; then
-  printf '\033[0;31m%s\033[0m\n' "You haven't configured your Git user name."
-  printf '\033[0;35m%s\033[0;31m%s\033[0m\n' "Please enter your first and last name " "[First Last]: "
-  read GIT_USER_NAME_FIRST GIT_USER_NAME_LAST
-  echo "  name = ${GIT_USER_NAME_FIRST} ${GIT_USER_NAME_LAST}" >> "${ZSH_CUSTOM}/gitconfig/user.inc"
-  printf '\033[0;35m%s\033[0;36m%s\033[0m\n' "Git config user.name saved to: " "${ZSH_CUSTOM}/gitconfig/user.inc"
-fi
-
-# Check to see if a Git global user.email has been set
-if [[ $(git config user.email) == "" ]]; then
-  printf '\033[0;31m%s\033[0m\n' "You haven't configured your Git user email."
-  printf '\033[0;35m%s\033[0;31m%s\033[0m\n' "Please enter your work email address " "[first.last@domain.com]: "
-  read GIT_USER_EMAIL
-  echo "  email = ${GIT_USER_EMAIL}" >> "${ZSH_CUSTOM}/gitconfig/user.inc"
-  printf '\033[0;35m%s\033[0;36m%s\033[0m\n' "Git config user.email saved to: " "${ZSH_CUSTOM}/gitconfig/user.inc"
-fi
-
 export PATH
 
 # Comment this out to disable auto-update checks for oh-my-zsy-psyrendust
