@@ -1,34 +1,5 @@
-# Configure $PATH variable
-# ----------------------------
-
-# Add locally installed binaries first
-if [[ -d "/usr/local/bin" ]]; then
-  PATH="/usr/local/bin:${PATH}"
-fi
-
-if [[ -d "/usr/local/sbin" ]]; then
-  PATH="/usr/local/sbin:${PATH}"
-fi
-
-# Check if homebrew is installed
-if [[ -s "/usr/local/bin/brew" ]]; then
-  # Add homebrew Core Utilities
-  if [[ -s "$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin" ]]; then
-    PATH="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin:${PATH}"
-  fi
-
-  # Add homebrew Core Utilities man
-  if [[ -s "$(/usr/local/bin/brew --prefix coreutils)/libexec/gnuman" ]]; then
-    export MANPATH="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnuman:${MANPATH}"
-  fi
-
-  # Add SSL Cert
-  if [[ -s "$(/usr/local/bin/brew --prefix curl-ca-bundle)/share/ca-bundle.crt" ]]; then
-    export SSL_CERT_FILE="$(/usr/local/bin/brew --prefix curl-ca-bundle)/share/ca-bundle.crt"
-  fi
-fi
-
 # Path to your oh-my-zsh configuration
+# ----------------------------------------------------------
 if [[ -d "${HOME}/.oh-my-zsh" ]]; then
   ZSH="${HOME}/.oh-my-zsh"
 fi
@@ -64,6 +35,53 @@ fi
 if [[ -d "${HOME}/.zshrc-personal" ]]; then
   export ZSHRC_PERSONAL="${HOME}/.zshrc-personal"
 fi
+
+# Auto update duration for oh-my-zsh-psyrendust
+export UPDATE_PSYRENDUST_DAYS=1
+
+# Do some system checks so we don't have to keep doing it later
+# ----------------------------------------------------------
+[[ $('uname') == *CYGWIN* ]] && export SYSTEM_IS_CYGWIN=1
+[[ $('uname') == *Linux* ]] && export SYSTEM_IS_LINUX=1
+[[ $('uname') == *Darwin* ]] && export SYSTEM_IS_MAC=1
+
+
+# Check for updates on initial load...
+# ----------------------------------------------------------
+if [[ "$DISABLE_PSYRENDUST_AUTO_UPDATE" != "true" ]]; then
+  /usr/bin/env ZSH=$ZSH ZSH_CUSTOM=$ZSH_CUSTOM DISABLE_PSYRENDUST_AUTO_UPDATE=$DISABLE_PSYRENDUST_AUTO_UPDATE zsh $ZSH_CUSTOM/plugins/psyrendust-auto-update/check_for_upgrade.zsh
+fi
+
+
+# Configure $PATH variable
+# ----------------------------------------------------------
+# Add locally installed binaries first
+if [[ -d "/usr/local/bin" ]]; then
+  PATH="/usr/local/bin:${PATH}"
+fi
+
+if [[ -d "/usr/local/sbin" ]]; then
+  PATH="/usr/local/sbin:${PATH}"
+fi
+
+# Check if homebrew is installed
+if [[ -s "/usr/local/bin/brew" ]]; then
+  # Add homebrew Core Utilities
+  if [[ -s "$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin" ]]; then
+    PATH="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin:${PATH}"
+  fi
+
+  # Add homebrew Core Utilities man
+  if [[ -s "$(/usr/local/bin/brew --prefix coreutils)/libexec/gnuman" ]]; then
+    export MANPATH="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnuman:${MANPATH}"
+  fi
+
+  # Add SSL Cert
+  if [[ -s "$(/usr/local/bin/brew --prefix curl-ca-bundle)/share/ca-bundle.crt" ]]; then
+    export SSL_CERT_FILE="$(/usr/local/bin/brew --prefix curl-ca-bundle)/share/ca-bundle.crt"
+  fi
+fi
+
 
 # ADD NVM's version of NPM
 if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
@@ -103,14 +121,6 @@ if [[ $(git config user.email) == "" ]]; then
 fi
 
 export PATH
-
-# Auto update duration for oh-my-zsh-psyrendust
-export UPDATE_PSYRENDUST_DAYS=1
-
-# Do some system checks so we don't have to keep doing it later
-[[ $('uname') == *CYGWIN* ]] && export SYSTEM_IS_CYGWIN=1
-[[ $('uname') == *Linux* ]] && export SYSTEM_IS_LINUX=1
-[[ $('uname') == *DARWIN* ]] && export SYSTEM_IS_MAC=1
 
 # Comment this out to disable auto-update checks for oh-my-zsy-psyrendust
 # DISABLE_PSYRENDUST_AUTO_UPDATE="true"
@@ -174,7 +184,6 @@ plugins=(
   kill-process
   mkcd
   pretty-print
-  psyrendust-auto-update
   refresh
   server
   sublime
