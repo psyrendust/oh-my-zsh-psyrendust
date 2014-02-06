@@ -49,7 +49,7 @@ export UPDATE_PSYRENDUST_DAYS=1
 # Check for updates on initial load...
 # ----------------------------------------------------------
 if [[ "$DISABLE_PSYRENDUST_AUTO_UPDATE" != "true" ]]; then
-  /usr/bin/env ZSH=$ZSH ZSH_CUSTOM=$ZSH_CUSTOM DISABLE_PSYRENDUST_AUTO_UPDATE=$DISABLE_PSYRENDUST_AUTO_UPDATE zsh $ZSH_CUSTOM/plugins/psyrendust-auto-update/check_for_upgrade.zsh
+  /usr/bin/env ZSH=$ZSH ZSH_CUSTOM=$ZSH_CUSTOM DISABLE_PSYRENDUST_AUTO_UPDATE=$DISABLE_PSYRENDUST_AUTO_UPDATE zsh $ZSH_CUSTOM/plugins/psyrendust-auto-update/check-for-upgrade.zsh
 fi
 
 
@@ -222,7 +222,7 @@ alias psyversion="printf '\033[0;35m%s\033[0;33m%s\033[0m\n' 'Running oh-my-zsh-
 # This little script will update all global npm packages except for npm.
 alias npmupdate="npm -g ls --depth=0 2>NUL | awk -F'@' '{print $1}' | awk '{print $2}' | awk  '!/npm/'> ~/.npm-g-ls && xargs -0 -n 1 npm -g update < <(tr \\n \\0 <~/.npm-g-ls) && rm ~/.npm-g-ls"
 
-if [[ -s "${ZSH_CUSTOM}/plugins/psyrendust-auto-update/check_for_upgrade.zsh" ]]; then
+if [[ -s "${ZSH_CUSTOM}/plugins/psyrendust-auto-update/upgrade.zsh" ]]; then
   alias forceupdate="source ${ZSH_CUSTOM}/plugins/psyrendust-auto-update/upgrade.zsh"
 fi
 
