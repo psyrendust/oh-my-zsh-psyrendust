@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-function isgitrepo() {
+function _is-git-repo() {
   # check if we're in a git repo
   if [[ -d "./.git" ]]; then
     if [[ $(git rev-parse --is-inside-work-tree) == "true" ]]; then
@@ -8,24 +8,25 @@ function isgitrepo() {
   fi
 }
 
-function cleanup() {
+function _cleanup() {
   # check if it's dirty and reset it back to HEAD
   if [[ -n $(git diff --ignore-submodules HEAD) ]]; then
     git reset HEAD --hard
   fi
 }
 
-function updaterepo() {
+function _update-repo() {
   # Check if the folder exists
   if [[ -d $1 ]]; then
     cd $1
     # Check if we're in a git repo
-    if [[ -n $(isgitrepo) ]]; then
-      cleanup
+    if [[ -n $(_is-git-repo) ]]; then
+      _cleanup
       if git pull --rebase origin master; then
         # Run any repo specific updates
-        local pattern="${2:-}"
-        [[ $pattern == '' ]] || $($2)
+        callback_function="${2:-}"
+        [[ $callback_function == '' ]] || $($2)
+        unset callback_function
         echo 1
       fi
     else
@@ -36,52 +37,52 @@ function updaterepo() {
   fi
 }
 
-function updatepsyrendust() {
+function _update-psyrendust() {
   # Run custom updates
   if [[ -d $ZSH_CUSTOM ]]; then
     cp "$ZSH_CUSTOM/templates/.zshrc" "$HOME/.zshrc"
   fi
 }
 
-function updatepuretheme() {
+function _update-pure-theme() {
   # Run custom updates
   if [[ -d $PURE_THEME ]]; then
     ln -sf "$HOME/.pure-theme/pure.zsh" "$ZSH_CUSTOM/themes/pure.zsh-theme"
   fi
 }
 
-function updatezshrcpersonal() {
+function _update-zshrc-personal() {
   # Run custom updates
   [[ -d $ZSHRC_PERSONAL ]]
 }
 
-function updatezshrcwork() {
+function _update-zshrc-work() {
   # Run custom updates
   [[ -d $ZSHRC_WORK ]]
 }
 
-function processupdate() {
+function _process-update() {
   printf '\033[0;35m%s\033[0m\n' "Processing updates..."
 
   [[ -d "$ZSH_CUSTOM" ]] && printf '\033[0;35m%s\033[0m\n' "Oh My Zsh Psyrendust"
-  successupdatepsyrendust=$(updaterepo "$ZSH_CUSTOM" updatepsyrendust)
+  success_update_psyrendust=$(_update-repo "$ZSH_CUSTOM" _update-psyrendust)
 
   [[ -d "$PURE_THEME" ]] && printf '\033[0;35m%s\033[0m\n' "Pure Theme"
-  successupdatepuretheme=$(updaterepo "$PURE_THEME" updatepuretheme)
+  success_update_pure_theme=$(_update-repo "$PURE_THEME" _update-pure-theme)
 
   [[ -d "$ZSHRC_PERSONAL" ]] && printf '\033[0;35m%s\033[0m\n' "Personal zshrc"
-  successupdatezshrcpersonal=$(updaterepo "$ZSHRC_PERSONAL" updatezshrcpersonal)
+  success_update_zshrc_personal=$(_update-repo "$ZSHRC_PERSONAL" _update-zshrc-personal)
 
   [[ -d "$ZSHRC_WORK" ]] && printf '\033[0;35m%s\033[0m\n' "Work zshrc"
-  successupdatezshrcwork=$(updaterepo "$ZSHRC_WORK" updatezshrcwork)
+  success_update_zshrc_work=$(_update-repo "$ZSHRC_WORK" _update-zshrc-work)
 
-  [[ -n $successupdatepsyrendust ]]    || printf '\033[0;31m%s\033[0m\n' ' - There was an error updating Oh My Zsh Psyrendust.'
-  [[ -n $successupdatepuretheme ]]     || printf '\033[0;31m%s\033[0m\n' ' - There was an error updating Pure Theme.'
-  [[ -n $successupdatezshrcpersonal ]] || printf '\033[0;31m%s\033[0m\n' ' - There was an error updating zshrc-personal.'
-  [[ -n $successupdatezshrcwork ]]     || printf '\033[0;31m%s\033[0m\n' ' - There was an error updating zshrc-work.'
+  [[ -n $success_update_psyrendust ]]    || printf '\033[0;31m%s\033[0m\n' ' - There was an error updating Oh My Zsh Psyrendust.'
+  [[ -n $success_update_pure_theme ]]     || printf '\033[0;31m%s\033[0m\n' ' - There was an error updating Pure Theme.'
+  [[ -n $success_update_zshrc_personal ]] || printf '\033[0;31m%s\033[0m\n' ' - There was an error updating zshrc-personal.'
+  [[ -n $success_update_zshrc_work ]]     || printf '\033[0;31m%s\033[0m\n' ' - There was an error updating zshrc-work.'
 
 
-  if [[ -n $successupdatepsyrendust && -n $successupdatepuretheme && -n $successupdatezshrcpersonal && -n $successupdatezshrcwork ]]; then
+  if [[ -n $success_update_psyrendust && -n $success_update_pure_theme && -n $success_update_zshrc_personal && -n $success_update_zshrc_work ]]; then
     printf '\033[0;35m%s\033[0m\n' '       __                            __                                    __         __  '
     printf '\033[0;35m%s\033[0m\n' ' ___  / /     __ _  __ __   ___ ___ / /     ___  ___ __ _________ ___  ___/ /_ _____ / /_ '
     printf '\033[0;35m%s\033[0m\n' '/ _ \/ _ \   /  ` \/ // /  /_ /(_-</ _ \   / _ \(_-</ // / __/ -_) _ \/ _  / // (_-</ __/ '
@@ -93,20 +94,20 @@ function processupdate() {
   fi
 
 
-  unset successupdatepsyrendust;
-  unset successupdatepuretheme;
-  unset successupdatezshrcpersonal;
-  unset successupdatezshrcwork;
+  unset success_update_psyrendust;
+  unset success_update_pure_theme;
+  unset success_update_zshrc_personal;
+  unset success_update_zshrc_work;
 }
 
 if [[ -n $SYSTEM_IS_CYGWIN ]] && [[ -d "/cygdrive/z/.oh-my-zsh-psyrendust" ]]; then
   # Don't process updates for CYGWIN because we are in
   # Parallels and symlinking those folders to the this
   # users home directory
-  updatepsyrendust
-  updatepuretheme
-  updatezshrcpersonal
-  updatezshrcwork
+  _update-psyrendust
+  _update-pure-theme
+  _update-zshrc-personal
+  _update-zshrc-work
 else
-  processupdate
+  _process-update
 fi
