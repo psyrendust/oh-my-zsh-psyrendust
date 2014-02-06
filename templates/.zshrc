@@ -61,8 +61,8 @@ if [[ -n $SYSTEM_IS_CYGWIN ]]; then
 fi
 
 # Copy over gitconfig templates
-[[ -s "$ZSH_CUSTOM/templates/core.gitconfig" ]] || cp "$ZSH_CUSTOM/templates/core.gitconfig" "$HOME/.gitconfig-includes/core.gitconfig"
-[[ -s "$ZSH_CUSTOM/templates/diff.gitconfig" ]] || cp "$ZSH_CUSTOM/templates/diff.gitconfig" "$HOME/.gitconfig-includes/diff.gitconfig"
+[[ -s "$ZSH_CUSTOM/templates/core.gitconfig" ]] && cp "$ZSH_CUSTOM/templates/core.gitconfig" "$HOME/.gitconfig-includes/core.gitconfig"
+[[ -s "$ZSH_CUSTOM/templates/diff.gitconfig" ]] && cp "$ZSH_CUSTOM/templates/diff.gitconfig" "$HOME/.gitconfig-includes/diff.gitconfig"
 
 # Check to see if user.gitconfig has been created
 if [[ ! -s "$HOME/.gitconfig-includes/user.gitconfig" ]]; then
