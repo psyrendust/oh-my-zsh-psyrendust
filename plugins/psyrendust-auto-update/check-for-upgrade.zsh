@@ -25,7 +25,7 @@ function _upgrade-psyrendust() {
 }
 
 # Check and see if we have internet first before continuing on
-if [[ -n _check-internet ]]; then
+if [[ -n $(_check-internet) ]]; then
 
   if [[ -f "$HOME/.psyrendust-update" ]]; then
     source ~/.psyrendust-update
@@ -34,7 +34,7 @@ if [[ -n _check-internet ]]; then
       _update-psyrendust-local-sha && return 0;
     fi
 
-    if [[ $current_psyrendust_local_sha != _get-current-psyrendust-remote-sha ]]; then
+    if [[ $current_psyrendust_local_sha != $(_get-current-psyrendust-remote-sha) ]]; then
       printf '\033[0;35m%s \033[0;33m%s\033[0m\n' "[Oh My Zsh Psyrendust]" "Updates found..."
       _upgrade-psyrendust
     fi
