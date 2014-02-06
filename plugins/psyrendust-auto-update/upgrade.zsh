@@ -38,7 +38,6 @@ function _update-repo() {
 }
 
 function _update-psyrendust() {
-  printf '\033[0;35m%s\033[0m\n' "Running oh-my-zsh-psyrendust migration script..."
   # Run custom updates
   if [[ -d $ZSH_CUSTOM ]]; then
     cp "$ZSH_CUSTOM/templates/.zshrc" "$HOME/.zshrc"
@@ -87,7 +86,6 @@ function _update-psyrendust() {
 }
 
 function _update-pure-theme() {
-  printf '\033[0;35m%s\033[0m\n' "Running pure-theme migration script"
   # Run custom updates
   if [[ -d $PURE_THEME ]]; then
     ln -sf "$HOME/.pure-theme/pure.zsh" "$ZSH_CUSTOM/themes/pure.zsh-theme"
@@ -95,13 +93,11 @@ function _update-pure-theme() {
 }
 
 function _update-zshrc-personal() {
-  printf '\033[0;35m%s\033[0m\n' "Running zshrc-personal migration script"
   # Run custom updates
   [[ -d $ZSHRC_PERSONAL ]]
 }
 
 function _update-zshrc-work() {
-  printf '\033[0;35m%s\033[0m\n' "Running zshrc-work migration script"
   # Run custom updates
   [[ -d $ZSHRC_WORK ]]
 }
