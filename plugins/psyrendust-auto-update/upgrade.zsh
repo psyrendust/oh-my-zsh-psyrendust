@@ -23,7 +23,6 @@ function _update-repo() {
     if [[ -n $(_is-git-repo) ]]; then
       _cleanup
       if git pull --rebase origin master; then
-        printf '\033[0;32m%s\033[0m\n' "Git update success!"
         # Run any repo specific updates
         callback_function="${2:-}"
         [[ $callback_function == '' ]] || $($2)
