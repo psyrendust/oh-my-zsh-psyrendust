@@ -1,19 +1,19 @@
 # Path to your oh-my-zsh configuration
 # ----------------------------------------------------------
-if [[ -d "${HOME}/.oh-my-zsh" ]]; then
-  ZSH="${HOME}/.oh-my-zsh"
+if [[ -d "$HOME/.oh-my-zsh" ]]; then
+  ZSH="$HOME/.oh-my-zsh"
 fi
 
 # Set the location of oh-my-zsh-psyrendust
-if [[ -d "${HOME}/.oh-my-zsh-psyrendust" ]]; then
-  export ZSH_CUSTOM="${HOME}/.oh-my-zsh-psyrendust"
+if [[ -d "$HOME/.oh-my-zsh-psyrendust" ]]; then
+  export ZSH_CUSTOM="$HOME/.oh-my-zsh-psyrendust"
 fi
 
 # Set the location of the PURE Theme and symlink pure.zsh
 # into our theme folder
-if [[ -d "${HOME}/.pure-theme" ]]; then
+if [[ -d "$HOME/.pure-theme" ]]; then
   export PURE_THEME="$HOME/.pure-theme"
-  ln -sf "${PURE_THEME}/pure.zsh" "${ZSH_CUSTOM}/themes/pure.zsh-theme"
+  ln -sf "$PURE_THEME/pure.zsh" "$ZSH_CUSTOM/themes/pure.zsh-theme"
 fi
 
 # Set name of the theme to load into oh-my-zsh.
@@ -27,13 +27,13 @@ else
 fi
 
 # Set the location of our work zshrc location
-if [[ -d "${HOME}/.zshrc-work" ]]; then
-  export ZSHRC_WORK="${HOME}/.zshrc-work"
+if [[ -d "$HOME/.zshrc-work" ]]; then
+  export ZSHRC_WORK="$HOME/.zshrc-work"
 fi
 
 # Set the location of our personal zshrc location
-if [[ -d "${HOME}/.zshrc-personal" ]]; then
-  export ZSHRC_PERSONAL="${HOME}/.zshrc-personal"
+if [[ -d "$HOME/.zshrc-personal" ]]; then
+  export ZSHRC_PERSONAL="$HOME/.zshrc-personal"
 fi
 
 # Auto update duration for oh-my-zsh-psyrendust
@@ -73,18 +73,21 @@ fi
 if [[ $(git config user.name) == "" ]]; then
   printf '\033[0;31m%s\033[0m\n' "One time setup to configure your Git user.name"
   printf '\033[0;35m%s\033[0;31m%s\033[0m\n' "Please enter your first and last name " "[First Last]: "
-  read GIT_USER_NAME_FIRST GIT_USER_NAME_LAST
-  echo "  name = ${GIT_USER_NAME_FIRST} ${GIT_USER_NAME_LAST}" >> "$HOME/.gitconfig-includes/user.gitconfig"
+  read git_xero_user_name_first git_xero_user_name_last
+  echo "  name = $git_xero_user_name_first $git_xero_user_name_last" >> "$HOME/.gitconfig-includes/user.gitconfig"
   printf '\033[0;35m%s\033[0;36m%s\033[0m\n' "Git config user.name saved to: " "$HOME/.gitconfig-includes/user.gitconfig"
+  unset git_xero_user_name_first
+  unset git_xero_user_name_last
 fi
 
 # Check to see if a Git global user.email has been set
 if [[ $(git config user.email) == "" ]]; then
   printf '\033[0;31m%s\033[0m\n' "One time setup to configure your Git user.email"
   printf '\033[0;35m%s\033[0;31m%s\033[0m\n' "Please enter your work email address " "[first.last@domain.com]: "
-  read GIT_USER_EMAIL
-  echo "  email = ${GIT_USER_EMAIL}" >> "$HOME/.gitconfig-includes/user.gitconfig"
+  read git_xero_user_email
+  echo "  email = $git_xero_user_email" >> "$HOME/.gitconfig-includes/user.gitconfig"
   printf '\033[0;35m%s\033[0;36m%s\033[0m\n' "Git config user.email saved to: " "$HOME/.gitconfig-includes/user.gitconfig"
+  unset git_xero_user_email
 fi
 
 
@@ -99,23 +102,23 @@ fi
 # ----------------------------------------------------------
 # Add locally installed binaries first
 if [[ -d "/usr/local/bin" ]]; then
-  PATH="/usr/local/bin:${PATH}"
+  PATH="/usr/local/bin:$PATH"
 fi
 
 if [[ -d "/usr/local/sbin" ]]; then
-  PATH="/usr/local/sbin:${PATH}"
+  PATH="/usr/local/sbin:$PATH"
 fi
 
 # Check if homebrew is installed
 if [[ -s "/usr/local/bin/brew" ]]; then
   # Add homebrew Core Utilities
   if [[ -s "$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin" ]]; then
-    PATH="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin:${PATH}"
+    PATH="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin:$PATH"
   fi
 
   # Add homebrew Core Utilities man
   if [[ -s "$(/usr/local/bin/brew --prefix coreutils)/libexec/gnuman" ]]; then
-    export MANPATH="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnuman:${MANPATH}"
+    export MANPATH="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnuman:$MANPATH"
   fi
 
   # Add SSL Cert
@@ -133,7 +136,7 @@ fi
 # Zsh & RVM woes (rvm-prompt doesn't resolve)
 # http://stackoverflow.com/questions/6636066/zsh-rvm-woes-rvm-prompt-doesnt-resolve
 # Load RVM into a shell session *as a function*
-if [[ -s "${HOME}/.rvm/scripts/rvm" ]]; then
+if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
   source "$HOME/.rvm/scripts/rvm"
 fi
 
@@ -231,7 +234,7 @@ alias sourceohmyzsh="source ~/.zshrc"
 alias chownusrlocal="find /usr/local -maxdepth 2 -user root -exec sudo chown -R $(echo $USER):staff {} + -print"
 alias npmlist="npm -g ls --depth=0 2>NUL"
 
-alias psyversion="printf '\033[0;35m%s\033[0;33m%s\033[0m\n' 'Running oh-my-zsh-psyrendust version ' '$(cat ${ZSH_CUSTOM}/.version)'"
+alias psyversion="printf '\033[0;35m%s\033[0;33m%s\033[0m\n' 'Running oh-my-zsh-psyrendust version ' '$(cat $ZSH_CUSTOM/.version)'"
 
 
 # Update all global npm packages except for npm, because updating npm using npm
@@ -239,8 +242,8 @@ alias psyversion="printf '\033[0;35m%s\033[0;33m%s\033[0m\n' 'Running oh-my-zsh-
 # This little script will update all global npm packages except for npm.
 alias npmupdate="npm -g ls --depth=0 2>NUL | awk -F'@' '{print $1}' | awk '{print $2}' | awk  '!/npm/'> ~/.npm-g-ls && xargs -0 -n 1 npm -g update < <(tr \\n \\0 <~/.npm-g-ls) && rm ~/.npm-g-ls"
 
-if [[ -s "${ZSH_CUSTOM}/plugins/psyrendust-auto-update/upgrade.zsh" ]]; then
-  alias forceupdate="source ${ZSH_CUSTOM}/plugins/psyrendust-auto-update/upgrade.zsh"
+if [[ -s "$ZSH_CUSTOM/plugins/psyrendust-auto-update/upgrade.zsh" ]]; then
+  alias forceupdate="source $ZSH_CUSTOM/plugins/psyrendust-auto-update/upgrade.zsh"
 fi
 
 # Custom .zshrc files that get sourced if they exist. Things
@@ -248,13 +251,13 @@ fi
 # this file.
 # ----------------------------------------------------------
 # Load custom work zshrc
-if [[ -s "${ZSHRC_WORK}/.zshrc" ]]; then
-  source "${ZSHRC_WORK}/.zshrc"
+if [[ -s "$ZSHRC_WORK/.zshrc" ]]; then
+  source "$ZSHRC_WORK/.zshrc"
 fi
 
 # Load custom personal zshrc
-if [[ -s "${ZSHRC_PERSONAL}/.zshrc" ]]; then
-  source "${ZSHRC_PERSONAL}/.zshrc"
+if [[ -s "$ZSHRC_PERSONAL/.zshrc" ]]; then
+  source "$ZSHRC_PERSONAL/.zshrc"
 fi
 
 source $ZSH/oh-my-zsh.sh

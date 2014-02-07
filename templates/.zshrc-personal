@@ -9,11 +9,11 @@
 # plugins=(plugin1 plugin2)
 
 # Uncomment to source a custom zshrc file or make one
-# if [[ ! -s "${ZSHRC_PERSONAL}/.zshrc-custom" ]]; then
-#   if [[ -s "${ZSHRC_PERSONAL}/backup/.zshrc-custom" ]]; then
-#     cp "${ZSHRC_PERSONAL}/backup/.zshrc-custom" "${ZSHRC_PERSONAL}/.zshrc-custom"
+# if [[ ! -s "$ZSHRC_PERSONAL/.zshrc-custom" ]]; then
+#   if [[ -s "$ZSHRC_PERSONAL/backup/.zshrc-custom" ]]; then
+#     cp "$ZSHRC_PERSONAL/backup/.zshrc-custom" "$ZSHRC_PERSONAL/.zshrc-custom"
 #   else
-#     cp "${ZSH_CUSTOM}/templates/.zshrc-personal-custom" "${ZSHRC_PERSONAL}/.zshrc-custom"
+#     cp "$ZSH_CUSTOM/templates/.zshrc-personal-custom" "$ZSHRC_PERSONAL/.zshrc-custom"
 #   fi
 # fi
-# [[ -s "${ZSHRC_PERSONAL}/.zshrc-custom" ]] && source "${ZSHRC_PERSONAL}/.zshrc-custom"
+# [[ -s "$ZSHRC_PERSONAL/.zshrc-custom" ]] && source "$ZSHRC_PERSONAL/.zshrc-custom"

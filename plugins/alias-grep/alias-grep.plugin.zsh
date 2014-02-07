@@ -1,7 +1,7 @@
 # Filter your zsh aliases using regex.
 
 # List all installed aliases or filter using regex
-function _alias_grep() {
+function _alias-grep() {
   local pattern="${1:-}"
   if [[ $pattern == '' ]]; then
     alias
@@ -12,7 +12,7 @@ function _alias_grep() {
 
 # List all installed aliases or filter using regex at the
 # start of the string
-function _alias_grep_starts_with() {
+function _alias-grep-starts-with() {
   local pattern="${1:-}"
   if [[ $pattern == '' ]]; then
     alias
@@ -21,5 +21,5 @@ function _alias_grep_starts_with() {
   fi
 }
 
-alias ag="_alias_grep"
-alias agb="_alias_grep_starts_with"
+alias ag="_alias-grep"
+alias agb="_alias-grep-starts-with"

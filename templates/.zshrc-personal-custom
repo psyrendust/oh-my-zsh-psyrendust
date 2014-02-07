@@ -2,7 +2,7 @@
 # If you choose, you can override anything that was configured in
 # the list below with the contents of this file.
 #
-# ${HOME}/.zshrc
-# ${ZSHRC_WORK}/.zshrc
-# ${ZSHRC_PERSONAL}/.zshrc
+# $HOME/.zshrc
+# $ZSHRC_WORK/.zshrc
+# $ZSHRC_PERSONAL/.zshrc
 #

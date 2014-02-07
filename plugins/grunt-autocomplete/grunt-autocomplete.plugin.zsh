@@ -11,7 +11,7 @@ if [[ -n ${ZSH_VERSION-} ]]; then
 fi
 
 # Enable bash autocompletion.
-function _grunt_completions() {
+function _grunt-completions() {
   # The currently-being-completed word.
   local cur="${COMP_WORDS[COMP_CWORD]}"
   # The current grunt version, available tasks, options, etc.
@@ -24,4 +24,4 @@ function _grunt_completions() {
   # Tell complete what stuff to show.
   COMPREPLY=($(compgen -W "$compls" -- "$cur"))
 }
-complete -o default -F _grunt_completions grunt
+complete -o default -F _grunt-completions grunt

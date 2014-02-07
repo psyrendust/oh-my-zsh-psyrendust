@@ -7,40 +7,42 @@
 # $ sbl .
 # $ sbl filename.txt
 # $ sbl file1.txt file2.txt
-local _sublime_darwin_paths > /dev/null 2>&1
-local _sublime_win_paths > /dev/null 2>&1
-_sublime_darwin_paths=(
+sublime_darwin_paths > /dev/null 2>&1
+sublime_win_paths > /dev/null 2>&1
+sublime_darwin_paths=(
   "$HOME/Applications/Sublime Text.app"
   "/Applications/Sublime Text.app"
   "$HOME/Applications/Sublime Text 2.app"
   "/Applications/Sublime Text 2.app"
 )
-_sublime_win_paths=(
+sublime_win_paths=(
   "/cygdrive/c/Program Files/Sublime Text 3/sublime_text.exe"
   "/cygdrive/c/Program Files/Sublime Text 2/sublime_text.exe"
 )
 
 if  [[ -n $SYSTEM_IS_MAC ]]; then
-  for _sublime_path in $_sublime_darwin_paths; do
-    if [[ -a $_sublime_path ]]; then
+  for sublime_path in $sublime_darwin_paths; do
+    if [[ -a $sublime_path ]]; then
       # Aliases that need to happen after plugins are loaded
-      ln -sf "$_sublime_path/Contents/SharedSupport/bin/subl" /usr/local/bin/subl
+      ln -sf "$sublime_path/Contents/SharedSupport/bin/subl" /usr/local/bin/subl
       break
     fi
   done
-  unset _sublime_path
 
 elif  [[ -n $SYSTEM_IS_CYGWIN ]]; then
 
-  for _sublime_path in $_sublime_win_paths; do
-    if [[ -a $_sublime_path ]]; then
-      ln -sf "$_sublime_path" /usr/local/bin/subl
+  for sublime_path in $sublime_win_paths; do
+    if [[ -a $sublime_path ]]; then
+      ln -sf "$sublime_path" /usr/local/bin/subl
       break
     fi
   done
-  unset _sublime_path
 
 fi
+
+unset sublime_path
+unset sublime_darwin_paths
+unset sublime_win_paths
 
 function sbl {
 
