@@ -12,6 +12,7 @@
 # Light Gray  0;37     White         1;37
 
 
+
 # Color references: alpha-sort
 # ----------------------------------------------------------
 # Black         0;30
@@ -31,80 +32,42 @@
 # White         1;37
 # Yellow        1;33
 
-# Setup path to pretty-print folder
-# ----------------------------------------------------------
-psyrendust_pretty_print=$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print
 
-# Cleanup old references
+# Create pretty print aliases
 # ----------------------------------------------------------
-[[ -s /usr/local/bin/pperror ]]       && rm -f /usr/local/bin/pperror
-[[ -s /usr/local/bin/ppinfo ]]        && rm -f /usr/local/bin/ppinfo
-[[ -s /usr/local/bin/ppquestion ]]    && rm -f /usr/local/bin/ppquestion
-[[ -s /usr/local/bin/ppsuccess ]]     && rm -f /usr/local/bin/ppsuccess
-[[ -s /usr/local/bin/ppblack ]]       && rm -f /usr/local/bin/ppblack
-[[ -s /usr/local/bin/ppblue ]]        && rm -f /usr/local/bin/ppblue
-[[ -s /usr/local/bin/ppbrown ]]       && rm -f /usr/local/bin/ppbrown
-[[ -s /usr/local/bin/ppcyan ]]        && rm -f /usr/local/bin/ppcyan
-[[ -s /usr/local/bin/ppdarkgray ]]    && rm -f /usr/local/bin/ppdarkgray
-[[ -s /usr/local/bin/ppgreen ]]       && rm -f /usr/local/bin/ppgreen
-[[ -s /usr/local/bin/pplightblue ]]   && rm -f /usr/local/bin/pplightblue
-[[ -s /usr/local/bin/pplightcyan ]]   && rm -f /usr/local/bin/pplightcyan
-[[ -s /usr/local/bin/pplightgray ]]   && rm -f /usr/local/bin/pplightgray
-[[ -s /usr/local/bin/pplightgreen ]]  && rm -f /usr/local/bin/pplightgreen
-[[ -s /usr/local/bin/pplightpurple ]] && rm -f /usr/local/bin/pplightpurple
-[[ -s /usr/local/bin/pplightred ]]    && rm -f /usr/local/bin/pplightred
-[[ -s /usr/local/bin/pppurple ]]      && rm -f /usr/local/bin/pppurple
-[[ -s /usr/local/bin/ppred ]]         && rm -f /usr/local/bin/ppred
-[[ -s /usr/local/bin/ppwhite ]]       && rm -f /usr/local/bin/ppwhite
-[[ -s /usr/local/bin/ppyellow ]]      && rm -f /usr/local/bin/ppyellow
+for ppfile in $(ls "$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/" | grep "^pretty-print-"); do
+  ppshortname=$(echo $ppfile | cut -d- -f 3 | cut -d. -f 1)
 
-# Create color based aliases
-# ----------------------------------------------------------
-alias ppblack="$psyrendust_pretty_print/pretty-print-black.zsh"
-alias ppblue="$psyrendust_pretty_print/pretty-print-blue.zsh"
-alias ppbrown="$psyrendust_pretty_print/pretty-print-brown.zsh"
-alias ppcyan="$psyrendust_pretty_print/pretty-print-cyan.zsh"
-alias ppdarkgray="$psyrendust_pretty_print/pretty-print-dark-gray.zsh"
-alias ppgreen="$psyrendust_pretty_print/pretty-print-green.zsh"
-alias pplightblue="$psyrendust_pretty_print/pretty-print-light-blue.zsh"
-alias pplightcyan="$psyrendust_pretty_print/pretty-print-light-cyan.zsh"
-alias pplightgray="$psyrendust_pretty_print/pretty-print-light-gray.zsh"
-alias pplightgreen="$psyrendust_pretty_print/pretty-print-light-green.zsh"
-alias pplightpurple="$psyrendust_pretty_print/pretty-print-light-purple.zsh"
-alias pplightred="$psyrendust_pretty_print/pretty-print-light-red.zsh"
-alias pppurple="$psyrendust_pretty_print/pretty-print-purple.zsh"
-alias ppred="$psyrendust_pretty_print/pretty-print-red.zsh"
-alias ppwhite="$psyrendust_pretty_print/pretty-print-white.zsh"
-alias ppyellow="$psyrendust_pretty_print/pretty-print-yellow.zsh"
+  # Create color based aliases
+  # --------------------------------------------------------
+  alias pp$ppshortname="$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile"
 
+  # Create status based aliases
+  # --------------------------------------------------------
+  [[ $ppshortname = "green" ]]  && alias ppsuccess="$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile"
+  [[ $ppshortname = "cyan" ]]   && alias ppinfo="$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile"
+  [[ $ppshortname = "brown" ]]  && alias ppwarning="$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile"
+  [[ $ppshortname = "red" ]]    && alias ppdanger="$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile"
+  [[ $ppshortname = "purple" ]] && alias ppemphasis="$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile"
+done
+unset ppshortname
+unset ppfile
 
-# Create status based aliases
-# ----------------------------------------------------------
-# alias ppblue="$psyrendust_pretty_print/pretty-print-blue.zsh"
-# alias ppbrown="$psyrendust_pretty_print/pretty-print-brown.zsh"
-# alias ppcyan="$psyrendust_pretty_print/pretty-print-cyan.zsh"
-# alias ppdarkgray="$psyrendust_pretty_print/pretty-print-dark-gray.zsh"
-# alias ppgreen="$psyrendust_pretty_print/pretty-print-green.zsh"
-# alias pplightblue="$psyrendust_pretty_print/pretty-print-light-blue.zsh"
-# alias pplightcyan="$psyrendust_pretty_print/pretty-print-light-cyan.zsh"
-# alias pplightgray="$psyrendust_pretty_print/pretty-print-light-gray.zsh"
-# alias pplightgreen="$psyrendust_pretty_print/pretty-print-light-green.zsh"
-# alias pplightpurple="$psyrendust_pretty_print/pretty-print-light-purple.zsh"
-# alias pplightred="$psyrendust_pretty_print/pretty-print-light-red.zsh"
-# alias pppurple="$psyrendust_pretty_print/pretty-print-purple.zsh"
-# alias ppred="$psyrendust_pretty_print/pretty-print-red.zsh"
-# alias ppwhite="$psyrendust_pretty_print/pretty-print-white.zsh"
-# alias ppyellow="$psyrendust_pretty_print/pretty-print-yellow.zsh"
-# alias pperror="pbred"
-# alias ppinfo=""
-# alias ppquestion=""
-# alias ppsuccess=""
 
 
 # Test colors
 # ----------------------------------------------------------
 function prettyprint-test-colors() {
-  for pp_alias in $(alias | grep -e "^pp" | cut -d= -f 1 | xargs echo); do
-    $pp_alias "${pp_alias}: testing pretty print"
+  pppurple " " "    Pretty Print Color Based Aliases"
+  pppurple "------------------------------------"
+  for ppfile in $(ls "$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/" | grep "^pretty-print-"); do
+    "$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile" "pp$(echo $ppfile | cut -d- -f 3 | cut -d. -f 1) - testing pretty print" | awk '{ printf "%20s %s %s %s %s\n", $1, $2, $3, $4, $5}'
   done
+  pppurple " " " " "   Pretty Print Status Based Aliases"
+  pppurple "------------------------------------"
+  ppsuccess  "ppsuccess  - testing pretty print" | awk '{ printf "%20s %s %s %s %s\n", $1, $2, $3, $4, $5}'
+  ppinfo     "ppinfo     - testing pretty print" | awk '{ printf "%20s %s %s %s %s\n", $1, $2, $3, $4, $5}'
+  ppwarning  "ppwarning  - testing pretty print" | awk '{ printf "%20s %s %s %s %s\n", $1, $2, $3, $4, $5}'
+  ppdanger   "ppdanger   - testing pretty print" | awk '{ printf "%20s %s %s %s %s\n", $1, $2, $3, $4, $5}'
+  ppemphasis "ppemphasis - testing pretty print" | awk '{ printf "%20s %s %s %s %s\n", $1, $2, $3, $4, $5}'
 }
