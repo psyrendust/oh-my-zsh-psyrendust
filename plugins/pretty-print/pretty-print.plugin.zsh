@@ -44,11 +44,11 @@ for ppfile in $(ls "$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/" | grep "^
 
   # Create status based aliases
   # --------------------------------------------------------
-  [[ $ppshortname = "green" ]]  && alias ppsuccess="$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile"
-  [[ $ppshortname = "cyan" ]]   && alias ppinfo="$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile"
-  [[ $ppshortname = "brown" ]]  && alias ppwarning="$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile"
-  [[ $ppshortname = "red" ]]    && alias ppdanger="$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile"
-  [[ $ppshortname = "purple" ]] && alias ppemphasis="$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile"
+  [[ $ppshortname = "green" ]]     && alias ppsuccess="$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile"
+  [[ $ppshortname = "lightcyan" ]] && alias ppinfo="$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile"
+  [[ $ppshortname = "brown" ]]     && alias ppwarning="$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile"
+  [[ $ppshortname = "red" ]]       && alias ppdanger="$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile"
+  [[ $ppshortname = "purple" ]]    && alias ppemphasis="$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile"
 done
 unset ppshortname
 unset ppfile
