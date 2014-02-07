@@ -61,7 +61,8 @@ function prettyprint-test-colors() {
   pppurple " " "    Pretty Print Color Based Aliases"
   pppurple "------------------------------------"
   for ppfile in $(ls "$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/" | grep "^pretty-print-"); do
-    "/usr/local/bin/$ppfile" "pp$(echo $ppfile | cut -d- -f 3 | cut -d. -f 1) - testing pretty print" | awk '{ printf "%20s %s %s %s %s\n", $1, $2, $3, $4, $5}'
+    ppshortname=$(echo $ppfile | cut -d- -f 3 | cut -d. -f 1)
+    "/usr/local/bin/pp$ppshortname" "pp$ppshortname - testing pretty print" | awk '{ printf "%20s %s %s %s %s\n", $1, $2, $3, $4, $5}'
   done
   pppurple " " " " "   Pretty Print Status Based Aliases"
   pppurple "------------------------------------"
@@ -70,4 +71,10 @@ function prettyprint-test-colors() {
   ppwarning  "ppwarning  - testing pretty print" | awk '{ printf "%20s %s %s %s %s\n", $1, $2, $3, $4, $5}'
   ppdanger   "ppdanger   - testing pretty print" | awk '{ printf "%20s %s %s %s %s\n", $1, $2, $3, $4, $5}'
   ppemphasis "ppemphasis - testing pretty print" | awk '{ printf "%20s %s %s %s %s\n", $1, $2, $3, $4, $5}'
+  pppurple " " " " "        Pretty Print Inline Printing"
+  pppurple "------------------------------------"
+  for ppfile in $(ls "$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/" | grep "^pretty-print-"); do
+    ppshortname=$(echo $ppfile | cut -d- -f 3 | cut -d. -f 1)
+    "/usr/local/bin/pp$ppshortname" -i "pp$ppshortname "
+  done
 }
