@@ -3,7 +3,7 @@
 # Output functions
 # ----------------------------------------------------------
 # Yellow
-function pretty_print_question() {
-  printf '\033[0;33m%s\033[0m\n' "$@"
+function pretty_print() {
+  printf '\033[1;33m%s\033[0m\n' "$@"
 }
-pretty_print_question "$@"
+pretty_print $@

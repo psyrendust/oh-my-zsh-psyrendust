@@ -3,8 +3,7 @@
 # Output functions
 # ----------------------------------------------------------
 # Green
-# Purple
-function pretty_print_info() {
-  printf '\033[0;35m%s\033[0m\n' "$@"
+function pretty_print() {
+  printf '\033[0;32m%s\033[0m\n' "$@"
 }
-pretty_print_info "$@"
+pretty_print $@
