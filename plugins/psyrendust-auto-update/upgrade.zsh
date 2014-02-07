@@ -155,7 +155,7 @@ else
                 # Run any repo specific updates
                 _${name_space}-post-update "$repo_root" "$name_space"
               else
-                pperror " - There was an error updating $repo."
+                ppdanger " - There was an error updating $repo."
               fi
 
               unset update_successful
