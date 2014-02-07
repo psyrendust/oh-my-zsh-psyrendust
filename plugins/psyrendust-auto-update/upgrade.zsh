@@ -47,12 +47,7 @@ function _update-repo() {
 # Post process update scripts
 # ----------------------------------------------------------
 function _oh-my-zsh-psyrendust-post-update() {
-  ppemphasis '       __                            __                                    __         __  '
-  ppemphasis ' ___  / /     __ _  __ __   ___ ___ / /     ___  ___ __ _________ ___  ___/ /_ _____ / /_ '
-  ppemphasis '/ _ \/ _ \   /  ` \/ // /  /_ /(_-</ _ \   / _ \(_-</ // / __/ -_) _ \/ _  / // (_-</ __/ '
-  ppemphasis '\___/_//_/  /_/_/_/\_, /   /__/___/_//_/  / .__/___/\_, /_/  \__/_//_/\_,_/\_,_/___/\__/  '
-  ppemphasis '                  /___/                  /_/       /___/                                  '
-  ppsuccess  'Hooray!'
+  [[ "$HOME/.oh-my-zsh-psyrendust/setup/post-update.zsh" ]] && source "$HOME/.oh-my-zsh-psyrendust/setup/post-update.zsh"
   _set-last-repo-update $@
 }
 

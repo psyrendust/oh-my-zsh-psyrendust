@@ -5,6 +5,10 @@
 # My post update script
 # ----------------------------------------------------------
 
+# Source Pretty Print
+[[ -f $ZSH_CUSTOM/plugins/pretty-print/pretty-print.plugin.zsh ]] && source $ZSH_CUSTOM/plugins/pretty-print/pretty-print.plugin.zsh
+
+
 # Run custom updates
 if [[ -d $ZSH_CUSTOM ]]; then
   cp "$ZSH_CUSTOM/templates/.zshrc" "$HOME/.zshrc"
@@ -51,3 +55,11 @@ if [[ -d $ZSH_CUSTOM ]]; then
     printf '\033[0;35m%s\033[0;36m%s\033[0m\n' "Git config user.email saved to: " "$HOME/.gitconfig-includes/user.gitconfig"
   fi
 fi
+
+
+ppemphasis '       __                            __                                    __         __  '
+ppemphasis ' ___  / /     __ _  __ __   ___ ___ / /     ___  ___ __ _________ ___  ___/ /_ _____ / /_ '
+ppemphasis '/ _ \/ _ \   /  ` \/ // /  /_ /(_-</ _ \   / _ \(_-</ // / __/ -_) _ \/ _  / // (_-</ __/ '
+ppemphasis '\___/_//_/  /_/_/_/\_, /   /__/___/_//_/  / .__/___/\_, /_/  \__/_//_/\_,_/\_,_/___/\__/  '
+ppemphasis '                  /___/                  /_/       /___/                                  '
+ppsuccess  'Hooray!'
