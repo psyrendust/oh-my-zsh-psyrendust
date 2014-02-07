@@ -243,7 +243,7 @@ alias psyversion="printf '\033[0;35m%s\033[0;33m%s\033[0m\n' 'Running oh-my-zsh-
 alias npmupdate="npm -g ls --depth=0 2>NUL | awk -F'@' '{print $1}' | awk '{print $2}' | awk  '!/npm/'> ~/.npm-g-ls && xargs -0 -n 1 npm -g update < <(tr \\n \\0 <~/.npm-g-ls) && rm ~/.npm-g-ls"
 
 if [[ -s "$ZSH_CUSTOM/plugins/psyrendust-auto-update/upgrade.zsh" ]]; then
-  alias forceupdate="source $ZSH_CUSTOM/plugins/psyrendust-auto-update/upgrade.zsh && /usr/bin/env zsh"
+  alias forceupdate="source $ZSH_CUSTOM/plugins/psyrendust-auto-update/upgrade.zsh -a && /usr/bin/env zsh"
 fi
 
 # Custom .zshrc files that get sourced if they exist. Things
