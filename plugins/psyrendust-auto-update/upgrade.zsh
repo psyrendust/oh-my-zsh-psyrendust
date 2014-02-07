@@ -6,7 +6,12 @@ function _has-internet() {
 
 function _get-current-repo-remote-sha() {
   cd "${1}"
-  echo $(git ls-remote $(git config remote.origin.url) HEAD | awk '{print $1}')
+  result=$(git ls-remote $(git config remote.origin.url) HEAD | awk '{print $1}')
+  if [[ $result == *fatal* ]]; then
+    echo $(_set-last-repo-update)
+  else
+    echo $result
+  fi
 }
 
 function _set-last-repo-update() {
@@ -104,10 +109,12 @@ if [[ -n $SYSTEM_IS_CYGWIN ]] && [[ -d "/cygdrive/z/.oh-my-zsh-psyrendust" ]]; t
   # Don't process updates for CYGWIN because we are in
   # Parallels and symlinking those folders to the this
   # users home directory
-  _update-psyrendust
-  _update-pure-theme
-  _update-zshrc-personal
-  _update-zshrc-work
+  _oh-my-zsh-psyrendust-post-update
+  _oh-my-zsh-post-update
+  _pure-theme-post-update
+  _zshrc-personal-post-update
+  _zshrc-work-post-update
+  update_found=1
 else
   # Check and see if we have internet first before continuing on
   if [[ -n $(_has-internet) ]]; then
