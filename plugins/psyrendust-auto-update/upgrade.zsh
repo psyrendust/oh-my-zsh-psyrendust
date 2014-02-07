@@ -47,7 +47,7 @@ function _update-repo() {
 # Post process update scripts
 # ----------------------------------------------------------
 function _oh-my-zsh-psyrendust-post-update() {
-  [[ "$HOME/.oh-my-zsh-psyrendust/setup/post-update.zsh" ]] && source "$HOME/.oh-my-zsh-psyrendust/setup/post-update.zsh"
+  [[ -f "$HOME/.oh-my-zsh-psyrendust/setup/post-update.zsh" ]] && source "$HOME/.oh-my-zsh-psyrendust/setup/post-update.zsh"
   _set-last-repo-update $@
 }
 
