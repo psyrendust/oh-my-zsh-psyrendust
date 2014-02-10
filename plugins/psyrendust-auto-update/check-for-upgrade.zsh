@@ -1,2 +1,5 @@
 #!/usr/bin/env zsh
-[[ -f $ZSH_CUSTOM/plugins/psyrendust-auto-update/upgrade.zsh ]] && source $ZSH_CUSTOM/plugins/psyrendust-auto-update/upgrade.zsh
+# Check for updates on initial load...
+if [[ -f $ZSH_CUSTOM/tools/auto-update.zsh ]]; then
+  (/usr/bin/env ZSH=$ZSH ZSH_CUSTOM=$ZSH_CUSTOM DISABLE_PSYRENDUST_AUTO_UPDATE=$DISABLE_PSYRENDUST_AUTO_UPDATE zsh $ZSH_CUSTOM/tools/auto-update.zsh &)
+fi

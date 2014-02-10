@@ -18,7 +18,7 @@ compdef _git gtag=git-tag
 alias gtaga='git tag -a'
 compdef _git gtaga=git-tag
 
-alias gbdel='git branch -D'
+alias gbdel='_git-branch-delete'
 compdef _git gbdel=git-branch-D
 
 alias gbfromhere='_git-branch-from-here'
@@ -97,6 +97,17 @@ function _git_branch_name() {
 
 function _git-branch-from-here() {
   git checkout -b $1 $(git_branch_name)
+}
+
+function _git-branch-delete() {
+  while getopts ":s" opt; do
+    [[ $opt == "s" ]] && has_option=1
+  done
+  if [[ -n $has_option ]]; then
+    shift
+    git branch | egrep "^  release" | xargs git branch -D
+  else
+    git branch -D $@
 }
 
 # git checkout remote branch and track it

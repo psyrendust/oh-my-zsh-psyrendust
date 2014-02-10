@@ -52,7 +52,7 @@ function sbl {
 
   elif  [[ -n $SYSTEM_IS_CYGWIN ]]; then
 
-    subl `cygpath -w $@` &
+    nohup subl `cygpath -w $@` > /dev/null &
 
   elif [[ -n $SYSTEM_IS_LINUX ]]; then
 
