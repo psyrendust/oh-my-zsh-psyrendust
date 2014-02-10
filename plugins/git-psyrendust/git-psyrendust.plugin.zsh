@@ -108,6 +108,7 @@ function _git-branch-delete() {
     git branch | egrep "^  release" | xargs git branch -D
   else
     git branch -D $@
+  fi
 }
 
 # git checkout remote branch and track it
