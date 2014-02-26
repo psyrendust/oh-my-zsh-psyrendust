@@ -339,8 +339,9 @@ if [[ ${_psyrendust_au_last_epoch_diff} -gt 1 ]]; then
   # background. The RPROMPT updates every 1 second to display the real-time
   # progress of the auto-update.
   # ----------------------------------------------------------------------------
-  if [[ -s "$ZSH_CUSTOM/tools/auto-update.zsh" ]]; then
-    source "$ZSH_CUSTOM/tools/auto-update.zsh"
+  if [[ -s "$ZSH_CUSTOM/tools/psyrendust-procedure-init.zsh" ]] && [[ -s "$ZSH_CUSTOM/tools/auto-update.zsh" ]]; then
+    # source "$ZSH_CUSTOM/tools/auto-update.zsh"
+    source "$ZSH_CUSTOM/tools/psyrendust-procedure-init.zsh" "$ZSH_CUSTOM/tools/auto-update.zsh"
   fi
 
 
