@@ -1,105 +1,75 @@
+# Do some system checks so we don't have to keep doing it later
+# ------------------------------------------------------------------------------
+if [[ $('uname') == *Darwin* ]]; then
+  # We are using OS X
+  export SYSTEM_IS_MAC=1
+
+elif [[ $('uname') == *CYGWIN* ]]; then
+  # We are using Cygwin in Windows
+  export SYSTEM_IS_CYGWIN=1
+  # We are also in a virtualized Windows environment
+  [[ -f "/cygdrive/z/.zshrc" ]] && export SYSTEM_IS_VM=1 && export SYSTEM_VM_HOME="/cygdrive/z"
+
+elif [[ $('uname') == *Linux* ]]; then
+  # We are using Linux
+  export SYSTEM_IS_LINUX=1
+
+fi
+
+
+
 # Path to your oh-my-zsh configuration
 # ----------------------------------------------------------
 if [[ -d "$HOME/.oh-my-zsh" ]]; then
   ZSH="$HOME/.oh-my-zsh"
 fi
 
+
 # Set the location of oh-my-zsh-psyrendust
+# ------------------------------------------------------------------------------
 if [[ -d "$HOME/.oh-my-zsh-psyrendust" ]]; then
   export ZSH_CUSTOM="$HOME/.oh-my-zsh-psyrendust"
 fi
 
-# Set the location of the PURE Theme and symlink pure.zsh
-# into our theme folder
-if [[ -d "$HOME/.pure-theme" ]]; then
-  export PURE_THEME="$HOME/.pure-theme"
-  ln -sf "$PURE_THEME/pure.zsh" "$ZSH_CUSTOM/themes/pure.zsh-theme"
-fi
 
 # Set name of the theme to load into oh-my-zsh.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-if [[ -n $PURE_THEME ]]; then
-  ZSH_THEME="pure"
-else
-  ZSH_THEME="psyrendust"
-fi
+# ------------------------------------------------------------------------------
+ZSH_THEME="pure"
+
 
 # Set the location of our work zshrc location
+# ------------------------------------------------------------------------------
 if [[ -d "$HOME/.zshrc-work" ]]; then
   export ZSHRC_WORK="$HOME/.zshrc-work"
 fi
 
+
 # Set the location of our personal zshrc location
+# ------------------------------------------------------------------------------
 if [[ -d "$HOME/.zshrc-personal" ]]; then
   export ZSHRC_PERSONAL="$HOME/.zshrc-personal"
 fi
 
+
 # Auto update duration for oh-my-zsh-psyrendust
+# ------------------------------------------------------------------------------
 export UPDATE_PSYRENDUST_DAYS=1
 
-# Do some system checks so we don't have to keep doing it later
-# ----------------------------------------------------------
-[[ $('uname') == *CYGWIN* ]] && export SYSTEM_IS_CYGWIN=1
-[[ $('uname') == *Linux* ]] && export SYSTEM_IS_LINUX=1
-[[ $('uname') == *Darwin* ]] && export SYSTEM_IS_MAC=1
 
-
-if [[ -n $SYSTEM_IS_MAC ]]; then
-  # Replace .gitconfig
-  [[ -s "$ZSH_CUSTOM/templates/.gitconfig_mac" ]] && cp "$ZSH_CUSTOM/templates/.gitconfig_mac" "$HOME/.gitconfig"
-  # Check to see if .gitconfig-includes has been created
-  [[ -d "$HOME/.gitconfig-includes" ]] || mkdir "$HOME/.gitconfig-includes"
+# Ensure we have a temp folder to work with
+# ------------------------------------------------------------------------------
+export PSYRENDUST_CONFIG_BASE_PATH="$HOME/.psyrendust"
+if [[ ! -d $PSYRENDUST_CONFIG_BASE_PATH ]]; then
+  mkdir -p $PSYRENDUST_CONFIG_BASE_PATH
 fi
 
-if [[ -n $SYSTEM_IS_CYGWIN ]]; then
-  # Replace .gitconfig
-  [[ -s "$ZSH_CUSTOM/templates/.gitconfig_win" ]] && cp "$ZSH_CUSTOM/templates/.gitconfig_win" "$HOME/.gitconfig"
-  # Check to see if .gitconfig-includes has been symlinked in cygwin
-  [[ -d "/cygdrive/z/.gitconfig-includes" ]] && ln -sf "/cygdrive/z/.gitconfig-includes" "$HOME/.gitconfig-includes"
-fi
-
-# Copy over gitconfig templates
-[[ -s "$ZSH_CUSTOM/templates/core.gitconfig" ]] && cp "$ZSH_CUSTOM/templates/core.gitconfig" "$HOME/.gitconfig-includes/core.gitconfig"
-[[ -s "$ZSH_CUSTOM/templates/diff.gitconfig" ]] && cp "$ZSH_CUSTOM/templates/diff.gitconfig" "$HOME/.gitconfig-includes/diff.gitconfig"
-
-# Check to see if user.gitconfig has been created
-if [[ ! -s "$HOME/.gitconfig-includes/user.gitconfig" ]]; then
-  [[ -s "$ZSH_CUSTOM/templates/user.gitconfig" ]] && cp "$ZSH_CUSTOM/templates/user.gitconfig" "$HOME/.gitconfig-includes/user.gitconfig"
-fi
-
-# Check to see if a Git global user.name has been set
-if [[ $(git config user.name) == "" ]]; then
-  printf '\033[0;31m%s\033[0m\n' "One time setup to configure your Git user.name"
-  printf '\033[0;35m%s\033[0;31m%s\033[0m\n' "Please enter your first and last name " "[First Last]: "
-  read git_xero_user_name_first git_xero_user_name_last
-  echo "  name = $git_xero_user_name_first $git_xero_user_name_last" >> "$HOME/.gitconfig-includes/user.gitconfig"
-  printf '\033[0;35m%s\033[0;36m%s\033[0m\n' "Git config user.name saved to: " "$HOME/.gitconfig-includes/user.gitconfig"
-  unset git_xero_user_name_first
-  unset git_xero_user_name_last
-fi
-
-# Check to see if a Git global user.email has been set
-if [[ $(git config user.email) == "" ]]; then
-  printf '\033[0;31m%s\033[0m\n' "One time setup to configure your Git user.email"
-  printf '\033[0;35m%s\033[0;31m%s\033[0m\n' "Please enter your work email address " "[first.last@domain.com]: "
-  read git_xero_user_email
-  echo "  email = $git_xero_user_email" >> "$HOME/.gitconfig-includes/user.gitconfig"
-  printf '\033[0;35m%s\033[0;36m%s\033[0m\n' "Git config user.email saved to: " "$HOME/.gitconfig-includes/user.gitconfig"
-  unset git_xero_user_email
-fi
-
-
-# Check for updates on initial load...
-# ----------------------------------------------------------
-# if [[ "$DISABLE_PSYRENDUST_AUTO_UPDATE" != "true" ]]; then
-#   /usr/bin/env ZSH=$ZSH ZSH_CUSTOM=$ZSH_CUSTOM DISABLE_PSYRENDUST_AUTO_UPDATE=$DISABLE_PSYRENDUST_AUTO_UPDATE zsh $ZSH_CUSTOM/plugins/psyrendust-auto-update/upgrade.zsh
-# fi
 
 
 # Configure $PATH variable
-# ----------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Add locally installed binaries first
 if [[ -d "/usr/local/bin" ]]; then
   PATH="/usr/local/bin:$PATH"
@@ -110,6 +80,7 @@ if [[ -d "/usr/local/sbin" ]]; then
 fi
 
 # Check if homebrew is installed
+# ------------------------------------------------------------------------------
 if [[ -s "/usr/local/bin/brew" ]]; then
   # Add homebrew Core Utilities
   if [[ -s "$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin" ]]; then
@@ -129,6 +100,7 @@ fi
 
 
 # ADD NVM's version of NPM
+# ------------------------------------------------------------------------------
 if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
   source "$HOME/.nvm/nvm.sh"
 fi
@@ -136,17 +108,32 @@ fi
 # Zsh & RVM woes (rvm-prompt doesn't resolve)
 # http://stackoverflow.com/questions/6636066/zsh-rvm-woes-rvm-prompt-doesnt-resolve
 # Load RVM into a shell session *as a function*
+# ------------------------------------------------------------------------------
 if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
   source "$HOME/.rvm/scripts/rvm"
 fi
 
 export PATH
 
-# Comment this out to disable auto-update checks for oh-my-zsy-psyrendust
-# DISABLE_PSYRENDUST_AUTO_UPDATE="true"
+# ------------------------------------------------------------------------------
+# Psyrendust settings
+# ------------------------------------------------------------------------------
+# Uncomment this to enable verbose output for oh-my-zsy-psyrendust related scripts
+# export PRETTY_PRINT_IS_VERBOSE=1
 
+# Uncomment this to disable auto-update checks for oh-my-zsy-psyrendust
+# export DISABLE_PSYRENDUST_AUTO_UPDATE="true"
+
+# Uncomment this to set your own custom right prompt id
+export PSYRENDUST_CONFIG_PRPROMPT_ID="%F{magenta}[ Psyrendust ]%f"
+
+
+
+# ------------------------------------------------------------------------------
+# Oh My Zsh Settings
+# ------------------------------------------------------------------------------
 # Comment this out to disable auto-update prompts for oh-my-zsh
-# DISABLE_UPDATE_PROMPT="true"
+DISABLE_UPDATE_PROMPT="true"
 
 # Set to this to use case-se;nsitive completion
 # CASE_SENSITIVE="true"
@@ -195,74 +182,189 @@ plugins=(
   git-flow-avh
   history
   history-substring-search
+  node
   npm
+  ruby
+  systemadmin
+  urltools
   # Custom plugins from oh-my-zsh-psyrendust
   alias-grep
-  apache2
   git-psyrendust
   grunt-autocomplete
   kill-process
   mkcd
+  plog
+  pprocess
   pretty-print
   refresh
-  server
   sublime
 )
 
 
 # Add some cygwin related configuration
+# ------------------------------------------------------------------------------
 if [[ -n $SYSTEM_IS_CYGWIN ]]; then
-  plugins=("${plugins[@]}" kaleidoscope)
-  ZSH_THEME="blinks"
+  plugins=("${plugins[@]}" kdiff3)
   alias cygpackages="cygcheck -c -d | sed -e \"1,2d\" -e 's/ .*$//'"
   alias open="/bin/cygstart --explore \"${1:-.}\""
+  cygcreateinstaller() {
+    echo "echo off" > $1
+    echo -n "%1 -q -P " >> $1
+    echo $(echo $(cygcheck -c -d | sed -e "1,2d" -e 's/ .*$//') | tr " " ",") >> $1
+  }
 fi
 
+
 # Add some OS X related configuration
+# ------------------------------------------------------------------------------
 if [[ -n $SYSTEM_IS_MAC ]]; then
-  plugins=("${plugins[@]}" brew osx)
+  plugins=(
+    "${plugins[@]}"
+    apache2
+    brew
+    osx
+    server
+    sudo
+  )
   alias chownapps="find /Applications -maxdepth 1 -user root -exec sudo chown -R $(echo $USER):staff {} + -print"
   alias manp="man-preview"
   alias ql="quick-look"
 fi
 
+
 # Helper aliases
+# ------------------------------------------------------------------------------
 alias zshconfig="sbl ~/.zshrc"
 alias ohmyzsh="sbl ~/.oh-my-zsh"
 alias sourceohmyzsh="source ~/.zshrc"
-
 alias chownusrlocal="find /usr/local -maxdepth 2 -user root -exec sudo chown -R $(echo $USER):staff {} + -print"
 alias npmlist="npm -g ls --depth=0 2>NUL"
-
-alias psyversion="printf '\033[0;35m%s\033[0;33m%s\033[0m\n' 'Running oh-my-zsh-psyrendust version ' '$(cat $ZSH_CUSTOM/.version)'"
+alias psyversion="pppurple -i \"Running oh-my-zsh-psyrendust version \" && pplightpurple \"$(cat $ZSH_CUSTOM/.version)\""
 
 
 # Update all global npm packages except for npm, because updating npm using npm
 # always breaks. Running npm -g update will result in having to reinstall node.
 # This little script will update all global npm packages except for npm.
-alias npmupdate="npm -g ls --depth=0 2>NUL | awk -F'@' '{print $1}' | awk '{print $2}' | awk  '!/npm/'> ~/.npm-g-ls && xargs -0 -n 1 npm -g update < <(tr \\n \\0 <~/.npm-g-ls) && rm ~/.npm-g-ls"
+# ------------------------------------------------------------------------------
+alias npmupdate="npm -g ls --depth=0 2>NUL | awk -F'@' '{print $1}' | awk '{print $2}' | awk  '!/npm/'> ${HOME}/.psyrendust/npm-g-ls && xargs -0 -n 1 npm -g update < <(tr \\n \\0 <${HOME}/.psyrendust/npm-g-ls) && rm ${HOME}/.psyrendust/npm-g-ls"
 
-if [[ -s "$ZSH_CUSTOM/plugins/psyrendust-auto-update/upgrade.zsh" ]]; then
-  alias forceupdate="source $ZSH_CUSTOM/plugins/psyrendust-auto-update/upgrade.zsh -a && /usr/bin/env zsh"
-fi
+
+
+# Force run the auto-update script
+# ------------------------------------------------------------------------------
+forceupdate() {
+  [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/auto-update-last-run" ]] && rm "$PSYRENDUST_CONFIG_BASE_PATH/auto-update-last-run";
+  [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/pprocess-post-update" ]] && rm "$PSYRENDUST_CONFIG_BASE_PATH/pprocess-post-update";
+  [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/post-update-procedure-result.conf" ]] && rm "$PSYRENDUST_CONFIG_BASE_PATH/post-update-procedure-result.conf";
+  [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/post-update-progress.conf" ]] && rm "$PSYRENDUST_CONFIG_BASE_PATH/post-update-progress.conf";
+  [[ -s "$ZSH_CUSTOM/plugins/prprompt/prprompt.plugin.zsh" ]] && source "$ZSH_CUSTOM/plugins/prprompt/prprompt.plugin.zsh";
+  [[ -f "$ZSH_CUSTOM/tools/auto-update.zsh" ]] && source "$ZSH_CUSTOM/tools/auto-update.zsh"
+}
+
+
 
 # Custom .zshrc files that get sourced if they exist. Things
 # place in these files will override any settings found in
 # this file.
-# ----------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Load custom work zshrc
+# ------------------------------------------------------------------------------
 if [[ -s "$ZSHRC_WORK/.zshrc" ]]; then
   source "$ZSHRC_WORK/.zshrc"
 fi
 
+
 # Load custom personal zshrc
+# ------------------------------------------------------------------------------
 if [[ -s "$ZSHRC_PERSONAL/.zshrc" ]]; then
   source "$ZSHRC_PERSONAL/.zshrc"
 fi
 
+
+# Source oh-my-zsh and get things started
+# ------------------------------------------------------------------------------
 source $ZSH/oh-my-zsh.sh
 
-# load fasd
+
+
+# Output our version number
+# ------------------------------------------------------------------------------
+psyversion
+
+
+
+# If we are using Cygwin and ZSH_THEME is Pure, then replace the prompt
+# character to something that works in Windows
+# ----------------------------------------------------------------------------
+if [[ -n $SYSTEM_IS_CYGWIN ]] && [[ $ZSH_THEME == "pure" ]]; then
+  PROMPT=$(echo $PROMPT | tr "❯" "›")
+fi
+
+
+
+# Last run helper functions
+# ------------------------------------------------------------------------------
+_psyrendust_au_last_run="$PSYRENDUST_CONFIG_BASE_PATH/auto-update-last-run"
+function _psyrendust-au-get-current-epoch() {
+  echo $(($(date +%s) / 24 / 60 / 60))
+  # echo $(date +%s)
+}
+
+function _psyrendust-au-set-current-epoch() {
+  echo "_psyrendust_au_last_epoch=$(_psyrendust-au-get-current-epoch)" > ${_psyrendust_au_last_run}
+}
+
+# Load up the last run for auto-update
+# ------------------------------------------------------------------------------
+if [[ -f "${_psyrendust_au_last_run}" ]]; then
+  source "${_psyrendust_au_last_run}"
+fi
+if [[ -z "${_psyrendust_au_last_epoch}" ]]; then
+  _psyrendust-au-set-current-epoch
+  source "${_psyrendust_au_last_run}"
+fi
+_psyrendust_au_last_epoch_diff=$(($(_psyrendust-au-get-current-epoch) - ${_psyrendust_au_last_epoch}))
+
+# See if we ran this today already
+# ------------------------------------------------------------------------------
+if [[ ${_psyrendust_au_last_epoch_diff} -gt 1 ]]; then
+  # Load prprompt script
+  # ----------------------------------------------------------------------------
+  if [[ -s "$ZSH_CUSTOM/plugins/prprompt/prprompt.plugin.zsh" ]]; then
+    source "$ZSH_CUSTOM/plugins/prprompt/prprompt.plugin.zsh"
+  fi
+
+
+  # Run auto-update for oh-my-zsh-psyrendust. Updates run asynchronously in the
+  # background. The RPROMPT updates every 1 second to display the real-time
+  # progress of the auto-update.
+  # ----------------------------------------------------------------------------
+  if [[ -s "$ZSH_CUSTOM/tools/auto-update.zsh" ]]; then
+    source "$ZSH_CUSTOM/tools/auto-update.zsh"
+  fi
+
+
+  # Update last epoch
+  # ----------------------------------------------------------------------------
+  _psyrendust-au-set-current-epoch
+else
+  # Run any post-update scripts if they exist
+  # ------------------------------------------------------------------------------
+  for psyrendust_run_once in $(ls "$PSYRENDUST_CONFIG_BASE_PATH/" | grep "^post-update-run-once.*zsh$"); do
+    source "$PSYRENDUST_CONFIG_BASE_PATH/$psyrendust_run_once"
+    # Sourcing helper script to call all procedure functions in this script
+    # ------------------------------------------------------------------------------
+    if [[ -s "$ZSH_CUSTOM/tools/psyrendust-procedure-init.zsh" ]]; then
+      # Pass -x option to cleanup
+      source "$ZSH_CUSTOM/tools/psyrendust-procedure-init.zsh" -x "$PSYRENDUST_CONFIG_BASE_PATH/$psyrendust_run_once"
+    fi
+  done
+  unset psyrendust_run_once
+fi
+
+
+
+# Load fasd
+# ------------------------------------------------------------------------------
 eval "$(fasd --init zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install)"
 
-psyversion

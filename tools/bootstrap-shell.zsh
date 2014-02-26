@@ -941,10 +941,10 @@ _psyrendust-procedure-00() {
 # add myself to wheel group
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-00() {
-  [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
-  [[ -n $SYSTEM_IS_LINUX ]] && return # Exit if we are in Linux
-  ppinfo "add myself to wheel group"
-  sudo dseditgroup -o edit -a $(echo $USER) -t user wheel
+  if [[ -n $SYSTEM_IS_MAC ]]; then
+    ppinfo "add myself to wheel group"
+    sudo dseditgroup -o edit -a $(echo $USER) -t user wheel
+  fi
 }
 
 
@@ -982,7 +982,7 @@ _psyrendust-procedure-00() {
 
 
 
-# Update rvm and install gems
+# Update rvm
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-00() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
@@ -1006,10 +1006,63 @@ _psyrendust-procedure-00() {
   rvm --default 2.0.0
 }
 _psyrendust-procedure-00() {
+  [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
+  ppinfo 'rvm cleanup all'
+  rvm cleanup all
+}
+
+
+
+# Check ruby version
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-00() {
   ppinfo 'which ruby and version'
   ruby -v
   which ruby
 }
+
+
+
+# # Install 7-zip in Windows
+# # ------------------------------------------------------------------------------
+# _psyrendust-procedure-00() {
+#   if [[ -n $SYSTEM_IS_CYGWIN ]]; then
+#     if [[ -z $(which ruby 2>&1 | grep "not found") ]]; then
+#       ppinfo "Install 7-zip"
+#       local url="http://downloads.sourceforge.net/project/p7zip/p7zip/9.20.1/p7zip_9.20.1_src_all.tar.bz2"
+#       local zip="${url##http*/}"
+#       local p7zip="${zip%.tar.bz2}"
+#       local download_dir="$HOME/.tmp-$$"
+#       mkdir -p "$download_dir"
+#       curl -L "$url" > "$download_dir/$zip"
+#       rm -rf "$download_dir"
+#     fi
+#   fi
+# }
+
+
+
+# # Install ruby in Windows
+# # ------------------------------------------------------------------------------
+# _psyrendust-procedure-00() {
+#   if [[ -n $SYSTEM_IS_CYGWIN ]]; then
+#     if [[ -z $(which ruby 2>&1 | grep "not found") ]]; then
+#       ppinfo "Install Ruby"
+#       local url="http://dl.bintray.com/oneclick/rubyinstaller/ruby-2.0.0-p451-x64-mingw32.7z"
+#       local zip="${url##http*/}"
+#       local download_dir="$HOME/.tmpruby-$$"
+#       mkdir -p "$download_dir"
+#       curl -L "$url" -o "${download_dir}/${zip}"
+#       unzip -q "${download_dir}/${zip}" -d /Applications/
+#       rm -rf "$download_dir"
+#     fi
+#   fi
+# }
+
+
+
+# Update and install some gems
+# ------------------------------------------------------------------------------
 _psyrendust-procedure-00() {
   ppinfo 'gem update --system'
   gem update --system
@@ -1029,11 +1082,6 @@ _psyrendust-procedure-00() {
 _psyrendust-procedure-00() {
   ppinfo 'gem install sass --pre'
   gem install sass --pre
-}
-_psyrendust-procedure-00() {
-  [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
-  ppinfo 'rvm cleanup all'
-  rvm cleanup all
 }
 
 
