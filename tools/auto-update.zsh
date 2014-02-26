@@ -108,6 +108,12 @@ function _psyrendust-au-git-update() {
 
 
 
+if [[ -n $(which prprompt | grep "not found") ]]; then
+  alias prprompt="_psyrendust-au-log-error \"prprompt not found\""
+fi
+
+
+
 # List repos we want to check and update
 # ------------------------------------------------------------------------------
 while getopts ":a" opt; do
