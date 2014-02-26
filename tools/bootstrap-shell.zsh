@@ -859,7 +859,7 @@ _psyrendust-procedure-00() {
     ppwarning "You seem to be running this script from iTerm.app."
     ppwarning "Opening Terminal.app to install iTerm.app preferences."
     sleep 4
-    osascript "$ZSH_CUSTOM/tools/bootstrap-mac-shell-to-term.zsh"
+    osascript "$ZSH_CUSTOM/tools/bootstrap-shell-to-term.zsh"
     exit 1
   fi
 }
@@ -891,7 +891,7 @@ _psyrendust-procedure-00() {
     ppwarning "You seem to be running this script from Terminal.app."
     ppwarning "Opening iTerm.app to pick up where we left off."
     sleep 4
-    osascript "$ZSH_CUSTOM/tools/bootstrap-mac-shell-to-iterm.zsh"
+    osascript "$ZSH_CUSTOM/tools/bootstrap-shell-to-iterm.zsh"
     exit 1
   fi
 }
@@ -1227,7 +1227,7 @@ if [[ -n $SYSTEM_IS_MAC ]]; then
   # Keep-alive: update existing `sudo` time stamp until
   # `bootstrap-shell.zsh` has finished
   # ----------------------------------------------------------------------------
-  ppinfo "Keep-alive: update existing `sudo` time stamp until `bootstrap-mac-shell.zsh` has finished"
+  ppinfo "Keep-alive: update existing `sudo` time stamp until `bootstrap-shell.zsh` has finished"
   while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 
