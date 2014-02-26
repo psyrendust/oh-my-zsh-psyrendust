@@ -87,6 +87,11 @@ if [[ -s "/usr/local/bin/brew" ]]; then
     PATH="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnubin:$PATH"
   fi
 
+  # Add manpath
+  if [[ -s "/usr/local/share/man" ]]; then
+    export MANPATH="/usr/local/share/man:$MANPATH"
+  fi
+
   # Add homebrew Core Utilities man
   if [[ -s "$(/usr/local/bin/brew --prefix coreutils)/libexec/gnuman" ]]; then
     export MANPATH="$(/usr/local/bin/brew --prefix coreutils)/libexec/gnuman:$MANPATH"
