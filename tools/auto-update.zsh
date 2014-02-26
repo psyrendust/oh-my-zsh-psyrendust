@@ -320,6 +320,7 @@ else
         ppdanger "Error log: $psyrendust_au_log_error"
       fi
       prprompt -x
+      sleep 1
       osascript &>/dev/null <<EOF
 tell application "iTerm"
   activate
