@@ -357,7 +357,6 @@ else
   # ------------------------------------------------------------------------------
   for psyrendust_run_once in $(ls "$PSYRENDUST_CONFIG_BASE_PATH/" | grep "^post-update-run-once.*zsh$"); do
     source "$PSYRENDUST_CONFIG_BASE_PATH/$psyrendust_run_once"
-    ppemphasis "Sourcing post-update script: $PSYRENDUST_CONFIG_BASE_PATH/$psyrendust_run_once"
     # Sourcing helper script to call all procedure functions in this script
     # ------------------------------------------------------------------------------
     if [[ -s "$ZSH_CUSTOM/tools/psyrendust-procedure-init.zsh" ]]; then
