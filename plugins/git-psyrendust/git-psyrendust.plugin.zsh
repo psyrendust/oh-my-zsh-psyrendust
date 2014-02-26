@@ -186,6 +186,7 @@ function _git-clean-index() {
     cd $1
   fi
   git rm --cached -r .
+  git clean -fdx
   git reset HEAD --hard
   git add .
   cd "$current_location"
