@@ -63,7 +63,8 @@ _psyrendust-procedure-update-config-path() {
 _psyrendust-procedure-update-config-git-path() {
   if [[ -n $SYSTEM_IS_VM ]]; then
     # Symlink git configs
-    [[ -d "$SYSTEM_VM_HOME/.psyrendust/config/git" ]] && ln -sf "$SYSTEM_VM_HOME/.psyrendust/config/git" "$PSYRENDUST_CONFIG_BASE_PATH/config/git"
+    # Don't process this for now. Use the link extension to create symlinks
+    # [[ -d "$SYSTEM_VM_HOME/.psyrendust/config/git" ]] && ln -sf "$SYSTEM_VM_HOME/.psyrendust/config/git" "$PSYRENDUST_CONFIG_BASE_PATH/config/git"
   else
     [[ -d "$PSYRENDUST_CONFIG_BASE_PATH/config/git" ]] || mkdir -p "$PSYRENDUST_CONFIG_BASE_PATH/config/git"
   fi
@@ -130,11 +131,7 @@ _psyrendust-procedure-install-git-config-templates() {
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-oh-my-zsh-psyrendust-updates() {
   if [[ ! -s "$PSYRENDUST_CONFIG_BASE_PATH/config/git/user" ]]; then
-    if [[ -n $SYSTEM_IS_VM ]]; then
-      ln -sf "$SYSTEM_VM_HOME/config/git/user" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/user"
-    else
-      cp "$ZSH_CUSTOM/templates/config/git/user" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/user"
-    fi
+    cp "$ZSH_CUSTOM/templates/config/git/user" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/user"
   fi
 }
 
