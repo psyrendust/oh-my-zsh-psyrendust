@@ -37,7 +37,7 @@ export PSYRENDUST_BACKUP_FOLDER="$ZSHRC_PERSONAL/backup/$(date '+%Y%m%d_%H')00"
 # Starting post-update
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-start() {
-  ppinfo "[oh-my-zsh-psyrendust] Post update starting"
+  pplightblue -i "[oh-my-zsh-psyrendust] Post update: "
 }
 
 
@@ -184,7 +184,7 @@ _psyrendust-procedure-git-user-email() {
 # All done
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-complete() {
-  ppsuccess "[oh-my-zsh-psyrendust] Post update complete!"
+  ppsuccess "complete"
 }
 
 
