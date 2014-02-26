@@ -149,7 +149,8 @@ _psyrendust-au-log-delete
 # Process updates
 # ------------------------------------------------------------------------------
 _psyrendust-au-log "[Psyrendust] Checking for updates..."
-if [[ -n $SYSTEM_IS_CYGWIN ]] && [[ -d "/cygdrive/z/.oh-my-zsh-psyrendust" ]]; then
+if [[ -n $SYSTEM_IS_VM ]]; then
+  _psyrendust-au-log "System is a VM"
   prprompt -p $(((${#repos}*3)+1))
   # Don't process updates for CYGWIN because we are in Parallels and symlinking
   # those folders to the this users home directory. Only run the post update
@@ -180,6 +181,7 @@ if [[ -n $SYSTEM_IS_CYGWIN ]] && [[ -d "/cygdrive/z/.oh-my-zsh-psyrendust" ]]; t
         cp "$psyrendust_au_git_root/tools/post-update.zsh" "$HOME/.psyrendust/post-update-run-once-${psyrendust_au_name_space}.zsh"
         prprompt -P
       else
+        _psyrendust-au-log "[$repo] No post-update-run found"
         prprompt -w
       fi
       _psyrendust-au-set-last-git-update "$psyrendust_au_git_root" "$psyrendust_au_name_space"
@@ -191,6 +193,7 @@ if [[ -n $SYSTEM_IS_CYGWIN ]] && [[ -d "/cygdrive/z/.oh-my-zsh-psyrendust" ]]; t
   _psyrendust-au-log "prprompt stop"
   prprompt -P
 else
+  _psyrendust-au-log "System is native"
   prprompt -p $(((${#repos}*6)+1))
   # Check and see if we have internet first before continuing on
   # ----------------------------------------------------------------------------
