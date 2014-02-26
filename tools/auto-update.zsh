@@ -240,7 +240,7 @@ else
             # ------------------------------------------------------------------
             if [[ -z "$psyrendust_au_current_local_sha" ]]; then
               _psyrendust-au-log "[$repo] \$psyrendust_au_current_local_sha does not exist"
-              _psyrendust-au-set-last-git-update "$psyrendust_au_git_root" "$psyrendust_au_name_space" && return 0;
+              _psyrendust-au-set-last-git-update "$psyrendust_au_git_root" "$psyrendust_au_name_space";
               source "$PSYRENDUST_CONFIG_BASE_PATH/last-repo-update-${psyrendust_au_name_space}"
             fi
 
