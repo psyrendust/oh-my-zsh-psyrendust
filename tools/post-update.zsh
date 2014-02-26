@@ -21,7 +21,7 @@ fi
 
 
 
-#
+# Setup base config path
 # ------------------------------------------------------------------------------
 [[ -d "$PSYRENDUST_CONFIG_BASE_PATH" ]] || mkdir -p "$PSYRENDUST_CONFIG_BASE_PATH"
 
