@@ -14,10 +14,6 @@ if [[ -s $HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/pretty-print.plugin.zs
   source $HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/pretty-print.plugin.zsh
 fi
 
-if [[ -s $HOME/.oh-my-zsh-psyrendust/plugins/git-psyrendust/git-psyrendust.plugin.zsh ]]; then
-  source $HOME/.oh-my-zsh-psyrendust/plugins/git-psyrendust/git-psyrendust.plugin.zsh
-fi
-
 
 
 # Log helper functions
@@ -46,6 +42,12 @@ function _psyrendust-au-has-internet() {
 
 # Git helper functions
 # ------------------------------------------------------------------------------
+function _psyrendust-au-get-current-git-branch() {
+  ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
+  ref=$(command git rev-parse --short HEAD 2> /dev/null) || return
+  echo "${ref#refs/heads/}"
+}
+
 function _psyrendust-au-get-current-git-remote-sha() {
   _psyrendust-au-log "  - _psyrendust-au-get-current-git-remote-sha"
   _psyrendust-au-log "  - cd: ${1}"
@@ -96,7 +98,7 @@ function _psyrendust-au-git-update() {
     _psyrendust-au-log "  - cd: ${1}"
     cd "${1}"
     _psyrendust-au-git-cleanup
-    result=git pull --rebase origin $(current_branch) 2>&1
+    result=git pull --rebase origin $(_psyrendust-au-get-current-git-branch) 2>&1
     if [[ -n $result ]]; then
       _psyrendust-au-log "  - git pull successful"
       echo 1
