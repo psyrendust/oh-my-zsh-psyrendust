@@ -26,18 +26,6 @@
 
 
 
-# If flag is passed, then remove the script that we are processing
-# ------------------------------------------------------------------------------
-while getopts "x" opt; do
-  [[ $opt == "x" ]] && psyrendust_pi_option=1
-done
-# Shift the params if an psyrendust_pi_option exists
-if [[ $psyrendust_pi_option > 0 ]]; then
-  shift
-fi
-
-
-
 # Sourcing pretty-print helpers
 #  ppsuccess - green
 #     ppinfo - light cyan
@@ -213,8 +201,8 @@ if [ -e $psyrendust_pi_procedure_result ]; then
   rm -f $psyrendust_pi_procedure_result
 fi
 if [[ $psyrendust_pi_option == 1 ]]; then
-  if [ -e $1 ]; then
-    # -x: Cleanup and remove the calling script
+  if [[ -n $(echo ${1##*/} | grep "run-once") ]]; then
+    # Cleanup and remove the calling script if it's name contains "run-once"
     ppverbose "- Removing: " "$1"
     rm -f $1
   fi

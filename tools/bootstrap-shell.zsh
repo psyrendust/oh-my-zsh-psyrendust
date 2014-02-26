@@ -536,7 +536,7 @@ _psyrendust-procedure-00() {
 _psyrendust-procedure-00() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   # Is node installed by brew and if node is installed
-  if [[ -n $(_brew-is-installed "node") ]] && [[ -z $(which node | "not found") ]]; then
+  if [[ -n $(_brew-is-installed "node") ]] && [[ -z $(which node | grep "not found") ]]; then
     ppinfo "Remove node because it's not installed by brew"
     lsbom -f -l -s -pf /var/db/receipts/org.nodejs.pkg.bom | while read f; do [[ -f /usr/local/${f} ]] && sudo rm -rf /usr/local/${f}; done
     [[ -f /usr/local/lib/node ]] && sudo rm -rf /usr/local/lib/node /usr/local/lib/node_modules /var/db/receipts/org.nodejs.*
@@ -552,7 +552,7 @@ _psyrendust-procedure-00() {
 _psyrendust-procedure-00() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   # Remove npm
-  if [[ -z $(which npm | "not found") ]]; then
+  if [[ -z $(which npm | grep "not found") ]]; then
     ppinfo "Remove npm: npm uninstall npm -g"
     npm uninstall npm -g
   fi

@@ -362,7 +362,7 @@ else
     # ------------------------------------------------------------------------------
     if [[ -s "$ZSH_CUSTOM/tools/psyrendust-procedure-init.zsh" ]]; then
       # Pass -x option to cleanup
-      "$ZSH_CUSTOM/tools/psyrendust-procedure-init.zsh" -x "$PSYRENDUST_CONFIG_BASE_PATH/$psyrendust_run_once"
+      source "$ZSH_CUSTOM/tools/psyrendust-procedure-init.zsh" "$PSYRENDUST_CONFIG_BASE_PATH/$psyrendust_run_once"
     fi
   done
   unset psyrendust_run_once
