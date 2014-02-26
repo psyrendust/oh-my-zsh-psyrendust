@@ -319,6 +319,7 @@ else
         ppdanger "See log for details...[Psyrendust]"
         ppdanger "Error log: $psyrendust_au_log_error"
       fi
+      prprompt -x
       osascript &>/dev/null <<EOF
 tell application "iTerm"
   activate
