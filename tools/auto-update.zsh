@@ -14,6 +14,10 @@ if [[ -s $HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/pretty-print.plugin.zs
   source $HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/pretty-print.plugin.zsh
 fi
 
+if [[ -s $HOME/.oh-my-zsh-psyrendust/plugins/git-psyrendust/git-psyrendust.plugin.zsh ]]; then
+  source $HOME/.oh-my-zsh-psyrendust/plugins/git-psyrendust/git-psyrendust.plugin.zsh
+fi
+
 
 
 # Log helper functions
