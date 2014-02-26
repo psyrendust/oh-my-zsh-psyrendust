@@ -1,5 +1,21 @@
 #!/usr/bin/env zsh
 
+
+
+# Sourcing pretty-print helpers
+#  ppsuccess - green
+#     ppinfo - light cyan
+#  ppwarning - brown
+#   ppdanger - red
+# ppemphasis - purple
+#  ppverbose - prints out message if PRETTY_PRINT_IS_VERBOSE="true"
+# ------------------------------------------------------------------------------
+if [[ -s $HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/pretty-print.plugin.zsh ]]; then
+  source $HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/pretty-print.plugin.zsh
+fi
+
+
+
 # Log helper functions
 # ------------------------------------------------------------------------------
 function _psyrendust-au-log() {
