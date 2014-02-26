@@ -1,0 +1,29 @@
+# Configure Windows to always use CRLF on checkout
+# ------------------------------------------------------------------------------
+[core]
+  autocrlf = true
+
+
+
+# Configure git to use kdiff3 for diff and merges
+# ------------------------------------------------------------------------------
+[difftool "kdiff3"]
+  # path = /home/uspayrolladmin/kdiff3.sh
+  cmd = kdiff3 --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+[mergetool "kdiff3"]
+  # path = /home/uspayrolladmin/kdiff3.sh
+  cmd = kdiff3 --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+# [mergetool]
+#   trustExitCode = false
+# [difftool]
+#   trustExitCode = false
+
+
+
+# Configure git to use kdiff3 for diff and merges
+# ------------------------------------------------------------------------------
+[merge]
+  tool = kdiff3
+  conflictstyle = diff3
+[diff]
+  tool = kdiff3

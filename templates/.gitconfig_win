@@ -1,7 +1,0 @@
-#-----------------------------------------------------------
-[include]
-  path = ~/.gitconfig-includes/user.gitconfig
-  path = ~/.gitconfig-includes/core.gitconfig
-  path = ~/.gitconfig-includes/diff.gitconfig
-  path = ~/.gitconfig-includes/work.gitconfig
-  path = ~/.gitconfig-includes/windows.gitconfig
