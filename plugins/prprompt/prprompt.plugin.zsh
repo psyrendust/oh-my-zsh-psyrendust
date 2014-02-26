@@ -129,7 +129,7 @@ _psyrendust-config-rprompt-status-update() {
 prprompt() {
   # Accepts an optional flag
   # ----------------------------------------------------------------------------
-  while getopts "xesmpPE" opt; do
+  while getopts "xpPwEesm" opt; do
     [[ $opt == "x" ]] && option=1 # Stop processing updates and reset message back to original RPROMPT
     [[ $opt == "p" ]] && option=2 # Output progress with chevrons and show current chevron as in progress [light green].
     [[ $opt == "P" ]] && option=3 # Output progress with chevrons and show current chevron as completed [green]
