@@ -200,12 +200,14 @@ if [ -e $psyrendust_pi_procedure_result ]; then
   ppverbose "- Removing: " "$psyrendust_pi_procedure_result"
   rm -f $psyrendust_pi_procedure_result
 fi
-if [[ $psyrendust_pi_option == 1 ]]; then
-  if [[ -n $(echo ${1##*/} | grep "run-once") ]]; then
-    # Cleanup and remove the calling script if it's name contains "run-once"
-    ppverbose "- Removing: " "$1"
-    rm -f $1
-  fi
+
+
+
+# ------------------------------------------------------------------------------
+# Cleanup and remove the calling script if it's name contains "run-once"
+if [[ -n $(echo ${1##*/} | grep "run-once") ]]; then
+  ppverbose "- Removing: " "$1"
+  rm -f $1
 fi
 
 
