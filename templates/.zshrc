@@ -119,7 +119,7 @@ export PATH
 # Psyrendust settings
 # ------------------------------------------------------------------------------
 # Uncomment this to enable verbose output for oh-my-zsy-psyrendust related scripts
-# export PRETTY_PRINT_IS_VERBOSE=1
+export PRETTY_PRINT_IS_VERBOSE=1
 
 # Uncomment this to disable auto-update checks for oh-my-zsy-psyrendust
 # export DISABLE_PSYRENDUST_AUTO_UPDATE="true"
