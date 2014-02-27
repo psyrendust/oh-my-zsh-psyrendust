@@ -144,6 +144,9 @@ if [[ -n $SYSTEM_IS_CYGWIN ]]; then
   psyrendust_au_cygwin_start_vbs="$PSYRENDUST_CONFIG_BASE_PATH/config/win/cygwin-start.vbs"
   psyrendust_au_cygwin_start_bat_src="$ZSH_CUSTOM/templates/config/win/cygwin-start.bat"
   psyrendust_au_cygwin_start_vbs_src="$ZSH_CUSTOM/templates/config/win/cygwin-start.vbs"
+  if [[ ! -d "$PSYRENDUST_CONFIG_BASE_PATH/config/win" ]]; then
+    mkdir "$PSYRENDUST_CONFIG_BASE_PATH/config/win"
+  fi
   if [[ ! -f "$psyrendust_au_cygwin_start_vbs" ]]; then
     sed "s/CURRENT_USER_NAME/$(whoami)/g" "$psyrendust_au_cygwin_start_vbs_src" > "$psyrendust_au_cygwin_start_vbs"
   fi
