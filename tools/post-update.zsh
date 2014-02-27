@@ -78,29 +78,6 @@ _psyrendust-procedure-update-config-git-path() {
 
 
 
-# Check to see if cygwin-start has been created
-# ------------------------------------------------------------------------------
-_psyrendust-procedure-update-cygwin-start() {
-  if [[ -n $SYSTEM_IS_CYGWIN ]]; then
-    cygwin_start_vbs_src="$ZSH_CUSTOM/templates/config/win/cygwin-start.vbs"
-    cygwin_start_bat_src="$ZSH_CUSTOM/templates/config/win/cygwin-start.bat"
-    cygwin_start_vbs_dest="$PSYRENDUST_CONFIG_BASE_PATH/config/win/cygwin-start.vbs"
-    cygwin_start_bat_dest="$PSYRENDUST_CONFIG_BASE_PATH/config/win/cygwin-start.bat"
-    if [[ ! -f "$cygwin_start_vbs_dest" ]]; then
-      sed "s/CURRENT_USER_NAME/$(whoami)/g" "$cygwin_start_vbs_src" > "$cygwin_start_vbs_dest"
-    fi
-    if [[ ! -f "$cygwin_start_bat_dest" ]]; then
-      sed "s/CURRENT_USER_NAME/$(whoami)/g" "$cygwin_start_bat_src" > "$cygwin_start_bat_dest"
-    fi
-    unset cygwin_start_vbs_src
-    unset cygwin_start_bat_src
-    unset cygwin_start_vbs_dest
-    unset cygwin_start_bat_dest
-  fi
-}
-
-
-
 # Migrate any legacy gitconfig-includes
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-migrate-existing-gitconfig-includes() {

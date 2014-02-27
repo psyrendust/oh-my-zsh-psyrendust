@@ -137,6 +137,23 @@ fi
 
 
 
+# Check to see if cygwin-start has been created
+# ------------------------------------------------------------------------------
+if [[ -n $SYSTEM_IS_CYGWIN ]]; then
+  psyrendust_au_cygwin_start_bat="$PSYRENDUST_CONFIG_BASE_PATH/config/win/cygwin-start.bat"
+  psyrendust_au_cygwin_start_vbs="$PSYRENDUST_CONFIG_BASE_PATH/config/win/cygwin-start.vbs"
+  psyrendust_au_cygwin_start_bat_src="$ZSH_CUSTOM/templates/config/win/cygwin-start.bat"
+  psyrendust_au_cygwin_start_vbs_src="$ZSH_CUSTOM/templates/config/win/cygwin-start.vbs"
+  if [[ ! -f "$psyrendust_au_cygwin_start_vbs" ]]; then
+    sed "s/CURRENT_USER_NAME/$(whoami)/g" "$psyrendust_au_cygwin_start_vbs_src" > "$psyrendust_au_cygwin_start_vbs"
+  fi
+  if [[ ! -f "$psyrendust_au_cygwin_start_bat" ]]; then
+    sed "s/CURRENT_USER_NAME/$(whoami)/g" "$psyrendust_au_cygwin_start_bat_src" > "$psyrendust_au_cygwin_start_bat"
+  fi
+fi
+
+
+
 # Reset logs
 # ------------------------------------------------------------------------------
 _psyrendust-au-log-delete
@@ -151,7 +168,7 @@ _psyrendust-au-log-delete
 # Don't process updates for CYGWIN if we are in Parallels. We are symlinking
 # those folders to the this users home directory. Only run the post update
 # scripts.
-# ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 if [[ -n $SYSTEM_IS_VM ]]; then
   _psyrendust-au-log "System is a VM"
 else
@@ -159,7 +176,7 @@ else
 fi
 prprompt -p $(((${#repos}*6)+1))
 # Check and see if we have internet first before continuing on
-# ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 if [[ -n $(_psyrendust-au-has-internet) ]]; then
   {
     sleep 1
@@ -171,7 +188,7 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
 
 
       # Create local variables to hold the namespace and the repo's root
-      # ----------------------------------------------------------------------
+      # ------------------------------------------------------------------------
       psyrendust_au_name_space="$(echo $repo | tr '[:upper:]' '[:lower:]' | tr ' ' '-')"
       psyrendust_au_git_root="$HOME/.${psyrendust_au_name_space}"
       _psyrendust-au-log "[$repo] Creating psyrendust_au_name_space=$psyrendust_au_name_space"
@@ -179,21 +196,21 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
 
 
       # Check if the repo folder exists
-      # ----------------------------------------------------------------------
+      # ------------------------------------------------------------------------
       if [[ -d $psyrendust_au_git_root ]]; then
         _psyrendust-au-log "[$repo] Folder exists"
         prprompt -P
 
 
         # Check if we are in a repo
-        # --------------------------------------------------------------------
+        # ----------------------------------------------------------------------
         if [[ -n $(_psyrendust-au-is-git-repo "$psyrendust_au_git_root") ]]; then
           _psyrendust-au-log "[$repo] Is a git repo"
           prprompt -P
 
 
           # Check if the last-repo-update file exists
-          # ------------------------------------------------------------------
+          # --------------------------------------------------------------------
           if [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/last-repo-update-${psyrendust_au_name_space}" ]]; then
             _psyrendust-au-log "[$repo] Has last-repo-update-${psyrendust_au_name_space}"
           else
@@ -205,7 +222,7 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
 
 
           # Set the psyrendust_au_current_local_sha if it doesn't exist
-          # ------------------------------------------------------------------
+          # --------------------------------------------------------------------
           if [[ -z "$psyrendust_au_current_local_sha" ]]; then
             _psyrendust-au-log "[$repo] \$psyrendust_au_current_local_sha does not exist"
             _psyrendust-au-set-last-git-update "$psyrendust_au_git_root" "$psyrendust_au_name_space";
@@ -216,7 +233,7 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
 
 
           # Get the current remote SHA
-          # ------------------------------------------------------------------
+          # --------------------------------------------------------------------
           if [[ -n $SYSTEM_IS_VM ]]; then
             psyrendust_au_current_remote_sha=$(cd "$psyrendust_au_git_root" && git rev-parse HEAD)
             _psyrendust-au-log "[$repo] remote VM SHA: $psyrendust_au_current_remote_sha"
@@ -227,7 +244,7 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
 
 
           # Compare the local sha against the remote
-          # ------------------------------------------------------------------
+          # --------------------------------------------------------------------
           if [[ $psyrendust_au_current_local_sha != $psyrendust_au_current_remote_sha ]]; then
             _psyrendust-au-log "[$repo] Fetching updates..."
             prprompt -P
@@ -239,7 +256,7 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
 
             if [[ -n $psyrendust_au_git_update_successful ]]; then
               # Updates are complete
-              # --------------------------------------------------------------
+              # ----------------------------------------------------------------
               if [[ -f "$psyrendust_au_git_root/tools/post-update.zsh" ]]; then
                 _psyrendust-au-log "[$repo] Creating post-update-run"
                 cp "$psyrendust_au_git_root/tools/post-update.zsh" "$PSYRENDUST_CONFIG_BASE_PATH/post-update-run-once-${psyrendust_au_name_space}.zsh"
@@ -314,6 +331,8 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
     prprompt -x
     sleep 1
     if [[ -n $SYSTEM_IS_MAC ]]; then
+      # If we are running OS X we can use applescript to create a new tab and
+      # close the current tab we are on
       osascript &>/dev/null <<EOF
 tell application "iTerm"
 activate
@@ -325,15 +344,17 @@ tell application "System Events"
 end tell
 end tell
 EOF
-    elif [[ -n $SYSTEM_IS_CYGWIN ]]; then
-      cygstart "$PSYRENDUST_CONFIG_BASE_PATH/config/win/cygwin-start.vbs"
+    elif [[ -n $SYSTEM_IS_CYGWIN ]] && [[ -f "$psyrendust_au_cygwin_start_vbs" ]]; then
+      # If we are running cygwin we can start a new console and exit the
+      # previous one
+      cygstart "$psyrendust_au_cygwin_start_vbs"
       exit
     fi
   } &!
 else
   {
     # Just complete the progress because there is no internet
-    # ------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     prprompt -x
   } &!
 fi
@@ -356,3 +377,9 @@ unset -m psyrendust_au_last_run
 unset -m psyrendust_au_log
 unset -m psyrendust_au_log_error
 unset -m psyrendust_au_name_space
+if [[ -n $SYSTEM_IS_CYGWIN ]]; then
+  unset -m psyrendust_au_cygwin_start_bat
+  unset -m psyrendust_au_cygwin_start_bat_src
+  unset -m psyrendust_au_cygwin_start_vbs
+  unset -m psyrendust_au_cygwin_start_vbs_src
+fi
