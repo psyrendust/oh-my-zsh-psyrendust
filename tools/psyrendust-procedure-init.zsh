@@ -214,8 +214,8 @@ fi
 
 # Script completed successfully
 # ------------------------------------------------------------------------------
+ppsuccess "complete!"
 if [[ -n $PRETTY_PRINT_IS_VERBOSE ]]; then
-  ppsuccess "Script complete!"
   ppsuccess "- $psyrendust_pi_script_path"
 fi
 

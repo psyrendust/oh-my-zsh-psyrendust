@@ -209,11 +209,3 @@ _psyrendust-procedure-git-user-email() {
 }
 
 
-
-# All done
-# ------------------------------------------------------------------------------
-_psyrendust-procedure-complete() {
-  ppsuccess "complete"
-}
-
-
