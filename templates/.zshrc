@@ -211,7 +211,7 @@ plugins=(
 if [[ -n $SYSTEM_IS_CYGWIN ]]; then
   plugins=("${plugins[@]}" kdiff3)
   alias cygpackages="cygcheck -c -d | sed -e \"1,2d\" -e 's/ .*$//'"
-  alias open="/bin/cygstart --explore \"${1:-.}\""
+  alias open="cygstart"
   cygcreateinstaller() {
     echo "echo off" > $1
     echo -n "%1 -q -P " >> $1
