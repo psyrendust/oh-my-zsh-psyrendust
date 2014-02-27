@@ -53,7 +53,13 @@ _psyrendust-procedure-update-base-path() {
 # Check to see if config path has been created
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-update-config-path() {
-  [[ -d "$PSYRENDUST_CONFIG_BASE_PATH/config" ]] || mkdir -p "$PSYRENDUST_CONFIG_BASE_PATH/config"
+  if [[ -n $SYSTEM_IS_VM ]]; then
+    # Symlink config path
+    # Don't process this for now. Use the link extension to create symlinks
+    # [[ -d "$SYSTEM_VM_HOME/.psyrendust/config" ]] && ln -sf "$SYSTEM_VM_HOME/.psyrendust/config" "$PSYRENDUST_CONFIG_BASE_PATH/config"
+  else
+    [[ -d "$PSYRENDUST_CONFIG_BASE_PATH/config" ]] || mkdir -p "$PSYRENDUST_CONFIG_BASE_PATH/config"
+  fi
 }
 
 
@@ -62,11 +68,34 @@ _psyrendust-procedure-update-config-path() {
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-update-config-git-path() {
   if [[ -n $SYSTEM_IS_VM ]]; then
-    # Symlink git configs
+    # Symlink config path
     # Don't process this for now. Use the link extension to create symlinks
     # [[ -d "$SYSTEM_VM_HOME/.psyrendust/config/git" ]] && ln -sf "$SYSTEM_VM_HOME/.psyrendust/config/git" "$PSYRENDUST_CONFIG_BASE_PATH/config/git"
   else
     [[ -d "$PSYRENDUST_CONFIG_BASE_PATH/config/git" ]] || mkdir -p "$PSYRENDUST_CONFIG_BASE_PATH/config/git"
+  fi
+}
+
+
+
+# Check to see if cygwin-start has been created
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-update-cygwin-start() {
+  if [[ -n $SYSTEM_IS_CYGWIN ]]; then
+    cygwin_start_vbs_src="$ZSH_CUSTOM/templates/config/win/cygwin-start.vbs"
+    cygwin_start_bat_src="$ZSH_CUSTOM/templates/config/win/cygwin-start.bat"
+    cygwin_start_vbs_dest="$PSYRENDUST_CONFIG_BASE_PATH/config/win/cygwin-start.vbs"
+    cygwin_start_bat_dest="$PSYRENDUST_CONFIG_BASE_PATH/config/win/cygwin-start.bat"
+    if [[ ! -f "$cygwin_start_vbs_dest" ]]; then
+      sed "s/CURRENT_USER_NAME/$(whoami)/g" "$cygwin_start_vbs_src" > "$cygwin_start_vbs_dest"
+    fi
+    if [[ ! -f "$cygwin_start_bat_dest" ]]; then
+      sed "s/CURRENT_USER_NAME/$(whoami)/g" "$cygwin_start_bat_src" > "$cygwin_start_bat_dest"
+    fi
+    unset cygwin_start_vbs_src
+    unset cygwin_start_bat_src
+    unset cygwin_start_vbs_dest
+    unset cygwin_start_bat_dest
   fi
 }
 
