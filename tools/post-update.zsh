@@ -67,12 +67,8 @@ _psyrendust-procedure-update-config-path() {
 # Check to see if config/git path has been created
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-update-config-git-path() {
-  if [[ -n $SYSTEM_IS_VM ]]; then
-    # Symlink config path
-    # Don't process this for now. Use the link extension to create symlinks
-    # [[ -d "$SYSTEM_VM_HOME/.psyrendust/config/git" ]] && ln -sf "$SYSTEM_VM_HOME/.psyrendust/config/git" "$PSYRENDUST_CONFIG_BASE_PATH/config/git"
-  else
-    [[ -d "$PSYRENDUST_CONFIG_BASE_PATH/config/git" ]] || mkdir -p "$PSYRENDUST_CONFIG_BASE_PATH/config/git"
+  if [[ ! -d "$PSYRENDUST_CONFIG_BASE_PATH/config/git" ]]; then
+    mkdir "$PSYRENDUST_CONFIG_BASE_PATH/config/git"
   fi
 }
 
