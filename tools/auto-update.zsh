@@ -148,206 +148,196 @@ _psyrendust-au-log-delete
 # ------------------------------------------------------------------------------
 # Process updates
 # ------------------------------------------------------------------------------
-_psyrendust-au-log "[Psyrendust] Checking for updates..."
+# Don't process updates for CYGWIN if we are in Parallels. We are symlinking
+# those folders to the this users home directory. Only run the post update
+# scripts.
+# ----------------------------------------------------------------------------
 if [[ -n $SYSTEM_IS_VM ]]; then
   _psyrendust-au-log "System is a VM"
-  prprompt -p $(((${#repos}*3)+1))
-  # Don't process updates for CYGWIN because we are in Parallels and symlinking
-  # those folders to the this users home directory. Only run the post update
-  # scripts.
-  # ----------------------------------------------------------------------------
-  for repo in $repos; do
-    _psyrendust-au-log "[$repo] Processing"
-    prprompt -P
-    # Slow things down since we are only doing file copies
-    sleep 1
-
-    # Create local variables to hold the namespace and the repo's root
-    # --------------------------------------------------------------------------
-    psyrendust_au_name_space="$(echo $repo | tr '[:upper:]' '[:lower:]' | tr ' ' '-')"
-    psyrendust_au_git_root="$HOME/.${psyrendust_au_name_space}"
-    _psyrendust-au-log "[$repo] Creating psyrendust_au_name_space=$psyrendust_au_name_space"
-    _psyrendust-au-log "[$repo] Creating psyrendust_au_git_root=$psyrendust_au_git_root"
-
-
-    # Check if the repo folder exists
-    # --------------------------------------------------------------------------
-    if [[ -d $psyrendust_au_git_root ]]; then
-      _psyrendust-au-log "[$repo] Folder exists"
-      prprompt -P
-
-      # Run any repo specific updates
-      # ------------------------------------------------------------------------
-      if [[ -f "$psyrendust_au_git_root/tools/post-update.zsh" ]]; then
-        _psyrendust-au-log "[$repo] Creating post-update-run"
-        cp "$psyrendust_au_git_root/tools/post-update.zsh" "$HOME/.psyrendust/post-update-run-once-${psyrendust_au_name_space}.zsh"
-        prprompt -P
-      else
-        _psyrendust-au-log "[$repo] No post-update-run found"
-        prprompt -w
-      fi
-      _psyrendust-au-set-last-git-update "$psyrendust_au_git_root" "$psyrendust_au_name_space"
-      # Slow things down since we are only doing file copies
-      sleep 1
-    else
-      _psyrendust-au-log "[$repo] Folder does not exist"
-      prprompt -w
-    fi
-  done
-  _psyrendust-au-log "prprompt stop"
-  prprompt -P
 else
   _psyrendust-au-log "System is native"
-  prprompt -p $(((${#repos}*6)+1))
-  # Check and see if we have internet first before continuing on
-  # ----------------------------------------------------------------------------
-  if [[ -n $(_psyrendust-au-has-internet) ]]; then
-    {
-      psyrendust_au_process_post_update_array=()
-      sleep 1
-      for repo in $repos; do
+fi
+prprompt -p $(((${#repos}*6)+1))
+# Check and see if we have internet first before continuing on
+# ----------------------------------------------------------------------------
+if [[ -n $(_psyrendust-au-has-internet) ]]; then
+  {
+    sleep 1
+    for repo in $repos; do
+      _psyrendust-au-log "[$repo] Processing"
+      prprompt -P
+      # Slow things down since we are only doing file copies
+      [[ -n $SYSTEM_IS_VM ]] && sleep 1
+
+
+      # Create local variables to hold the namespace and the repo's root
+      # ----------------------------------------------------------------------
+      psyrendust_au_name_space="$(echo $repo | tr '[:upper:]' '[:lower:]' | tr ' ' '-')"
+      psyrendust_au_git_root="$HOME/.${psyrendust_au_name_space}"
+      _psyrendust-au-log "[$repo] Creating psyrendust_au_name_space=$psyrendust_au_name_space"
+      _psyrendust-au-log "[$repo] Creating psyrendust_au_git_root=$psyrendust_au_git_root"
+
+
+      # Check if the repo folder exists
+      # ----------------------------------------------------------------------
+      if [[ -d $psyrendust_au_git_root ]]; then
+        _psyrendust-au-log "[$repo] Folder exists"
         prprompt -P
 
 
-        # Create local variables to hold the namespace and the repo's root
-        # ----------------------------------------------------------------------
-        psyrendust_au_name_space="$(echo $repo | tr '[:upper:]' '[:lower:]' | tr ' ' '-')"
-        psyrendust_au_git_root="$HOME/.${psyrendust_au_name_space}"
-        _psyrendust-au-log "[$repo] Creating psyrendust_au_name_space=$psyrendust_au_name_space"
-        _psyrendust-au-log "[$repo] Creating psyrendust_au_git_root=$psyrendust_au_git_root"
-
-
-        # Check if the repo folder exists
-        # ----------------------------------------------------------------------
-        if [[ -d $psyrendust_au_git_root ]]; then
-          _psyrendust-au-log "[$repo] Folder exists"
+        # Check if we are in a repo
+        # --------------------------------------------------------------------
+        if [[ -n $(_psyrendust-au-is-git-repo "$psyrendust_au_git_root") ]]; then
+          _psyrendust-au-log "[$repo] Is a git repo"
           prprompt -P
 
 
-          # Check if we are in a repo
-          # --------------------------------------------------------------------
-          if [[ -n $(_psyrendust-au-is-git-repo "$psyrendust_au_git_root") ]]; then
-            _psyrendust-au-log "[$repo] Is a git repo"
-            prprompt -P
+          # Check if the last-repo-update file exists
+          # ------------------------------------------------------------------
+          if [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/last-repo-update-${psyrendust_au_name_space}" ]]; then
+            _psyrendust-au-log "[$repo] Has last-repo-update-${psyrendust_au_name_space}"
+          else
+            # Set last repo update
+            _psyrendust-au-log "[$repo] Creating last-repo-update-${psyrendust_au_name_space}"
+            _psyrendust-au-set-last-git-update "$psyrendust_au_git_root" "$psyrendust_au_name_space"
+          fi
+          source "$PSYRENDUST_CONFIG_BASE_PATH/last-repo-update-${psyrendust_au_name_space}"
 
 
-            # Check if the last-repo-update file exists
-            # ------------------------------------------------------------------
-            if [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/last-repo-update-${psyrendust_au_name_space}" ]]; then
-              _psyrendust-au-log "[$repo] Has last-repo-update-${psyrendust_au_name_space}"
-            else
-              # Set last repo update
-              _psyrendust-au-log "[$repo] Creating last-repo-update-${psyrendust_au_name_space}"
-              _psyrendust-au-set-last-git-update "$psyrendust_au_git_root" "$psyrendust_au_name_space"
-            fi
+          # Set the psyrendust_au_current_local_sha if it doesn't exist
+          # ------------------------------------------------------------------
+          if [[ -z "$psyrendust_au_current_local_sha" ]]; then
+            _psyrendust-au-log "[$repo] \$psyrendust_au_current_local_sha does not exist"
+            _psyrendust-au-set-last-git-update "$psyrendust_au_git_root" "$psyrendust_au_name_space";
             source "$PSYRENDUST_CONFIG_BASE_PATH/last-repo-update-${psyrendust_au_name_space}"
+          fi
+
+          _psyrendust-au-log "[$repo] local SHA: $psyrendust_au_current_local_sha"
 
 
-            # Set the psyrendust_au_current_local_sha if it doesn't exist
-            # ------------------------------------------------------------------
-            if [[ -z "$psyrendust_au_current_local_sha" ]]; then
-              _psyrendust-au-log "[$repo] \$psyrendust_au_current_local_sha does not exist"
-              _psyrendust-au-set-last-git-update "$psyrendust_au_git_root" "$psyrendust_au_name_space";
-              source "$PSYRENDUST_CONFIG_BASE_PATH/last-repo-update-${psyrendust_au_name_space}"
-            fi
-
-            _psyrendust-au-log "[$repo] local SHA: $psyrendust_au_current_local_sha"
-
-
-            # Get the current remote SHA
-            # ------------------------------------------------------------------
+          # Get the current remote SHA
+          # ------------------------------------------------------------------
+          if [[ -n $SYSTEM_IS_VM ]]; then
+            psyrendust_au_current_remote_sha=$(cd "$psyrendust_au_git_root" && git rev-parse HEAD)
+            _psyrendust-au-log "[$repo] remote VM SHA: $psyrendust_au_current_remote_sha"
+          else
             psyrendust_au_current_remote_sha=$(_psyrendust-au-get-current-git-remote-sha $psyrendust_au_git_root)
             _psyrendust-au-log "[$repo] remote SHA: $psyrendust_au_current_remote_sha"
+          fi
 
 
-            # Compare the local sha against the remote
-            # ------------------------------------------------------------------
-            if [[ $psyrendust_au_current_local_sha != $psyrendust_au_current_remote_sha ]]; then
-              _psyrendust-au-log "[$repo] Fetching updates..."
-              prprompt -P
-              psyrendust_au_git_update_successful=$(_psyrendust-au-git-update "$psyrendust_au_git_root")
-
-              if [[ -n $psyrendust_au_git_update_successful ]]; then
-                # Updates are complete
-                # --------------------------------------------------------------
-                if [[ -f "$psyrendust_au_git_root/tools/post-update.zsh" ]]; then
-                  _psyrendust-au-log "[$repo] Creating post-update-run"
-                  cp "$psyrendust_au_git_root/tools/post-update.zsh" "$PSYRENDUST_CONFIG_BASE_PATH/post-update-run-once-${psyrendust_au_name_space}.zsh"
-                  prprompt -P
-                else
-                  prprompt -w
-                fi
-                _psyrendust-au-log "[$repo] Update successful"
-                prprompt -P
-                _psyrendust-au-set-last-git-update "$psyrendust_au_git_root" "$psyrendust_au_name_space"
-              else
-                psyrendust_au_process_post_update_array=("${psyrendust_au_process_post_update_array[@]}" 0)
-                _psyrendust-au-log-error "[$repo] Update error"
-                prprompt -E
-              fi
-              unset psyrendust_au_git_update_successful
+          # Compare the local sha against the remote
+          # ------------------------------------------------------------------
+          if [[ $psyrendust_au_current_local_sha != $psyrendust_au_current_remote_sha ]]; then
+            _psyrendust-au-log "[$repo] Fetching updates..."
+            prprompt -P
+            if [[ -n $SYSTEM_IS_VM ]]; then
+              psyrendust_au_git_update_successful=1
             else
-              _psyrendust-au-log "[$repo] Already up-to-date"
-              prprompt -P
+              psyrendust_au_git_update_successful=$(_psyrendust-au-git-update "$psyrendust_au_git_root")
             fi
+
+            if [[ -n $psyrendust_au_git_update_successful ]]; then
+              # Updates are complete
+              # --------------------------------------------------------------
+              if [[ -f "$psyrendust_au_git_root/tools/post-update.zsh" ]]; then
+                _psyrendust-au-log "[$repo] Creating post-update-run"
+                cp "$psyrendust_au_git_root/tools/post-update.zsh" "$PSYRENDUST_CONFIG_BASE_PATH/post-update-run-once-${psyrendust_au_name_space}.zsh"
+                prprompt -P
+              else
+                _psyrendust-au-log "[$repo] No post-update-run found"
+                prprompt -w
+              fi
+              _psyrendust-au-log "[$repo] Update successful"
+              prprompt -P
+              _psyrendust-au-set-last-git-update "$psyrendust_au_git_root" "$psyrendust_au_name_space"
+              # Slow things down since we are only doing file copies
+              [[ -n $SYSTEM_IS_VM ]] && sleep 1
+            else
+              _psyrendust-au-log-error "[$repo] Update error"
+              prprompt -E
+              prprompt -E
+            fi
+            unset psyrendust_au_git_update_successful
           else
-            prprompt -w
+            _psyrendust-au-log "[$repo] Already up-to-date"
+            prprompt -P
+            prprompt -P
+            prprompt -P
           fi
         else
+          _psyrendust-au-log "[$repo] Is not a git repo"
+          prprompt -w
+          prprompt -w
+          prprompt -w
           prprompt -w
         fi
-        unset psyrendust_au_current_local_sha
-        unset psyrendust_au_current_remote_sha
-        unset psyrendust_au_name_space
-        unset psyrendust_au_git_root
-      done
-
-      # echo out "string, " for each repo
-      # results: "string1, string2, string3, "
-      # Then use Substring Removal ${string%substring} to delete the shortest match from the end
-      # Let's get rid of the trailing comma space ", " - ${string%", "}
-      # results: "Checked repos: (string1, string2, string3)"
-      _psyrendust-au-log "Checked repos: (${$(for repo in $repos; do echo -n "$repo, "; done)%", "})"
-
-
-      if [[ ! -s $psyrendust_au_log_error ]]; then
-        # Display a success message
-        _psyrendust-au-log "Display a success message"
-        _psyrendust-au-log "All updates complete!"
-        prprompt -P
       else
-        # Display an error message
-        _psyrendust-au-log "Display an error message"
-        _psyrendust-au-log "Errors were found!"
-        _psyrendust-au-log "See log for details...[Psyrendust]"
-        _psyrendust-au-log "Error log: $psyrendust_au_log_error"
-        prprompt -E
-        ppdanger "Errors were found!"
-        ppdanger "See log for details...[Psyrendust]"
-        ppdanger "Error log: $psyrendust_au_log_error"
+        _psyrendust-au-log "[$repo] Folder does not exist"
+        prprompt -w
+        prprompt -w
+        prprompt -w
+        prprompt -w
+        prprompt -w
       fi
-      prprompt -x
-      sleep 1
+      unset psyrendust_au_current_local_sha
+      unset psyrendust_au_current_remote_sha
+      unset psyrendust_au_name_space
+      unset psyrendust_au_git_root
+    done
+
+    # echo out "string, " for each repo
+    # results: "string1, string2, string3, "
+    # Then use Substring Removal ${string%substring} to delete the shortest match from the end
+    # Let's get rid of the trailing comma space ", " - ${string%", "}
+    # results: "Checked repos: (string1, string2, string3)"
+    _psyrendust-au-log "Checked repos: (${$(for repo in $repos; do echo -n "$repo, "; done)%", "})"
+
+
+    if [[ -s $psyrendust_au_log_error ]]; then
+      # Display an error message
+      _psyrendust-au-log "Display an error message"
+      _psyrendust-au-log "Errors were found!"
+      _psyrendust-au-log "See log for details...[Psyrendust]"
+      _psyrendust-au-log "Error log: $psyrendust_au_log_error"
+      prprompt -E
+      ppdanger "Errors were found!"
+      ppdanger "Opening log for details...[Psyrendust]"
+      ppdanger "Error log: $psyrendust_au_log_error"
+      sbl $psyrendust_au_log_error
+    else
+      # Display a success message
+      _psyrendust-au-log "Display a success message"
+      _psyrendust-au-log "All updates complete!"
+      prprompt -P
+    fi
+    prprompt -x
+    sleep 1
+    if [[ -n $SYSTEM_IS_MAC ]]; then
       osascript &>/dev/null <<EOF
 tell application "iTerm"
-  activate
-  tell application "System Events"
-    keystroke "t" using command down
-    key code 123 using {command down, option down}
-    keystroke "w" using command down
-    key code 124 using {command down, option down}
-  end tell
+activate
+tell application "System Events"
+  keystroke "t" using command down
+  key code 123 using {command down, option down}
+  keystroke "w" using command down
+  key code 124 using {command down, option down}
+end tell
 end tell
 EOF
-    } &!
-  else
-    {
-      # Just complete the progress because there is no internet
-      # ------------------------------------------------------------------------
-      prprompt -x
-    } &!
-  fi
+    elif [[ -n $SYSTEM_IS_CYGWIN ]]; then
+      cygstart "$PSYRENDUST_CONFIG_BASE_PATH/config/win/cygwin-start.vbs"
+      exit
+    fi
+  } &!
+else
+  {
+    # Just complete the progress because there is no internet
+    # ------------------------------------------------------------------------
+    prprompt -x
+  } &!
 fi
+
 unfunction _psyrendust-au-log-delete
 unfunction _psyrendust-au-log
 unfunction _psyrendust-au-log-error
@@ -366,5 +356,3 @@ unset -m psyrendust_au_last_run
 unset -m psyrendust_au_log
 unset -m psyrendust_au_log_error
 unset -m psyrendust_au_name_space
-unset -m psyrendust_au_process_post_update
-unset -m psyrendust_au_process_post_update_array
