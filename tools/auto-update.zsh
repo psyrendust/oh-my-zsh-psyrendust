@@ -159,6 +159,8 @@ if [[ -n $SYSTEM_IS_VM ]]; then
   for repo in $repos; do
     _psyrendust-au-log "[$repo] Processing"
     prprompt -P
+    # Slow things down since we are only doing file copies
+    sleep 1
 
     # Create local variables to hold the namespace and the repo's root
     # --------------------------------------------------------------------------
@@ -185,6 +187,8 @@ if [[ -n $SYSTEM_IS_VM ]]; then
         prprompt -w
       fi
       _psyrendust-au-set-last-git-update "$psyrendust_au_git_root" "$psyrendust_au_name_space"
+      # Slow things down since we are only doing file copies
+      sleep 1
     else
       _psyrendust-au-log "[$repo] Folder does not exist"
       prprompt -w
