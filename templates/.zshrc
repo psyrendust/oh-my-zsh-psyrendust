@@ -14,73 +14,6 @@ elif [[ $('uname') == *CYGWIN* ]]; then
   fi
   if [[ -n "$(which ruby 2>/dev/null)" ]]; then
     export RUBY_BIN="$(cygpath -u $(ruby -e 'puts RbConfig::CONFIG["bindir"]') | sed 's/\\r$//g' )"
-
-
-    # Lists all gems and associated executables installed with gem
-    # --------------------------------------------------------------------------
-    _psyrendust-gem-list() {
-      echo "${$(ls "$RUBY_BIN" | grep ".bat$" | tr "\n" ":")%:}"
-    }
-
-
-    # Manage aliases for installed gems
-    # Adds an alias to the associated .bat when executing "gem install".
-    # Removes an alias when executing "gem uninstall".
-    # --------------------------------------------------------------------------
-    _psyrendust-gem-alias() {
-      if [[ $1 == "uninstall" ]]; then
-        uninstall_alias=1
-      fi
-      shift
-      gem_file_bats_args=( $(echo $@ | tr ":" " ") )
-      gem_file_bats_curr=( $(_psyrendust-gem-list | tr ":" " ") )
-      gem_file_bats_diff=()
-      # Add gem.bat if the array is empty so that it can be filtered out later.
-      # We do this because we have a function called "gem" and we don't need
-      # an alias to replace this function.
-      [[ ${#gem_file_bats_args} == 0 ]] && gem_file_bats_args=( gem.bat )
-      gem_file_bats_sm=("${gem_file_bats_args[@]}")
-      gem_file_bats_lg=("${gem_file_bats_curr[@]}")
-      # Find the largest array
-      if [[ ${#gem_file_bats_sm} -gt ${#gem_file_bats_lg} ]]; then
-        gem_file_bats_sm=("${gem_file_bats_curr[@]}")
-        gem_file_bats_lg=("${gem_file_bats_args[@]}")
-      fi
-      # Filter out the unique elements
-      for gem_file_bat in "${gem_file_bats_lg[@]}"; do
-        if [[ ! -n $(grep "$gem_file_bat" <<< "${gem_file_bats_sm[@]}") ]]; then
-          gem_file_bats_diff=("${gem_file_bats_diff[@]}" $gem_file_bat)
-        fi
-      done
-      # Add or remove alias
-      for gem_file_bat in $gem_file_bats_diff; do
-        if [[ -n $uninstall_alias ]]; then
-          unalias "${gem_file_bat%.bat}"
-        else
-          alias "${gem_file_bat%.bat}"="$RUBY_BIN/$gem_file_bat"
-        fi
-      done
-      unset gem_file_bats_sm
-      unset gem_file_bats_lg
-      unset gem_file_bats_args
-      unset gem_file_bats_curr
-      unset gem_file_bats_diff
-    }
-
-
-
-    # Wrapper for gem command
-    # When executing "gem install" or "gem uninstall" the command will manage
-    # the gems associated aliases.
-    # --------------------------------------------------------------------------
-    gem() {
-      local gem_file_bats=`_psyrendust-gem-list`
-      "$RUBY_BIN/gem.bat" $@
-      if [[ -n $(echo $1 | grep "install") ]]; then
-        _psyrendust-gem-alias $1 "$gem_file_bats"
-      fi
-    }
-    _psyrendust-gem-alias "install"
   fi
 
 elif [[ $('uname') == *MINGW* ]]; then
@@ -295,7 +228,11 @@ plugins=(
 # Add some cygwin related configuration
 # ------------------------------------------------------------------------------
 if [[ -n $SYSTEM_IS_CYGWIN ]]; then
-  plugins=("${plugins[@]}" kdiff3)
+  plugins=(
+    "${plugins[@]}"
+    kdiff3
+    psyrendust-gem
+  )
   alias cygpackages="cygcheck -c -d | sed -e \"1,2d\" -e 's/ .*$//'"
   alias open="cygstart"
   cygcreateinstaller() {
@@ -381,6 +318,14 @@ source $ZSH/oh-my-zsh.sh
 # Output our version number
 # ------------------------------------------------------------------------------
 psyversion
+
+
+
+# Install gem helper aliases
+# ------------------------------------------------------------------------------
+if [[ -n $SYSTEM_IS_CYGWIN ]] && [[ -n "$(which ruby 2>/dev/null)" ]]; then
+  _psyrendust-gem-alias "install"
+fi
 
 
 
