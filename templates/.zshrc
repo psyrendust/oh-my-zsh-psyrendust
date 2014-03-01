@@ -8,7 +8,94 @@ elif [[ $('uname') == *CYGWIN* ]]; then
   # We are using Cygwin in Windows
   export SYSTEM_IS_CYGWIN=1
   # We are also in a virtualized Windows environment
-  [[ -f "/cygdrive/z/.zshrc" ]] && export SYSTEM_IS_VM=1 && export SYSTEM_VM_HOME="/cygdrive/z"
+  if [[ -f "/cygdrive/z/.zshrc" ]]; then
+    export SYSTEM_IS_VM=1
+    export SYSTEM_VM_HOME="/cygdrive/z"
+  fi
+  if [[ -n "$(which ruby 2>/dev/null)" ]]; then
+    export RUBY_BIN="$(cygpath -u $(ruby -e 'puts RbConfig::CONFIG["bindir"]') | sed 's/\\r$//g' )"
+
+
+    # Lists all gems and associated executables installed with gem
+    # --------------------------------------------------------------------------
+    _psyrendust-gem-list() {
+      echo "${$(ls "$RUBY_BIN" | grep ".bat$" | tr "\n" ":")%:}"
+    }
+
+
+    # Manage aliases for installed gems
+    # Adds an alias to the associated .bat when executing "gem install".
+    # Removes an alias when executing "gem uninstall".
+    # --------------------------------------------------------------------------
+    _psyrendust-gem-alias() {
+      if [[ $1 == "uninstall" ]]; then
+        uninstall_alias=1
+      fi
+      shift
+      gem_file_bats_args=( $(echo $@ | tr ":" " ") )
+      gem_file_bats_curr=( $(_psyrendust-gem-list | tr ":" " ") )
+      gem_file_bats_diff=()
+      # Add gem.bat if the array is empty so that it can be filtered out later.
+      # We do this because we have a function called "gem" and we don't need
+      # an alias to replace this function.
+      [[ ${#gem_file_bats_args} == 0 ]] && gem_file_bats_args=( gem.bat )
+      gem_file_bats_sm=("${gem_file_bats_args[@]}")
+      gem_file_bats_lg=("${gem_file_bats_curr[@]}")
+      # Find the largest array
+      if [[ ${#gem_file_bats_sm} -gt ${#gem_file_bats_lg} ]]; then
+        gem_file_bats_sm=("${gem_file_bats_curr[@]}")
+        gem_file_bats_lg=("${gem_file_bats_args[@]}")
+      fi
+      # Filter out the unique elements
+      for gem_file_bat in "${gem_file_bats_lg[@]}"; do
+        if [[ ! -n $(grep "$gem_file_bat" <<< "${gem_file_bats_sm[@]}") ]]; then
+          gem_file_bats_diff=("${gem_file_bats_diff[@]}" $gem_file_bat)
+        fi
+      done
+      # Add or remove alias
+      for gem_file_bat in $gem_file_bats_diff; do
+        if [[ -n $uninstall_alias ]]; then
+          unalias "${gem_file_bat%.bat}"
+        else
+          alias "${gem_file_bat%.bat}"="$RUBY_BIN/$gem_file_bat"
+        fi
+      done
+      unset gem_file_bats_sm
+      unset gem_file_bats_lg
+      unset gem_file_bats_args
+      unset gem_file_bats_curr
+      unset gem_file_bats_diff
+    }
+
+
+
+    # Wrapper for gem command
+    # When executing "gem install" or "gem uninstall" the command will manage
+    # the gems associated aliases.
+    # --------------------------------------------------------------------------
+    gem() {
+      local gem_file_bats=`_psyrendust-gem-list`
+      "$RUBY_BIN/gem.bat" $@
+      if [[ -n $(echo $1 | grep "install") ]]; then
+        _psyrendust-gem-alias $1 "$gem_file_bats"
+      fi
+    }
+    _psyrendust-gem-alias "install"
+  fi
+
+elif [[ $('uname') == *MINGW* ]]; then
+  # We are using Git Bash in Windows
+  export SYSTEM_IS_MINGW32=1
+  if [[ -f "/c/cygwin64/z/.zshrc" ]]; then
+    export SYSTEM_IS_VM=1
+    export SYSTEM_VM_HOME="/c/cygwin64/z"
+  fi
+  if [[ -d "/c/cygwin64/c/cygwin64/home" ]]; then
+    psyrendust_user=`whoami`
+    export HOME="/c/cygwin64/c/cygwin64/home/${psyrendust_user##*\\}"
+    unset psyrendust_user
+  fi
+  return
 
 elif [[ $('uname') == *Linux* ]]; then
   # We are using Linux
@@ -17,9 +104,8 @@ elif [[ $('uname') == *Linux* ]]; then
 fi
 
 
-
 # Path to your oh-my-zsh configuration
-# ----------------------------------------------------------
+# ------------------------------------------------------------------------------
 if [[ -d "$HOME/.oh-my-zsh" ]]; then
   ZSH="$HOME/.oh-my-zsh"
 fi
@@ -59,14 +145,13 @@ fi
 export UPDATE_PSYRENDUST_DAYS=1
 
 
+
 # Ensure we have a temp folder to work with
 # ------------------------------------------------------------------------------
 export PSYRENDUST_CONFIG_BASE_PATH="$HOME/.psyrendust"
 if [[ ! -d $PSYRENDUST_CONFIG_BASE_PATH ]]; then
   mkdir -p $PSYRENDUST_CONFIG_BASE_PATH
 fi
-
-
 
 # Configure $PATH variable
 # ------------------------------------------------------------------------------
@@ -103,12 +188,11 @@ if [[ -s "/usr/local/bin/brew" ]]; then
   fi
 fi
 
-
 # ADD NVM's version of NPM
 # ------------------------------------------------------------------------------
-if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
-  source "$HOME/.nvm/nvm.sh"
-fi
+# if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
+#   source "$HOME/.nvm/nvm.sh"
+# fi
 
 # Zsh & RVM woes (rvm-prompt doesn't resolve)
 # http://stackoverflow.com/questions/6636066/zsh-rvm-woes-rvm-prompt-doesnt-resolve
@@ -119,6 +203,8 @@ if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
 fi
 
 export PATH
+
+
 
 # ------------------------------------------------------------------------------
 # Psyrendust settings
@@ -300,7 +386,7 @@ psyversion
 
 # If we are using Cygwin and ZSH_THEME is Pure, then replace the prompt
 # character to something that works in Windows
-# ----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 if [[ -n $SYSTEM_IS_CYGWIN ]] && [[ $ZSH_THEME == "pure" ]]; then
   PROMPT=$(echo $PROMPT | tr "❯" "›")
 fi
@@ -365,4 +451,3 @@ fi
 # Load fasd
 # ------------------------------------------------------------------------------
 eval "$(fasd --init zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install)"
-
