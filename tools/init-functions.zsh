@@ -20,3 +20,12 @@ psyrendust-update() {
   psyrendust source "$ZSH_CUSTOM/plugins/prprompt/prprompt.plugin.zsh";
   psyrendust source "$ZSH_CUSTOM/tools/auto-update.zsh"
 }
+
+psyrendust-currentepoch() {
+  local arg_flag="$1"
+  if [[ $arg_flag == "--set" ]]; then
+    echo "$(($(date +%s) / 60 / 60 / 24))" > "$PSYRENDUST_CONFIG_BASE_PATH/psyrendust-update"
+  elif [[ $arg_flag == "--get" ]]; then
+    [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/psyrendust-update" ]] && echo $(cat "$PSYRENDUST_CONFIG_BASE_PATH/psyrendust-update")
+  fi
+}
