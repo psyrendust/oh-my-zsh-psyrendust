@@ -1,25 +1,5 @@
 #!/usr/bin/env zsh
 
-# Helper function: Same as `export $1=$2`, but will only happen if the name
-# specified by `$1` is not already set.
-# Borrowed from Antigen (https://github.com/zsh-users/antigen)
-psyrendust-export() {
-  local arg_flag="$1"
-  local arg_name="$2"
-  local arg_value="$3"
-  if [[ $arg_flag != "--check" ]]; then
-    arg_value="$arg_name"
-    arg_name="$arg_flag"
-    arg_flag=""
-  fi
-  if [[ -z "$arg_name" ]]; then
-    if [[ $arg_flag == "--check" ]]; then
-      [[ -a "$arg_value" ]] && eval "export $arg_name='$arg_value'"
-    else
-      eval "export $arg_name='$arg_value'"
-    fi
-  fi
-}
 
 # Helper function: Same as `[[ -f $1 ]] && source $1`, but will only happen
 # if the file specified by `$1` is present.
