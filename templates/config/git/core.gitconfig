@@ -7,7 +7,7 @@
   hidedotfiles = false
   trustctime = false
 [color]
-  ui = autoww
+  ui = always
 [http]
   sslVerify = false
 # [url "https://"]
