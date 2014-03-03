@@ -23,7 +23,7 @@ psyrendust-update() {
 
 psyrendust-epoch() {
   local arg_flag="$1"
-  local arg_name="$PSYRENDUST_CONFIG_BASE_PATH/currentepoch-${2:-"default}"
+  local arg_name="$PSYRENDUST_CONFIG_BASE_PATH/currentepoch-${2:-default}"
   if [[ $arg_flag == "--set" ]]; then
     echo "$(($(date +%s) / 60 / 60 / 24))" > "$arg_name"
   elif [[ $arg_flag == "--get" ]]; then
