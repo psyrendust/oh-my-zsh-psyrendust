@@ -7,26 +7,6 @@
 
 
 
-# Do some system checks so we don't have to keep doing it later
-# ------------------------------------------------------------------------------
-if [[ $('uname') == *Darwin* ]]; then
-  # We are using OS X
-  export SYSTEM_IS_MAC=1
-
-elif [[ $('uname') == *CYGWIN* ]]; then
-  # We are using Cygwin in Windows
-  export SYSTEM_IS_CYGWIN=1
-  # We are also in a virtualized Windows environment
-  [[ -f "/cygdrive/z/.zshrc" ]] && export SYSTEM_IS_VM=1 && export SYSTEM_VM_HOME="/cygdrive/z"
-
-elif [[ $('uname') == *Linux* ]]; then
-  # We are using Linux
-  export SYSTEM_IS_LINUX=1
-
-fi
-
-
-
 # Path to your oh-my-zsh configuration
 # ----------------------------------------------------------
 ZSH="$HOME/.oh-my-zsh"
@@ -55,34 +35,28 @@ if [[ ! -d $PSYRENDUST_CONFIG_BASE_PATH ]]; then
   mkdir -p "$PSYRENDUST_CONFIG_BASE_PATH/config"
 fi
 
-# Symlink some folders to get us started in Virtualized Windows
 # ------------------------------------------------------------------------------
-if [[ -n $SYSTEM_IS_VM ]]; then
-  # Remove any previous symlinks
-  [[ -d "$HOME/.oh-my-zsh-psyrendust" ]] && rm -rf "$HOME/.oh-my-zsh-psyrendust"
-  [[ -d "$HOME/.ssh" ]] && rm -rf "$HOME/.ssh"
-  [[ -d "$HOME/.zshrc-personal" ]] && rm -rf "$HOME/.zshrc-personal"
-  [[ -d "$HOME/.zshrc-work" ]] && rm -rf "$HOME/.zshrc-work"
-  # Create symlinks
-  ln -sf "$SYSTEM_VM_HOME/.oh-my-zsh-psyrendust" "$HOME/.oh-my-zsh-psyrendust"
-  ln -sf "$SYSTEM_VM_HOME/.ssh" "$HOME/.ssh"
-  ln -sf "$SYSTEM_VM_HOME/.zshrc-personal" "$HOME/.zshrc-personal"
-  ln -sf "$SYSTEM_VM_HOME/.zshrc-work" "$HOME/.zshrc-work"
-fi
-
-
-
-
 # Download a local copy of oh-my-zsh-psyrendust to help get us started
 # ------------------------------------------------------------------------------
-if [[ ! -n $SYSTEM_IS_VM ]]; then
-  if [[ ! -f "$ZSH_CUSTOM/tools/psyrendust-procedure-init.zsh" ]]; then
-    mkdir -p "$HOME/.psyrendust-temp"
-    curl -L "https://github.com/psyrendust/oh-my-zsh-psyrendust/archive/master.zip" -o "$HOME/.psyrendust-temp/oh-my-zsh-psyrendust.zip"
-    unzip -q "$HOME/.psyrendust-temp/oh-my-zsh-psyrendust.zip" -d "$HOME/.psyrendust-temp/"
-    ln -sf "$HOME/.psyrendust-temp/oh-my-zsh-psyrendust-master" "$HOME/.oh-my-zsh-psyrendust"
-  fi
+[[ -d "$HOME/.oh-my-zsh-psyrendust" ]] && mv "$HOME/.oh-my-zsh-psyrendust-old"
+git clone https://github.com/psyrendust/oh-my-zsh-psyrendust.git "$HOME/.oh-my-zsh-psyrendust"
+
+
+
+# ------------------------------------------------------------------------------
+# Load up some defaults
+# ------------------------------------------------------------------------------
+# Init system
+if [[ -f "$ZSH_CUSTOM/tools/init-system.zsh" ]]; then
+  source "$ZSH_CUSTOM/tools/init-system.zsh"
 fi
+# Init paths
+if [[ -f "$ZSH_CUSTOM/tools/init-paths.zsh" ]]; then
+  source "$ZSH_CUSTOM/tools/init-paths.zsh"
+fi
+
+
+
 
 
 # Helper function to check if a formula is installed in homebrew
@@ -119,10 +93,29 @@ _killname() {
 
 
 
+# Symlink some folders to get us started in Virtualized Windows
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-init-vm() {
+  if [[ -n $SYSTEM_IS_VM ]]; then
+    # Remove any previous symlinks
+    [[ -d "$HOME/.oh-my-zsh-psyrendust" ]] && rm -rf "$HOME/.oh-my-zsh-psyrendust"
+    [[ -d "$HOME/.ssh" ]] && rm -rf "$HOME/.ssh"
+    [[ -d "$HOME/.zshrc-personal" ]] && rm -rf "$HOME/.zshrc-personal"
+    [[ -d "$HOME/.zshrc-work" ]] && rm -rf "$HOME/.zshrc-work"
+    # Create symlinks
+    ln -sf "$SYSTEM_VM_HOME/.oh-my-zsh-psyrendust" "$HOME/.oh-my-zsh-psyrendust"
+    ln -sf "$SYSTEM_VM_HOME/.ssh" "$HOME/.ssh"
+    ln -sf "$SYSTEM_VM_HOME/.zshrc-personal" "$HOME/.zshrc-personal"
+    ln -sf "$SYSTEM_VM_HOME/.zshrc-work" "$HOME/.zshrc-work"
+  fi
+}
+
+
+
 # Backup your current configuration stuff in
 # "$ZSHRC_PERSONAL/backup/".
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-backup-configs() {
   ppinfo 'Backup your current configuration stuff'
   [[ -s $HOME/.gemrc ]] && mv $HOME/.gemrc $PSYRENDUST_BACKUP_FOLDER/.gemrc
   [[ -s $HOME/.gitconfig ]] && mv $HOME/.gitconfig $PSYRENDUST_BACKUP_FOLDER/.gitconfig
@@ -145,7 +138,7 @@ _psyrendust-procedure-00() {
 
 # See if we already have some user data
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-load-user-data() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -f "$psyrendust_pi_config_user_info" ]]; then
     source "$psyrendust_pi_config_user_info"
@@ -156,7 +149,7 @@ _psyrendust-procedure-00() {
 
 # Would you like to replace your hosts file [y/n]?
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-ask-replace-hosts-file() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n "$psyrendust_replace_hosts_file" ]]; then
     ppinfo "Would you like to replace your hosts file [y/n]? "
@@ -180,7 +173,7 @@ _psyrendust-procedure-git-config-templates() {
 
 # Check to see if config/git/user has been created
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-config-git-user() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ ! -s "$PSYRENDUST_CONFIG_BASE_PATH/config/git/user" ]]; then
     cp "$ZSH_CUSTOM/templates/config/git/user" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/user"
@@ -191,7 +184,7 @@ _psyrendust-procedure-00() {
 
 # Check to see if a Git global user.name has been set
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-git-user-name() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ $(git config user.name) == "" ]]; then
     echo
@@ -211,7 +204,7 @@ _psyrendust-procedure-00() {
 
 # Check to see if a Git global user.email has been set
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-git-user-email() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ $(git config user.email) == "" ]]; then
     echo
@@ -233,7 +226,7 @@ _psyrendust-procedure-00() {
 
 # Install Homebrew
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-install-homebrew() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Checking for homebrew..."
   if [[ $(which -s brew) != 0 ]]; then
@@ -249,7 +242,7 @@ _psyrendust-procedure-00() {
 
 # Check with brew doctor
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-doctor() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Check with brew doctor"
   brew doctor
@@ -259,7 +252,7 @@ _psyrendust-procedure-00() {
 
 # Make sure we’re using the latest Homebrew
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-latest-homebrew() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Make sure we’re using the latest Homebrew"
   brew update
@@ -269,7 +262,7 @@ _psyrendust-procedure-00() {
 
 # Upgrade any already-installed formulae
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-upgrade() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Upgrade any already-installed formulae"
   brew upgrade
@@ -279,7 +272,7 @@ _psyrendust-procedure-00() {
 
 # Install GNU core utilities (those that come with OS X are outdated)
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-install-coreutils() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(_brew-is-installed "coreutils") ]]; then
     ppinfo "Install GNU core utilities (those that come with OS X are outdated)"
@@ -292,7 +285,7 @@ _psyrendust-procedure-00() {
 
 # Install GNU find, locate, updatedb, and xargs, g-prefixed
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-install-findutils() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(_brew-is-installed "findutils") ]]; then
     ppinfo "Install GNU find, locate, updatedb, and xargs, g-prefixed"
@@ -304,7 +297,7 @@ _psyrendust-procedure-00() {
 
 # Install the latest Bash
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-install-bash() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(_brew-is-installed "bash") ]]; then
     ppinfo "Install the latest Bash"
@@ -316,7 +309,7 @@ _psyrendust-procedure-00() {
 
 # Install the latest Zsh
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-install-zsh() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(_brew-is-installed "zsh") ]]; then
     ppinfo "Install the latest Zsh"
@@ -328,7 +321,7 @@ _psyrendust-procedure-00() {
 
 # Add bash to the allowed shells list if it's not already there
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-bash-shells() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Add bash to the allowed shells list if it's not already there"
   if [[ -z $(cat /private/etc/shells | grep "/usr/local/bin/bash") ]]; then
@@ -340,7 +333,7 @@ _psyrendust-procedure-00() {
 
 # Add zsh to the allowed shells list if it's not already there
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-zsh-shells() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Add zsh to the allowed shells list if it's not already there"
   if [[ -z $(cat /private/etc/shells | grep "/usr/local/bin/zsh") ]]; then
@@ -352,7 +345,7 @@ _psyrendust-procedure-00() {
 
 # Change root shell to the new zsh
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-sudo-chsh-zsh() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Change root shell to the new zsh"
   sudo chsh -s /usr/local/bin/zsh
@@ -362,7 +355,7 @@ _psyrendust-procedure-00() {
 
 # Change local shell to the new zsh
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-chsh-zsh() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Change local shell to the new zsh"
   chsh -s /usr/local/bin/zsh
@@ -372,7 +365,7 @@ _psyrendust-procedure-00() {
 
 # Make sure that everything went well
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-check-shell() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Making sure that everything went well"
   ppinfo "Checking \$SHELL"
@@ -388,7 +381,7 @@ _psyrendust-procedure-00() {
 
 # Install wget with IRI support
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-install-wget() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(_brew-is-installed "wget") ]]; then
     ppinfo "Install wget with IRI support"
@@ -400,7 +393,7 @@ _psyrendust-procedure-00() {
 
 # Tap homebrew/dupes
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-tap-homebrew-dupes() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(_brew-is-tapped "homebrew/dupes") ]]; then
     ppinfo "Tap homebrew/dupes"
@@ -413,7 +406,7 @@ _psyrendust-procedure-00() {
 
 # Install more recent versions of some OS X tools
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-install-grep() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(_brew-is-installed "grep") ]]; then
     ppinfo "brew install homebrew/dupes/grep --default-names"
@@ -425,7 +418,7 @@ _psyrendust-procedure-00() {
 
 # brew install ack
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-install-ack() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(_brew-is-installed "ack") ]]; then
     ppinfo "brew install ack"
@@ -437,7 +430,7 @@ _psyrendust-procedure-00() {
 
 # brew install automake
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-install-automake() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(_brew-is-installed "automake") ]]; then
     ppinfo "brew install automake"
@@ -449,7 +442,7 @@ _psyrendust-procedure-00() {
 
 # brew install curl-ca-bundle
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-curl-ca-bundle() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(_brew-is-installed "curl-ca-bundle") ]]; then
     ppinfo "brew install curl-ca-bundle"
@@ -461,7 +454,7 @@ _psyrendust-procedure-00() {
 
 # brew install fasd
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-install-fasd() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(_brew-is-installed "fasd") ]]; then
     ppinfo "brew install fasd"
@@ -473,7 +466,7 @@ _psyrendust-procedure-00() {
 
 # brew install git
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-install-git() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(_brew-is-installed "git") ]]; then
     ppinfo "brew install git"
@@ -485,7 +478,7 @@ _psyrendust-procedure-00() {
 
 # brew install optipng
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-install-optipng() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(_brew-is-installed "optipng") ]]; then
     ppinfo "brew install optipng"
@@ -497,7 +490,7 @@ _psyrendust-procedure-00() {
 
 # brew install phantomjs
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-install-phantomjs() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(_brew-is-installed "phantomjs") ]]; then
     ppinfo "brew install phantomjs"
@@ -509,7 +502,7 @@ _psyrendust-procedure-00() {
 
 # brew install rename
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-install-rename() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(_brew-is-installed "rename") ]]; then
     ppinfo "brew install rename"
@@ -521,7 +514,7 @@ _psyrendust-procedure-00() {
 
 # brew install tree
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-install-tree() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(_brew-is-installed "tree") ]]; then
     ppinfo "brew install tree"
@@ -533,7 +526,7 @@ _psyrendust-procedure-00() {
 
 # Remove node if it's not installed by brew
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-remove-node() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   # Is node installed by brew and if node is installed
   if [[ -n $(_brew-is-installed "node") ]] && [[ -z $(which node | grep "not found") ]]; then
@@ -549,7 +542,7 @@ _psyrendust-procedure-00() {
 
 # Remove npm
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-remove-npm() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   # Remove npm
   if [[ -z $(which npm | grep "not found") ]]; then
@@ -566,7 +559,7 @@ _psyrendust-procedure-00() {
 
 # brew install node
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-install-node() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(_brew-is-installed "node") ]]; then
     ppinfo "brew install node"
@@ -578,7 +571,7 @@ _psyrendust-procedure-00() {
 
 # brew install node
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-install-link-node() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "brew link node"
   brew link --overwrite node
@@ -588,7 +581,7 @@ _psyrendust-procedure-00() {
 
 # brew install haskell-platform
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-install-haskell() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "brew install haskell-platform"
   brew install haskell-platform
@@ -598,7 +591,7 @@ _psyrendust-procedure-00() {
 
 # cabal update
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-cabal-update() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "cabal update"
   cabal update
@@ -608,7 +601,7 @@ _psyrendust-procedure-00() {
 
 # cabal install cabal-install
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-cabal-install-cabal() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "cabal install cabal-install"
   cabal install cabal-install
@@ -620,7 +613,7 @@ _psyrendust-procedure-00() {
 # Notes: useful for converting docs
 # pandoc -s -w man plog.1.md -o plog.1
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-cabal-install-pandoc() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "cabal install pandoc"
   cabal install pandoc
@@ -630,7 +623,7 @@ _psyrendust-procedure-00() {
 
 # Remove outdated versions from the cellar
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-brew-cleanup() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Remove outdated versions from the cellar"
   brew cleanup
@@ -640,7 +633,7 @@ _psyrendust-procedure-00() {
 
 # # Install NVM
 # # ------------------------------------------------------------------------------
-# _psyrendust-procedure-00() {
+# _psyrendust-procedure-install-nvm() {
 #   if [[ -n $(_brew-is-installed "node") ]]; then
 #     ppinfo "Install NVM"
 #     curl https://raw.github.com/creationix/nvm/master/install.sh | sh
@@ -651,7 +644,7 @@ _psyrendust-procedure-00() {
 
 # # nvm install v0.10.25
 # # ------------------------------------------------------------------------------
-# _psyrendust-procedure-00() {
+# _psyrendust-procedure-nvm-install() {
 #   if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
 #     ppinfo "nvm install v0.10.25"
 #     nvm install v0.10.25
@@ -662,7 +655,7 @@ _psyrendust-procedure-00() {
 
 # # nvm alias default 0.10.25
 # # ------------------------------------------------------------------------------
-# _psyrendust-procedure-00() {
+# _psyrendust-procedure-nvm-default() {
 #   if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
 #     ppinfo "nvm alias default 0.10.25"
 #     nvm alias default 0.10.25
@@ -673,7 +666,7 @@ _psyrendust-procedure-00() {
 
 # # nvm use v0.10.25
 # # ------------------------------------------------------------------------------
-# _psyrendust-procedure-00() {
+# _psyrendust-procedure-nvm-use() {
 #   if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
 #     ppinfo "nvm use v0.10.25"
 #     nvm use v0.10.25
@@ -684,7 +677,7 @@ _psyrendust-procedure-00() {
 
 # # Install npm
 # # ------------------------------------------------------------------------------
-# _psyrendust-procedure-00() {
+# _psyrendust-procedure-install-npm() {
 #   if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
 #     ppinfo "Install npm"
 #     curl https://npmjs.org/install.sh | sh
@@ -695,7 +688,7 @@ _psyrendust-procedure-00() {
 
 # Cleanup old zsh dotfiles
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-cleanup-old-dotfiles() {
   ppinfo "Cleanup old zsh dotfiles"
   rm "$HOME/.zcompdump*"
   rm "$HOME/.zlogin"
@@ -707,37 +700,37 @@ _psyrendust-procedure-00() {
 
 # Install oh-my-zsh
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-install-oh-my-zsh() {
   ppinfo "Install oh-my-zsh"
   git clone https://github.com/robbyrussell/oh-my-zsh.git "$ZSH"
 }
 
 
 
-# Clone oh-my-zsh-psyrendust if it's not already there
-# ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
-  [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
-  ppinfo "Clone oh-my-zsh-psyrendust if it's not already there"
-  git clone https://github.com/psyrendust/oh-my-zsh-psyrendust.git "$HOME/.tmp-oh-my-zsh-psyrendust"
-}
+# # Clone oh-my-zsh-psyrendust if it's not already there
+# # ------------------------------------------------------------------------------
+# _psyrendust-procedure-install-oh-my-zsh-psyrendust() {
+#   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
+#   ppinfo "Clone oh-my-zsh-psyrendust if it's not already there"
+#   git clone https://github.com/psyrendust/oh-my-zsh-psyrendust.git "$HOME/.tmp-oh-my-zsh-psyrendust"
+# }
 
 
 
-# Swap out our curled version of oh-my-zsh-psyrendust with the git version
-# ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
-  [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
-  ppinfo "Swap out our curled version of oh-my-zsh-psyrendust with the git version"
-  mv "$HOME/.oh-my-zsh-psyrendust" "$PSYRENDUST_BACKUP_FOLDER/.oh-my-zsh-psyrendust"
-  mv "$HOME/.tmp-oh-my-zsh-psyrendust" "$HOME/.oh-my-zsh-psyrendust"
-}
+# # Swap out our curled version of oh-my-zsh-psyrendust with the git version
+# # ------------------------------------------------------------------------------
+# _psyrendust-procedure-swap-oh-my-zsh-psyrendust() {
+#   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
+#   ppinfo "Swap out our curled version of oh-my-zsh-psyrendust with the git version"
+#   mv "$HOME/.oh-my-zsh-psyrendust" "$PSYRENDUST_BACKUP_FOLDER/.oh-my-zsh-psyrendust"
+#   mv "$HOME/.tmp-oh-my-zsh-psyrendust" "$HOME/.oh-my-zsh-psyrendust"
+# }
 
 
 
 # Copy over template files to your home folder
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-copy-templates() {
   ppinfo "Copy over template files to your home folder"
   [[ -f "$ZSH_CUSTOM/templates/.gemrc" ]] && cp "$ZSH_CUSTOM/templates/.gemrc" "$HOME/.gemrc"
   [[ -f "$ZSH_CUSTOM/templates/.gitignore_global" ]] && cp "$ZSH_CUSTOM/templates/.gitignore_global" "${HOME}/.gitignore_global"
@@ -769,7 +762,7 @@ _psyrendust-procedure-00() {
 
 # Install fonts DroidSansMono and Inconsolata
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-install-mac-fonts() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Install fonts DroidSansMono and Inconsolata"
   [[ -d "$HOME/Library/Fonts" ]] || mkdir -p "$HOME/Library/Fonts"
@@ -779,11 +772,11 @@ _psyrendust-procedure-00() {
 
 
 
-# Install fonts DroidSansMono and Inconsolata
+# Install fonts DroidSansMono and ErlerDingbats
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-install-win-fonts() {
   if [[ -n $SYSTEM_IS_CYGWIN ]]; then
-    ppinfo "Install fonts DroidSansMono and ErlerDingats"
+    ppinfo "Install fonts DroidSansMono and ErlerDingbats"
     [[ -d "/cygdrive/c/Windows/Fonts" ]] || mkdir -p "/cygdrive/c/Windows/Fonts"
     [[ -f "$HOME/.oh-my-zsh-psyrendust/fonts/win/DROIDSAM.TTF" ]] && cp "$HOME/.oh-my-zsh-psyrendust/fonts/win/DROIDSAM.TTF" "/cygdrive/c/Windows/Fonts/DROIDSAM.TTF"
     [[ -f "$HOME/.oh-my-zsh-psyrendust/fonts/win/ErlerDingbats.ttf" ]] && cp "$HOME/.oh-my-zsh-psyrendust/fonts/win/ErlerDingbats.ttf" "/cygdrive/c/Windows/Fonts/ErlerDingbats.ttf"
@@ -794,7 +787,7 @@ _psyrendust-procedure-00() {
 
 # Clone zshrc-work
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-install-zsh-work() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Clone zshrc-work"
   git clone https://github.dev.xero.com/dev-larryg/zshrc-xero.git "$ZSHRC_WORK"
@@ -802,18 +795,9 @@ _psyrendust-procedure-00() {
 
 
 
-# Run post-update for zshrc-work
-# ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
-  ppinfo "Run post-update for zshrc-work"
-  [[ -f "$ZSHRC_WORK/tools/post-update.zsh" ]] && source "$ZSHRC_WORK/tools/post-update.zsh"
-}
-
-
-
 # Install zshrc-personal starter template
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-zshrc-personal-starter() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Install zshrc-personal starter template"
   [[ -d "$ZSHRC_PERSONAL" ]] && mkdir -p "$ZSHRC_PERSONAL"
@@ -823,18 +807,20 @@ _psyrendust-procedure-00() {
 
 
 
-# sourcing .zshrc file
+# Create post-updates
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
-  ppinfo "sourcing .zshrc file"
-  /usr/bin/env zsh
+_psyrendust-procedure-create-post-update() {
+  ppinfo "Create post-updates"
+  [[ -f "$ZSH_CUSTOM/tools/post-update.zsh" ]] && cp "$ZSH_CUSTOM/tools/post-update.zsh" "$PSYRENDUST_CONFIG_BASE_PATH/post-update-run-once-oh-my-zsh-psyrendust.zsh"
+  [[ -f "$ZSHRC_PERSONAL/tools/post-update.zsh" ]] && cp "$ZSHRC_PERSONAL/tools/post-update.zsh" "$PSYRENDUST_CONFIG_BASE_PATH/post-update-run-once-zshrc-personal.zsh"
+  [[ -f "$ZSHRC_WORK/tools/post-update.zsh" ]] && cp "$ZSHRC_WORK/tools/post-update.zsh" "$PSYRENDUST_CONFIG_BASE_PATH/post-update-run-once-zshrc-work.zsh"
 }
 
 
 
 # Install iTerm2
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-install-iterm2() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ ! -d "/Applications/iTerm.app" ]]; then
     ppinfo "Install iTerm2"
@@ -853,7 +839,7 @@ _psyrendust-procedure-00() {
 # Install default settings for iTerm2
 # Opening Terminal.app to install iTerm.app preferences
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-switch-to-terminal() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ "$TERM_PROGRAM" == "iTerm.app"]]; then
     ppwarning "You seem to be running this script from iTerm.app."
@@ -868,7 +854,7 @@ _psyrendust-procedure-00() {
 
 # Assume we are in Teriminal app and install iTerm2 preferences
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-install-iterm2-preferences() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ "$TERM_PROGRAM" == "Apple_Terminal"]]; then
     if [[ -f "$ZSH_CUSTOM/templates/com.googlecode.iterm2.plist" ]]; then
@@ -885,7 +871,7 @@ _psyrendust-procedure-00() {
 
 # Open iTerm2 to pick up where we left off
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-switch-to-iterm2() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ "$TERM_PROGRAM" == "Apple_Terminal"]]; then
     ppwarning "You seem to be running this script from Terminal.app."
@@ -900,7 +886,7 @@ _psyrendust-procedure-00() {
 
 # Install a default hosts file
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-install-hosts-file() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ $psyrendust_replace_hosts_file = [Yy] ]]; then
     ppinfo 'install a default hosts file'
@@ -912,7 +898,7 @@ _psyrendust-procedure-00() {
 
 # add some automount sugar for Parallels
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-automount-sugar-for-parallels() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   [[ -n $SYSTEM_IS_LINUX ]] && return # Exit if we are in Linux
   ppquestion "Would you like to replace your /etc/auto_smb file with a new one [y/n]: "
@@ -927,20 +913,10 @@ _psyrendust-procedure-00() {
 
 
 
-# sourcing .zshrc file
-# ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
-  [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
-  ppinfo "sourcing .zshrc file"
-  /usr/bin/env zsh
-}
-
-
-
 # let's do some admin type stuff
 # add myself to wheel group
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-add-user-to-wheel() {
   if [[ -n $SYSTEM_IS_MAC ]]; then
     ppinfo "add myself to wheel group"
     sudo dseditgroup -o edit -a $(echo $USER) -t user wheel
@@ -951,7 +927,7 @@ _psyrendust-procedure-00() {
 
 # Change ownership of /usr/local
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-change-ownership-of-usr-local() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Change ownership of /usr/local"
   sudo chown -R $(echo $USER):staff /usr/local
@@ -960,53 +936,60 @@ _psyrendust-procedure-00() {
 
 
 # https://rvm.io
-# rvm for the rubiess
+# Install rvm, latest stable ruby, and rails
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-install-rvm() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
-  ppinfo "rvm for the rubiess"
-  curl -L https://get.rvm.io | bash -s stable --ruby
+  if [[ -z $PSYRENDUST_HAS_RVM ]]; then
+    ppinfo "Install rvm, latest stable ruby, and rails"
+    curl -sSL https://get.rvm.io | bash -s stable --rails
+  fi
 }
 
 
 
 # To start using RVM you need to run `source "/Users/$USER/.rvm/scripts/rvm"`
 # in all your open shell windows, in rare cases you need to reopen all shell windows.
-# sourcing .zshrc file
+# sourcing rvm
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
-  [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
-  ppinfo "sourcing .zshrc file"
-  /usr/bin/env zsh
+_psyrendust-procedure-sourcing-rvm() {
+  [[ -n $SYSTEM_IS_CYGWIN ]] && return # Exit if we are in Cygwin
+  if [[ -f "$HOME/.rvm/scripts/rvm" ]]; then
+    ppinfo "sourcing rvm"
+    source "$HOME/.rvm/scripts/rvm"
+  fi
 }
 
 
 
 # Update rvm
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
-  [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
+_psyrendust-procedure-rvm-get-stable() {
+  [[ -n $SYSTEM_IS_CYGWIN ]] && return # Exit if we are in Cygwin
   ppinfo 'Update rvm'
-  # If we are using ruby 2.0.0pxxx skip it
   rvm get stable
 }
-_psyrendust-procedure-00() {
-  [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
+_psyrendust-procedure-rvm-reload() {
+  [[ -n $SYSTEM_IS_CYGWIN ]] && return # Exit if we are in Cygwin
   ppinfo 'Reload the updated version of rvm'
   rvm reload
 }
-_psyrendust-procedure-00() {
-  [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
-  ppinfo 'rvm install 2.0.0'
-  rvm install 2.0.0
+_psyrendust-procedure-rvm-install-ruby() {
+  [[ -n $SYSTEM_IS_CYGWIN ]] && return # Exit if we are in Cygwin
+  if [[ -n $PSYRENDUST_HAS_RVM ]]; then
+    ppinfo 'rvm install 2.1.1'
+    rvm install 2.1.1
+  fi
 }
-_psyrendust-procedure-00() {
-  [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
-  ppinfo 'rvm --default 2.0.0'
-  rvm --default 2.0.0
+_psyrendust-procedure-rvm-default() {
+  [[ -n $SYSTEM_IS_CYGWIN ]] && return # Exit if we are in Cygwin
+  if [[ -n $PSYRENDUST_HAS_RVM ]]; then
+    ppinfo 'rvm --default 2.1.1'
+    rvm --default 2.1.1
+  fi
 }
-_psyrendust-procedure-00() {
-  [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
+_psyrendust-procedure-rvm-cleanup() {
+  [[ -n $SYSTEM_IS_CYGWIN ]] && return # Exit if we are in Cygwin
   ppinfo 'rvm cleanup all'
   rvm cleanup all
 }
@@ -1015,7 +998,7 @@ _psyrendust-procedure-00() {
 
 # Check ruby version
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-check-ruby-version() {
   ppinfo 'which ruby and version'
   ruby -v
   which ruby
@@ -1023,63 +1006,31 @@ _psyrendust-procedure-00() {
 
 
 
-# # Install 7-zip in Windows
-# # ------------------------------------------------------------------------------
-# _psyrendust-procedure-00() {
-#   if [[ -n $SYSTEM_IS_CYGWIN ]]; then
-#     if [[ -z $(which ruby 2>&1 | grep "not found") ]]; then
-#       ppinfo "Install 7-zip"
-#       local url="http://downloads.sourceforge.net/project/p7zip/p7zip/9.20.1/p7zip_9.20.1_src_all.tar.bz2"
-#       local zip="${url##http*/}"
-#       local p7zip="${zip%.tar.bz2}"
-#       local download_dir="$HOME/.tmp-$$"
-#       mkdir -p "$download_dir"
-#       curl -L "$url" > "$download_dir/$zip"
-#       rm -rf "$download_dir"
-#     fi
-#   fi
-# }
-
-
-
-# # Install ruby in Windows
-# # ------------------------------------------------------------------------------
-# _psyrendust-procedure-00() {
-#   if [[ -n $SYSTEM_IS_CYGWIN ]]; then
-#     if [[ -z $(which ruby 2>&1 | grep "not found") ]]; then
-#       ppinfo "Install Ruby"
-#       local url="http://dl.bintray.com/oneclick/rubyinstaller/ruby-2.0.0-p451-x64-mingw32.7z"
-#       local zip="${url##http*/}"
-#       local download_dir="$HOME/.tmpruby-$$"
-#       mkdir -p "$download_dir"
-#       curl -L "$url" -o "${download_dir}/${zip}"
-#       unzip -q "${download_dir}/${zip}" -d /Applications/
-#       rm -rf "$download_dir"
-#     fi
-#   fi
-# }
+# Load up gem helper function
+# ------------------------------------------------------------------------------
+psyrendust source --cygwin "$ZSH_CUSTOM/tools/init-post-settings.zsh"
 
 
 
 # Update and install some gems
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-gem-update() {
   ppinfo 'gem update --system'
   gem update --system
 }
-_psyrendust-procedure-00() {
+_psyrendust-procedure-gem-install-rails() {
   ppinfo 'gem install rails'
   gem install rails
 }
-_psyrendust-procedure-00() {
+_psyrendust-procedure-gem-install-bundler() {
   ppinfo 'gem install bundler'
   gem install bundler
 }
-_psyrendust-procedure-00() {
+_psyrendust-procedure-gem-install-compass() {
   ppinfo 'gem install compass --pre'
   gem install compass --pre
 }
-_psyrendust-procedure-00() {
+_psyrendust-procedure-gem-install-sass() {
   ppinfo 'gem install sass --pre'
   gem install sass --pre
 }
@@ -1088,7 +1039,7 @@ _psyrendust-procedure-00() {
 
 # Install bower
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-npm-install-bower() {
   ppinfo "Install bower"
   npm install -g bower
 }
@@ -1097,7 +1048,7 @@ _psyrendust-procedure-00() {
 
 # Install jshint
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-npm-install-jshint() {
   ppinfo "Install jshint"
   npm install -g jshint
 }
@@ -1106,7 +1057,7 @@ _psyrendust-procedure-00() {
 
 # Install grunt-init
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-npm-install-grunt-init() {
   ppinfo "Install grunt-init"
   npm install -g grunt-init
 }
@@ -1115,7 +1066,7 @@ _psyrendust-procedure-00() {
 
 # Install grunt-cli
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-npm-install-grunt-cli() {
   ppinfo "Install grunt-cli"
   npm install -g grunt-cli
 }
@@ -1124,7 +1075,7 @@ _psyrendust-procedure-00() {
 
 # Remove all grunt-init plugins and start over
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-remove-grunt-init-plugins() {
   ppinfo "Remove all grunt-init plugins and start over"
   if [[ -d "$HOME/.grunt-init" ]]; then
     gruntinitplugins=$(ls "$HOME/.grunt-init")
@@ -1141,7 +1092,7 @@ _psyrendust-procedure-00() {
 
 # Add gruntfile plugin for grunt-init
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-add-grunt-init-gruntfile() {
   ppinfo "Add gruntfile plugin for grunt-init"
   git clone https://github.com/gruntjs/grunt-init-gruntfile.git "${HOME}/.grunt-init/gruntfile"
 }
@@ -1150,7 +1101,7 @@ _psyrendust-procedure-00() {
 
 # Add commonjs plugin for grunt-init
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-add-grunt-init-commonjs() {
   ppinfo "Add commonjs plugin for grunt-init"
   git clone https://github.com/gruntjs/grunt-init-commonjs.git "${HOME}/.grunt-init/commonjs"
 }
@@ -1159,7 +1110,7 @@ _psyrendust-procedure-00() {
 
 # Add gruntplugin plugin for grunt-init
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-add-grunt-init-gruntplugin() {
   ppinfo "Add gruntplugin plugin for grunt-init"
   git clone https://github.com/gruntjs/grunt-init-gruntplugin.git "${HOME}/.grunt-init/gruntplugin"
 }
@@ -1168,7 +1119,7 @@ _psyrendust-procedure-00() {
 
 # Add jquery plugin for grunt-init
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-add-grunt-init-jquery() {
   ppinfo "Add jquery plugin for grunt-init"
   git clone https://github.com/gruntjs/grunt-init-jquery.git "${HOME}/.grunt-init/jquery"
 }
@@ -1177,7 +1128,7 @@ _psyrendust-procedure-00() {
 
 # Add node plugin for grunt-init
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-add-grunt-init-node() {
   ppinfo "Add node plugin for grunt-init"
   git clone https://github.com/gruntjs/grunt-init-node.git "${HOME}/.grunt-init/node"
 }
@@ -1186,7 +1137,7 @@ _psyrendust-procedure-00() {
 
 # Install easy_install
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-install-easy-install() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ -n $(which easy_install 2>&1 | grep "not found") ]]; then
     ppinfo 'Install easy_install'
@@ -1198,7 +1149,7 @@ _psyrendust-procedure-00() {
 
 # for the c alias (syntax highlighted cat)
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-install-pygments() {
   ppinfo 'Installing Pygments for the c alias (syntax highlighted cat)'
   if [[ -n $SYSTEM_IS_VM ]]; then
     easy_install Pygments
@@ -1211,7 +1162,7 @@ _psyrendust-procedure-00() {
 
 # Installing pip
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-install-pip() {
   if [[ -n $SYSTEM_IS_VM ]]; then
     if [[ ! -s "/usr/bin/pip" ]]; then
       ppinfo "Installing pip"
@@ -1229,7 +1180,7 @@ _psyrendust-procedure-00() {
 
 # Installing sciinema https://asciinema.org/
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-install-asciinema() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ ! -s "/usr/local/bin/asciinema" ]]; then
     ppinfo 'Installing asciinema https://asciinema.org/'
@@ -1241,7 +1192,7 @@ _psyrendust-procedure-00() {
 
 # All done
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-00() {
+_psyrendust-procedure-all-done() {
   /usr/bin/env zsh
   ppsuccess "We are all done!"
   ppemphasis ""
@@ -1286,6 +1237,14 @@ if [[ -n $SYSTEM_IS_MAC ]]; then
     ppinfo "Adding /usr/local/bin to path"
     export PATH="/usr/local/bin:${PATH}"
   fi
+fi
+
+
+
+# See if RVM is installed
+# ------------------------------------------------------------------------------
+if [[ -f "$HOME/.rvm/scripts/rvm" ]]; then
+  export PSYRENDUST_HAS_RVM=1
 fi
 
 
