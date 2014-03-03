@@ -10,9 +10,7 @@
 # ppemphasis - purple
 #  ppverbose - prints out message if PRETTY_PRINT_IS_VERBOSE="true"
 # ------------------------------------------------------------------------------
-if [[ -s $HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/pretty-print.plugin.zsh ]]; then
-  source $HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/pretty-print.plugin.zsh
-fi
+psyrendust source "$ZSH_CUSTOM/plugins/pretty-print/pretty-print.plugin.zsh"
 
 
 
@@ -153,6 +151,10 @@ if [[ -n $SYSTEM_IS_CYGWIN ]]; then
   if [[ ! -f "$psyrendust_au_cygwin_start_bat" ]]; then
     sed "s/CURRENT_USER_NAME/$(whoami)/g" "$psyrendust_au_cygwin_start_bat_src" > "$psyrendust_au_cygwin_start_bat"
   fi
+  unset -m psyrendust_au_cygwin_start_bat
+  unset -m psyrendust_au_cygwin_start_bat_src
+  unset -m psyrendust_au_cygwin_start_vbs
+  unset -m psyrendust_au_cygwin_start_vbs_src
 fi
 
 
@@ -194,8 +196,14 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
       # ------------------------------------------------------------------------
       psyrendust_au_name_space="$(echo $repo | tr '[:upper:]' '[:lower:]' | tr ' ' '-')"
       psyrendust_au_git_root="$HOME/.${psyrendust_au_name_space}"
+      psyrendust_au_last_repo_update="$PSYRENDUST_CONFIG_BASE_PATH/last-repo-update-${psyrendust_au_name_space}"
+      psyrendust_au_post_update="$psyrendust_au_git_root/tools/post-update.zsh"
+      psyrendust_au_post_update_run_once="$PSYRENDUST_CONFIG_BASE_PATH/post-update-run-once-${psyrendust_au_name_space}.zsh"
       _psyrendust-au-log "[$repo] Creating psyrendust_au_name_space=$psyrendust_au_name_space"
       _psyrendust-au-log "[$repo] Creating psyrendust_au_git_root=$psyrendust_au_git_root"
+      _psyrendust-au-log "[$repo] Creating psyrendust_au_last_repo_update=$psyrendust_au_last_repo_update"
+      _psyrendust-au-log "[$repo] Creating psyrendust_au_post_update=$psyrendust_au_post_update"
+      _psyrendust-au-log "[$repo] Creating psyrendust_au_post_update_run_once=$psyrendust_au_post_update_run_once"
 
 
       # Check if the repo folder exists
@@ -211,17 +219,16 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
           _psyrendust-au-log "[$repo] Is a git repo"
           prprompt -P
 
-
           # Check if the last-repo-update file exists
           # --------------------------------------------------------------------
-          if [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/last-repo-update-${psyrendust_au_name_space}" ]]; then
-            _psyrendust-au-log "[$repo] Has last-repo-update-${psyrendust_au_name_space}"
+          if [[ -f "$psyrendust_au_last_repo_update" ]]; then
+            _psyrendust-au-log "[$repo] Has $psyrendust_au_last_repo_update"
           else
             # Set last repo update
-            _psyrendust-au-log "[$repo] Creating last-repo-update-${psyrendust_au_name_space}"
+            _psyrendust-au-log "[$repo] Creating $psyrendust_au_last_repo_update"
             _psyrendust-au-set-last-git-update "$psyrendust_au_git_root" "$psyrendust_au_name_space"
           fi
-          source "$PSYRENDUST_CONFIG_BASE_PATH/last-repo-update-${psyrendust_au_name_space}"
+          source "$psyrendust_au_last_repo_update"
 
 
           # Set the psyrendust_au_current_local_sha if it doesn't exist
@@ -229,7 +236,7 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
           if [[ -z "$psyrendust_au_current_local_sha" ]]; then
             _psyrendust-au-log "[$repo] \$psyrendust_au_current_local_sha does not exist"
             _psyrendust-au-set-last-git-update "$psyrendust_au_git_root" "$psyrendust_au_name_space";
-            source "$PSYRENDUST_CONFIG_BASE_PATH/last-repo-update-${psyrendust_au_name_space}"
+            source "$psyrendust_au_last_repo_update"
           fi
 
           _psyrendust-au-log "[$repo] local SHA: $psyrendust_au_current_local_sha"
@@ -260,9 +267,9 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
             if [[ -n $psyrendust_au_git_update_successful ]]; then
               # Updates are complete
               # ----------------------------------------------------------------
-              if [[ -f "$psyrendust_au_git_root/tools/post-update.zsh" ]]; then
+              if [[ -f "$psyrendust_au_post_update" ]]; then
                 _psyrendust-au-log "[$repo] Creating post-update-run"
-                cp "$psyrendust_au_git_root/tools/post-update.zsh" "$PSYRENDUST_CONFIG_BASE_PATH/post-update-run-once-${psyrendust_au_name_space}.zsh"
+                cp "$psyrendust_au_post_update" "$psyrendust_au_post_update_run_once"
                 prprompt -P
               else
                 _psyrendust-au-log "[$repo] No post-update-run found"
@@ -302,8 +309,9 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
       fi
       unset psyrendust_au_current_local_sha
       unset psyrendust_au_current_remote_sha
-      unset psyrendust_au_name_space
       unset psyrendust_au_git_root
+      unset psyrendust_au_last_repo_update
+      unset psyrendust_au_name_space
     done
 
     # echo out "string, " for each repo
@@ -380,9 +388,3 @@ unset -m psyrendust_au_last_run
 unset -m psyrendust_au_log
 unset -m psyrendust_au_log_error
 unset -m psyrendust_au_name_space
-if [[ -n $SYSTEM_IS_CYGWIN ]]; then
-  unset -m psyrendust_au_cygwin_start_bat
-  unset -m psyrendust_au_cygwin_start_bat_src
-  unset -m psyrendust_au_cygwin_start_vbs
-  unset -m psyrendust_au_cygwin_start_vbs_src
-fi
