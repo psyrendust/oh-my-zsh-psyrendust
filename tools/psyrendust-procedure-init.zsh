@@ -34,17 +34,13 @@
 # ppemphasis - purple
 #  ppverbose - prints out message if PRETTY_PRINT_IS_VERBOSE="true"
 # ------------------------------------------------------------------------------
-if [[ -s $HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/pretty-print.plugin.zsh ]]; then
-  source $HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/pretty-print.plugin.zsh
-fi
+psyrendust source "$ZSH_CUSTOM/plugins/pretty-print/pretty-print.plugin.zsh"
 
 
 
 # Sourcing plog helpers
 # ------------------------------------------------------------------------------
-if [[ -s $HOME/.oh-my-zsh-psyrendust/plugins/plog/plog.plugin.zsh ]]; then
-  source $HOME/.oh-my-zsh-psyrendust/plugins/plog/plog.plugin.zsh
-fi
+psyrendust source "$ZSH_CUSTOM/plugins/plog/plog.plugin.zsh"
 
 
 
@@ -138,10 +134,8 @@ ppverbose "psyrendust_pi_current_breakpoint: " "$psyrendust_pi_current_breakpoin
 
 # Sourcing user info
 # ------------------------------------------------------------------------------
-if [[ -s $psyrendust_pi_config_user_info ]]; then
-  ppverbose "Sourcing: " "$psyrendust_pi_config_user_info"
-  source $psyrendust_pi_config_user_info
-fi
+ppverbose "Sourcing: " "$psyrendust_pi_config_user_info"
+psyrendust source "$psyrendust_pi_config_user_info"
 
 
 
