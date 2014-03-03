@@ -1,0 +1,8 @@
+#-----------------------------------------------------------
+[include]
+  path = ~/.psyrendust/config/git/user.gitconfig
+  path = ~/.psyrendust/config/git/core.gitconfig
+  path = ~/.psyrendust/config/git/diff.gitconfig
+  path = ~/.psyrendust/config/git/work.gitconfig
+  path = ~/.psyrendust/config/git/windows.gitconfig
+  path = ~/.psyrendust/config/git/custom-win.gitconfig

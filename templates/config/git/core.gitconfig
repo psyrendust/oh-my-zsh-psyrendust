@@ -1,12 +1,14 @@
 #-----------------------------------------------------------
 # Core Git config settings
 [core]
-  hidedotfiles = false
-  excludesfile = ~/.gitignore_global
   editor = subl -n -w
+  excludesfile = ~/.gitignore_global
   filemode = false
+  hidedotfiles = false
   trustctime = false
+[color]
+  ui = autoww
 [http]
   sslVerify = false
-[url "https://"]
-  insteadOf = git://
+# [url "https://"]
+#   insteadOf = git://

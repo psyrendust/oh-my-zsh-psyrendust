@@ -1,7 +1,0 @@
-#-----------------------------------------------------------
-[include]
-  path = ~/.psyrendust/config/git/user
-  path = ~/.psyrendust/config/git/core
-  path = ~/.psyrendust/config/git/diff
-  path = ~/.psyrendust/config/git/work
-  path = ~/.psyrendust/config/git/custom-mac
