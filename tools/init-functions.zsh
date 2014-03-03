@@ -21,11 +21,12 @@ psyrendust-update() {
   psyrendust source "$ZSH_CUSTOM/tools/auto-update.zsh"
 }
 
-psyrendust-currentepoch() {
+psyrendust-epoch() {
   local arg_flag="$1"
+  local arg_name="$PSYRENDUST_CONFIG_BASE_PATH/currentepoch-${2:-"default}"
   if [[ $arg_flag == "--set" ]]; then
-    echo "$(($(date +%s) / 60 / 60 / 24))" > "$PSYRENDUST_CONFIG_BASE_PATH/psyrendust-update"
+    echo "$(($(date +%s) / 60 / 60 / 24))" > "$arg_name"
   elif [[ $arg_flag == "--get" ]]; then
-    [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/psyrendust-update" ]] && echo $(cat "$PSYRENDUST_CONFIG_BASE_PATH/psyrendust-update")
+    [[ -f "$arg_name" ]] && echo "$(cat "$arg_name")"
   fi
 }
