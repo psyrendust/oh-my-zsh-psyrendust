@@ -14,7 +14,7 @@ if [[ -f "${_psyrendust_au_last_run}" ]]; then
   source "${_psyrendust_au_last_run}"
 fi
 if [[ -z "${_psyrendust_au_last_epoch}" ]]; then
-  _psyrendust-au-set-current-epoch
+  psyrendust currentepoch --set
   source "${_psyrendust_au_last_run}"
 fi
 _psyrendust_au_last_epoch_diff=$(($(psyrendust currentepoch --get) - ${_psyrendust_au_last_epoch}))
