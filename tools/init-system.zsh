@@ -107,36 +107,36 @@ psyrendust() {
 # ------------------------------------------------------------------------------
 if [[ $('uname') == *Darwin* ]]; then
   # We are using OS X
-  psyrendust export SYSTEM_IS_MAC 1
+  export SYSTEM_IS_MAC=1
 
 elif [[ $('uname') == *CYGWIN* ]]; then
   # We are using Cygwin in Windows
-  psyrendust export SYSTEM_IS_CYGWIN 1
+  export SYSTEM_IS_CYGWIN=1
   # We are also in a virtualized Windows environment
   if [[ -f "/cygdrive/z/.zshrc" ]]; then
-    psyrendust export SYSTEM_IS_VM 1
-    psyrendust export SYSTEM_VM_HOME "/cygdrive/z"
+    export SYSTEM_IS_VM=1
+    export SYSTEM_VM_HOME="/cygdrive/z"
   fi
   if [[ -n "$(which ruby 2>/dev/null)" ]]; then
-    psyrendust export RUBY_BIN "$(cygpath -u $(ruby -e 'puts RbConfig::CONFIG["bindir"]') | sed 's/\\r$//g' )"
+    export RUBY_BIN="$(cygpath -u $(ruby -e 'puts RbConfig::CONFIG["bindir"]') | sed 's/\\r$//g' )"
   fi
 
 elif [[ $('uname') == *MINGW* ]]; then
   # We are using Git Bash in Windows
-  psyrendust export SYSTEM_IS_MINGW32 1
+  export SYSTEM_IS_MINGW32=1
   if [[ -f "/c/cygwin64/z/.zshrc" ]]; then
-    psyrendust export SYSTEM_IS_VM 1
-    psyrendust export SYSTEM_VM_HOME "/c/cygwin64/z"
+    export SYSTEM_IS_VM=1
+    export SYSTEM_VM_HOME="/c/cygwin64/z"
   fi
   if [[ -d "/c/cygwin64/c/cygwin64/home" ]]; then
     psyrendust_user=`whoami`
-    psyrendust export HOME "/c/cygwin64/c/cygwin64/home/${psyrendust_user##*\\}"
+    export HOME="/c/cygwin64/c/cygwin64/home/${psyrendust_user##*\\}"
     unset psyrendust_user
   fi
   return
 
 elif [[ $('uname') == *Linux* ]]; then
   # We are using Linux
-  psyrendust export SYSTEM_IS_LINUX 1
+  export SYSTEM_IS_LINUX=1
 
 fi

@@ -6,8 +6,6 @@
 # ------------------------------------------------------------------------------
 
 
-psyrendust source "$ZSH_CUSTOM/tools/init-paths.zsh"
-
 # Sourcing pretty-print helpers
 #  ppsuccess - green
 #     ppinfo - light cyan

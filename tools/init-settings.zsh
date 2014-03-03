@@ -6,16 +6,16 @@
 # ------------------------------------------------------------------------------
 # Uncomment to change how often before auto-updates occur for
 # oh-my-zsh-psyrendust? (in days)
-psyrendust export PSYRENDUST_UPDATE_DAYS 1
+export PSYRENDUST_UPDATE_DAYS=1
 
 # Uncomment this to enable verbose output for oh-my-zsy-psyrendust related scripts
-# psyrendust export PRETTY_PRINT_IS_VERBOSE 1
+# export PRETTY_PRINT_IS_VERBOSE=1
 
 # Uncomment this to disable auto-update checks for oh-my-zsy-psyrendust
-# psyrendust export PSYRENDUST_DISABLE_AUTO_UPDATE "true"
+# export PSYRENDUST_DISABLE_AUTO_UPDATE="true"
 
 # Uncomment this to set your own custom right prompt id
-psyrendust export PSYRENDUST_CONFIG_PRPROMPT_ID "%F{magenta}[ Psyrendust ]%f"
+export PSYRENDUST_CONFIG_PRPROMPT_ID="%F{magenta}[ Psyrendust ]%f"
 
 
 
