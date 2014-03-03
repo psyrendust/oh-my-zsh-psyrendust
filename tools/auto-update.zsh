@@ -1,6 +1,8 @@
 #!/usr/bin/env zsh
 
 
+source "$ZSH_CUSTOM/tools/init-system.zsh"
+
 
 # Sourcing pretty-print helpers
 #  ppsuccess - green
