@@ -1,7 +1,10 @@
 #!/usr/bin/env zsh
 
-# Add some cygwin related functions
 # ------------------------------------------------------------------------------
+# Setup global functions
+# ------------------------------------------------------------------------------
+
+# Add some cygwin related functions
 if [[ -n $SYSTEM_IS_CYGWIN ]]; then
   psyrendust-mkcygwin() {
     echo "echo off" > $1
@@ -11,7 +14,6 @@ if [[ -n $SYSTEM_IS_CYGWIN ]]; then
 fi
 
 # Force run the auto-update script
-# ------------------------------------------------------------------------------
 psyrendust-update() {
   [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/auto-update-last-run" ]] && rm "$PSYRENDUST_CONFIG_BASE_PATH/auto-update-last-run";
   [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/pprocess-post-update" ]] && rm "$PSYRENDUST_CONFIG_BASE_PATH/pprocess-post-update";
@@ -21,6 +23,7 @@ psyrendust-update() {
   psyrendust source "$ZSH_CUSTOM/tools/auto-update.zsh"
 }
 
+# Get or Set a epoch
 psyrendust-epoch() {
   local arg_flag="$1"
   local arg_name="$PSYRENDUST_CONFIG_BASE_PATH/currentepoch-${2:-default}"

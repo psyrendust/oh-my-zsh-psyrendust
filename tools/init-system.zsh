@@ -12,23 +12,44 @@ compdef () { __psyrendust_deferred_compdefs=($__psyrendust_deferred_compdefs "$*
 # function, you can write `psyrendust-update` as `psyrendust update` and so on.
 # Borrowed from Antigen (https://github.com/zsh-users/antigen)
 psy() {
-    local cmd="$1"
-    if [[ -z "$cmd" ]]; then
-        echo 'Psyrendust: Please give a command to run.' >&2
-        return 1
-    fi
-    shift
+  local cmd="$1"
+  if [[ $cmd == "--version" ]] || [[ $cmd == "-v" ]]; then
+    _psyrendust-version --get
+    return
+  elif [[ -z "$cmd" ]]; then
+    echo 'Psyrendust: Please give a command to run.' >&2
+    return 1
+  fi
+  shift
 
-    if functions "psyrendust-$cmd" > /dev/null; then
-        "psyrendust-$cmd" "$@"
-    else
-        echo "Psyrendust: Unknown command: $cmd" >&2
-    fi
+  if functions "psyrendust-$cmd" > /dev/null; then
+    "psyrendust-$cmd" "$@"
+  else
+    echo "Psyrendust: Unknown command: $cmd" >&2
+  fi
 }
 
 # Long name version of psy function
 psyrendust() {
   psy $@
+}
+
+_psyrendust-version() {
+  local arg_flag="$1"
+  if [[ $arg_flag == "--set" ]]; then
+    cd "$ZSH_CUSTOM"
+    local version_file="$PSYRENDUST_CONFIG_BASE_PATH/version"
+    local version=$(git describe)
+    local version_tag=$(echo $version | cut -d- -f 1)
+    local version_commit=$(echo $version | cut -d- -f 2)
+    local version_sha=$(echo $version | cut -d- -f 3)
+    local version_date=$(echo $(git show -s --format=%ci | cut -d\  -f 1))
+    echo "pppurple -i \"oh-my-zsh-psyrendust \"" > "$version_file"
+    echo "pplightpurple \"${version_tag}p${version_commit} (${version_date} revision ${version_sha})\"" >> "$version_file"
+  else
+    [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/version" ]] || _psyrendust-version --set
+    source "$PSYRENDUST_CONFIG_BASE_PATH/version"
+  fi
 }
 
 # Initialize completion.
@@ -55,7 +76,7 @@ _psyrendust() {
 }
 
 # Setup psyrendust's own completion.
-compdef _psyrendust psyrendust
+compdef _psyrendust psy
 
 
 

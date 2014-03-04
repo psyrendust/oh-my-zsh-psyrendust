@@ -8,7 +8,6 @@ alias ohmyzsh="sbl ~/.oh-my-zsh"
 alias sourceohmyzsh="source ~/.zshrc"
 alias chownusrlocal="find /usr/local -maxdepth 2 -user root -exec sudo chown -R $(echo $USER):staff {} + -print"
 alias npmlist="npm -g ls --depth=0 2>NUL"
-alias psyversion="pppurple -i \"Running oh-my-zsh-psyrendust version \" && pplightpurple \"$(cat $ZSH_CUSTOM/.version)\""
 
 
 

@@ -61,4 +61,4 @@ psyrendust source "$ZSH_CUSTOM/tools/last-run.zsh"
 eval "$(fasd --init zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install)"
 
 # Output our version number
-psyversion
+psyrendust --version
