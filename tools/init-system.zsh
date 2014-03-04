@@ -11,7 +11,7 @@ compdef () { __psyrendust_deferred_compdefs=($__psyrendust_deferred_compdefs "$*
 # A syntax sugar to avoid the `-` when calling psyrendust commands. With this
 # function, you can write `psyrendust-update` as `psyrendust update` and so on.
 # Borrowed from Antigen (https://github.com/zsh-users/antigen)
-psyrendust() {
+psy() {
     local cmd="$1"
     if [[ -z "$cmd" ]]; then
         echo 'Psyrendust: Please give a command to run.' >&2
@@ -24,6 +24,11 @@ psyrendust() {
     else
         echo "Psyrendust: Unknown command: $cmd" >&2
     fi
+}
+
+# Long name version of psy function
+psyrendust() {
+  psy $@
 }
 
 # Initialize completion.
