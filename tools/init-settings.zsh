@@ -17,6 +17,9 @@ export PSYRENDUST_UPDATE_DAYS=1
 # Uncomment this to set your own custom right prompt id
 export PSYRENDUST_CONFIG_PRPROMPT_ID="%F{magenta}[ Psyrendust ]%f"
 
+# zsh-syntax-highlighting highlighters
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
+
 
 
 # ------------------------------------------------------------------------------
