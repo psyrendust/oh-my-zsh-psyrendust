@@ -54,6 +54,7 @@ if [[ -n $SYSTEM_IS_MAC ]]; then
     osx
     server
     sudo
+    zsh-syntax-highlighting
   )
 elif [[ -n $SYSTEM_IS_CYGWIN ]]; then
   # Add some cygwin related configuration
@@ -64,9 +65,3 @@ elif [[ -n $SYSTEM_IS_CYGWIN ]]; then
     psyrendust-gem
   )
 fi
-
-
-plugins=(
-  "${plugins[@]}"
-  zsh-syntax-highlighting
-)
