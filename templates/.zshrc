@@ -2,7 +2,7 @@
 source "$HOME/.oh-my-zsh-psyrendust/tools/init-system.zsh"
 
 # Init paths
-psyrendust source "$ZSH_CUSTOM/tools/init-paths.zsh"
+psyrendust source "$HOME/.oh-my-zsh-psyrendust/tools/init-paths.zsh"
 
 # Init homebrew
 psyrendust source "$ZSH_CUSTOM/tools/init-homebrew.zsh"
@@ -61,4 +61,4 @@ psyrendust source "$ZSH_CUSTOM/tools/last-run.zsh"
 eval "$(fasd --init zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install)"
 
 # Output our version number
-psyrendust --version
+psyrendustsbl  --version
