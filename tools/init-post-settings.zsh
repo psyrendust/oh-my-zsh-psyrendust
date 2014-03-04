@@ -58,40 +58,7 @@ ZSH_HIGHLIGHT_STYLES[path_prefix]=fg=blue,bold                                # 
 
 
 
-
 # ------------------------------------------------------------------------------
-# Setup autocompletion for psyrendust-* functions
-# Borrowed from Antigen (https://github.com/zsh-users/antigen)
+# Apply psyrendust's own completion.
 # ------------------------------------------------------------------------------
-# Used to defer compinit/compdef
-typeset -a __psyrendust_deferred_compdefs
-compdef () { __psyrendust_deferred_compdefs=($__psyrendust_deferred_compdefs "$*") }
-
-psyrendust-apply() {
-
-  # Initialize completion.
-  local cdef
-
-  # Load the compinit module. This will readefine the `compdef` function to
-  # the one that actually initializes completions.
-  autoload -U compinit
-  compinit -i
-
-  # Apply all `compinit`s that have been deferred.
-  eval "$(for cdef in $__psyrendust_deferred_compdefs; do
-            echo compdef $cdef
-          done)"
-
-  unset __psyrendust_deferred_compdefs
-
-}
-
-_psyrendust() {
-  eval "compadd \
-    $(echo $(print -l ${(ok)functions} | grep "psyrendust-" | sed "s/psyrendust-//g"))"
-}
-
-# Setup psyrendust's own completion.
-compdef _psyrendust psyrendust
-
-psyrendust apply
+psy apply

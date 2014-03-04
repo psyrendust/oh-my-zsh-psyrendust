@@ -1,8 +1,63 @@
 #!/usr/bin/env zsh
 
+# ------------------------------------------------------------------------------
+# Setup autocompletion for psyrendust-* functions
+# Borrowed from Antigen (https://github.com/zsh-users/antigen)
+# ------------------------------------------------------------------------------
+# Used to defer compinit/compdef
+typeset -a __psyrendust_deferred_compdefs
+compdef () { __psyrendust_deferred_compdefs=($__psyrendust_deferred_compdefs "$*") }
 
+# A syntax sugar to avoid the `-` when calling psyrendust commands. With this
+# function, you can write `psyrendust-update` as `psyrendust update` and so on.
+# Borrowed from Antigen (https://github.com/zsh-users/antigen)
+psyrendust() {
+    local cmd="$1"
+    if [[ -z "$cmd" ]]; then
+        echo 'Psyrendust: Please give a command to run.' >&2
+        return 1
+    fi
+    shift
+
+    if functions "psyrendust-$cmd" > /dev/null; then
+        "psyrendust-$cmd" "$@"
+    else
+        echo "Psyrendust: Unknown command: $cmd" >&2
+    fi
+}
+
+# Initialize completion.
+psyrendust-apply() {
+  local cdef
+
+  # Load the compinit module. This will readefine the `compdef` function to
+  # the one that actually initializes completions.
+  autoload -U compinit
+  compinit -i
+
+  # Apply all `compinit`s that have been deferred.
+  eval "$(for cdef in $__psyrendust_deferred_compdefs; do
+            echo compdef $cdef
+          done)"
+
+  unset __psyrendust_deferred_compdefs
+}
+
+# Setup psyrendust's autocompletion
+_psyrendust() {
+  eval "compadd \
+    $(echo $(print -l ${(ok)functions} | grep "psyrendust-" | sed "s/psyrendust-//g"))"
+}
+
+# Setup psyrendust's own completion.
+compdef _psyrendust psyrendust
+
+
+
+# ------------------------------------------------------------------------------
 # Helper function: Same as `[[ -f $1 ]] && source $1`, but will only happen
 # if the file specified by `$1` is present.
+# ------------------------------------------------------------------------------
 psyrendust-source() {
   local arg_flag="${1}"
   local arg_file="${2}"
@@ -64,25 +119,9 @@ EOF
   fi
 }
 
-# A syntax sugar to avoid the `-` when calling psyrendust commands. With this
-# function, you can write `psyrendust-update` as `psyrendust update` and so on.
-# Borrowed from Antigen (https://github.com/zsh-users/antigen)
-psyrendust() {
-    local cmd="$1"
-    if [[ -z "$cmd" ]]; then
-        echo 'Psyrendust: Please give a command to run.' >&2
-        return 1
-    fi
-    shift
-
-    if functions "psyrendust-$cmd" > /dev/null; then
-        "psyrendust-$cmd" "$@"
-    else
-        echo "Psyrendust: Unknown command: $cmd" >&2
-    fi
-}
 
 
+# ------------------------------------------------------------------------------
 # Do some system checks so we don't have to keep doing it later
 # ------------------------------------------------------------------------------
 if [[ $('uname') == *Darwin* ]]; then
