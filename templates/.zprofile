@@ -91,19 +91,6 @@ export ZSHRC_WORK="$HOME/.zshrc-work"
 # Set the location of our personal zshrc location
 export ZSHRC_PERSONAL="$HOME/.zshrc-personal"
 
-# Set the location of our oh-my-zsh-psyrendust dev location
-if [[ -n $SYSTEM_IS_CYGWIN ]]; then
-  PSYRENDUST_CONFIG_BASE_ROOT="/cygdrive/z"
-else
-  PSYRENDUST_CONFIG_BASE_ROOT="$HOME"
-fi
-if [[ -d "${PSYRENDUST_CONFIG_BASE_ROOT}/psyrendust/github/oh-my-zsh-psyrendust" ]]; then
-  export PSYRENDUST_CONFIG_IS_ADMIN=1
-  export PSYRENDUST_CONFIG_BASE_DEVELOPMENT="${PSYRENDUST_CONFIG_BASE_ROOT}/psyrendust/github/oh-my-zsh-psyrendust"
-else
-  export PSYRENDUST_CONFIG_BASE_DEVELOPMENT="${PSYRENDUST_CONFIG_BASE_ROOT}/.psyrendust/backup/oh-my-zsh-psyrendust"
-fi
-
 # Set the location of our config path
 export PSYRENDUST_CONFIG_BASE_PATH="$HOME/.psyrendust"
 
