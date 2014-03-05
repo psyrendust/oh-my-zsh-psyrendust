@@ -25,11 +25,15 @@ mkdir -p "$PSYRENDUST_BACKUP_FOLDER"
 
 
 
-# Starting post-update
+# Replace dotfiles
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-start() {
-  pplightblue -i "[oh-my-zsh-psyrendust] Post update: "
-}
+cp "$ZSH_CUSTOM/templates/.gemrc" "$HOME/.gemrc"
+cp "$ZSH_CUSTOM/templates/.gitignore_global" "${HOME}/.gitignore_global"
+cp "$ZSH_CUSTOM/templates/.zlogin" "$HOME/.zlogin"
+cp "$ZSH_CUSTOM/templates/.zprofile" "$HOME/.zprofile"
+cp "$ZSH_CUSTOM/templates/.zshenv" "$HOME/.zshenv"
+cp "$ZSH_CUSTOM/templates/.zshrc" "$HOME/.zshrc"
+/usr/bin/env zsh
 
 
 
@@ -70,16 +74,6 @@ _psyrendust-procedure-update-gitconfig() {
     # Replace mac .gitconfig
     cp "$ZSH_CUSTOM/templates/config/git/mac.gitconfig" "$HOME/.gitconfig"
   fi
-}
-
-
-
-# Replace dotfiles
-# ------------------------------------------------------------------------------
-_psyrendust-procedure-update-dotfiles() {
-  cp "$ZSH_CUSTOM/templates/.gemrc" "$HOME/.gemrc"
-  cp "$ZSH_CUSTOM/templates/.gitignore_global" "${HOME}/.gitignore_global"
-  cp "$ZSH_CUSTOM/templates/.zshrc" "$HOME/.zshrc"
 }
 
 
