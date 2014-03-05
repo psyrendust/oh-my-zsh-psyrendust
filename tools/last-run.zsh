@@ -8,11 +8,11 @@
 # Load up the last run for auto-update
 # ------------------------------------------------------------------------------
 psyrendust epoch --set
-_psyrendust_au_last_epoch_diff=$(( $(psyrendust epoch --get "auto-update") - $(psyrendust epoch --get) ))
+psyrendust_au_last_epoch_diff=$(( $(psyrendust epoch --get "auto-update") - $(psyrendust epoch --get) ))
 
 # See if we ran this today already
 # ------------------------------------------------------------------------------
-if [[ ${_psyrendust_au_last_epoch_diff} -gt $PSYRENDUST_UPDATE_DAYS ]]; then
+if [[ ${psyrendust_au_last_epoch_diff} -gt $PSYRENDUST_UPDATE_DAYS ]]; then
   # Load prprompt script
   # ----------------------------------------------------------------------------
   psyrendust source "$ZSH_CUSTOM/plugins/prprompt/prprompt.plugin.zsh"
@@ -33,4 +33,4 @@ else
   # ----------------------------------------------------------------------------
   psyrendust source "$ZSH_CUSTOM/tools/run-once.zsh"
 fi
-unset _psyrendust_au_last_run
+unset psyrendust_au_last_epoch_diff
