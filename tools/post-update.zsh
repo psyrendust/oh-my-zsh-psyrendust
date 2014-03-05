@@ -49,10 +49,14 @@ _psyrendust-procedure-replace-dotfiles() {
 # Restart shell, and kill the current pprocess status
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-source-shell() {
+  if [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/version" ]]; then
+    # Remove the previous version file so that it can get recreated after
+    # the shell restarts
+    rm "$PSYRENDUST_CONFIG_BASE_PATH/version"
+  fi
   {
     sleep 1
     pprocess -x "post-update-run-once-oh-my-zsh-psyrendust"
-    _psyrendust-version --set
     psy restartshell
   } &!
 }
