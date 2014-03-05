@@ -46,11 +46,24 @@ _psyrendust-procedure-replace-dotfiles() {
 
 
 
-# Source shell
+# Restart shell, and kill the current pprocess status
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-source-shell() {
-  /usr/bin/env zsh
+  {
+    sleep 1
+    pprocess -x "post-update-run-once-oh-my-zsh-psyrendust"
+    psy restartshell
+  } &!
 }
+
+
+
+# Waiting for shell restart completion
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-waiting() {
+  sleep 5
+}
+
 
 
 # Migrate any legacy gitconfig-includes
