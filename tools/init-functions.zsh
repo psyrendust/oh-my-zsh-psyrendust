@@ -10,13 +10,13 @@
 # ------------------------------------------------------------------------------
 
 # Add some cygwin related functions
-if [[ -n $SYSTEM_IS_CYGWIN ]]; then
-  psyrendust-mkcygwin() {
+psyrendust-mkcygwin() {
+  if [[ -n $SYSTEM_IS_CYGWIN ]]; then
     echo "echo off" > $1
     echo -n "%1 -q -P " >> $1
     echo $(echo $(cygcheck -c -d | sed -e "1,2d" -e 's/ .*$//') | tr " " ",") >> $1
-  }
-fi
+  fi
+}
 
 # Force run the auto-update script
 psyrendust-update() {
@@ -26,6 +26,25 @@ psyrendust-update() {
   [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/post-update-progress.conf" ]] && rm "$PSYRENDUST_CONFIG_BASE_PATH/post-update-progress.conf";
   psyrendust source "$ZSH_CUSTOM/plugins/prprompt/prprompt.plugin.zsh";
   psyrendust source "$ZSH_CUSTOM/tools/auto-update.zsh"
+}
+
+# Restart the current shell
+psyrendust-restartshell() {
+  ppemphasis ""
+  ppemphasis ""
+  if [[ -n $SYSTEM_IS_MAC ]]; then
+    # If we are running OS X we can use applescript to create a new tab and
+    # close the current tab we are on
+    ppemphasis "Restarting iTerm Shell in 2 seconds"
+    sleep 2
+    osascript "$ZSH_CUSTOM/tools/restart-iterm.scpt"
+  elif [[ -n $SYSTEM_IS_CYGWIN ]]; then
+    # If we are running cygwin we can restart the current console
+    ppemphasis "Restarting Cygwin Shell in 2 seconds"
+    sleep 2
+    cygstart "$ZSH_CUSTOM/tools/restart-cygwin.vbs"
+    exit
+  fi
 }
 
 # Create a backup of any config files
