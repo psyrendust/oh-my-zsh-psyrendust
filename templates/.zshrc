@@ -1,23 +1,3 @@
-# Init system
-source "$HOME/.oh-my-zsh-psyrendust/tools/init-system.zsh"
-
-# Init paths
-psyrendust source "$HOME/.oh-my-zsh-psyrendust/tools/init-paths.zsh"
-
-# Init homebrew
-psyrendust source "$ZSH_CUSTOM/tools/init-homebrew.zsh"
-
-# Init nvm
-# psyrendust source "$HOME/.nvm/nvm.sh"
-
-# Init rvm
-# Zsh & RVM woes (rvm-prompt doesn't resolve)
-# http://stackoverflow.com/questions/6636066/zsh-rvm-woes-rvm-prompt-doesnt-resolve
-psyrendust source "$HOME/.rvm/scripts/rvm"
-
-# Init settings
-psyrendust source "$ZSH_CUSTOM/tools/init-settings.zsh"
-
 # Init plugins
 psyrendust source "$ZSH_CUSTOM/tools/init-plugins.zsh"
 
@@ -42,15 +22,13 @@ psyrendust source "$ZSHRC_PERSONAL/.zshrc"
 
 
 
-# ------------------------------------------------------------------------------
 # Source oh-my-zsh and get things started
-# ------------------------------------------------------------------------------
-psyrendust source $ZSH/oh-my-zsh.sh
+psyrendust source "$ZSH/oh-my-zsh.sh"
 
 
 
 # ------------------------------------------------------------------------------
-# Init post settings
+# Post initialization
 # ------------------------------------------------------------------------------
 psyrendust source "$ZSH_CUSTOM/tools/init-post-settings.zsh"
 
