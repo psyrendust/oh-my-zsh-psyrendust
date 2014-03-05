@@ -52,6 +52,7 @@ _psyrendust-procedure-source-shell() {
   {
     sleep 1
     pprocess -x "post-update-run-once-oh-my-zsh-psyrendust"
+    _psyrendust-version --set
     psy restartshell
   } &!
 }
