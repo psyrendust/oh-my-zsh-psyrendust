@@ -1,0 +1,14 @@
+#-----------------------------------------------------------
+# Core Git config settings
+[core]
+  editor = subl -n -w
+  excludesfile = ~/.gitignore_global
+  filemode = false
+  hidedotfiles = false
+  trustctime = false
+[color]
+  ui = always
+[http]
+  sslVerify = false
+# [url "https://"]
+#   insteadOf = git://

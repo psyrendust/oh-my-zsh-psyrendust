@@ -57,22 +57,22 @@ compdef _git gfu=git-fetch-upstream
 alias gfr='git fetch root'
 compdef _git gfr=git-fetch-root
 
-alias ggpullr='git pull root $(git_branch_name)'
+alias ggpullr='git pull root $(current_branch)'
 compdef _git ggpullr=git-pull-root
 
-alias ggpullu='git pull upstream $(git_branch_name)'
+alias ggpullu='git pull upstream $(current_branch)'
 compdef _git ggpullu=git-pull-upstream
 
-alias ggpullo='git pull origin $(git_branch_name)'
+alias ggpullo='git pull origin $(current_branch)'
 compdef _git ggpullo=git-pull-origin
 
-alias ggpushr='git push root $(git_branch_name)'
+alias ggpushr='git push root $(current_branch)'
 compdef _git ggpushr=git-push-root
 
-alias ggpushu='git push upstream $(git_branch_name)'
+alias ggpushu='git push upstream $(current_branch)'
 compdef _git ggpushu=git-push-upstream
 
-alias ggpusho='git push origin $(git_branch_name)'
+alias ggpusho='git push origin $(current_branch)'
 compdef _git ggpusho=git-push-origin
 
 alias gcleanindex='_git-clean-index'
@@ -89,14 +89,14 @@ compdef _git glg=git-log-pretty
 
 # alias gfupdate='git-flow-update'
 
-function _git_branch_name() {
+function _current_branch() {
   ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
   ref=$(command git rev-parse --short HEAD 2> /dev/null) || return
   echo "${ref#refs/heads/}"
 }
 
 function _git-branch-from-here() {
-  git checkout -b $1 $(git_branch_name)
+  git checkout -b $1 $(current_branch)
 }
 
 function _git-branch-delete() {
@@ -122,7 +122,7 @@ function _git-checkout-branch() {
 
 # update target branch and merge it into current branch
 function _git-merge-from() {
-  current_branch=$(git_branch_name)
+  current_branch=$(current_branch)
   target_branch=$1
   echo "switching to branch $target_branch"
   gco -f $target_branch
@@ -138,7 +138,7 @@ function _git-merge-from() {
 
 # update branch from origin and merge it into current branch
 function _git-merge-from-origin() {
-  current_branch=$(git_branch_name)
+  current_branch=$(current_branch)
   echo "fetching from origin $1"
   gfo $1:$1
   echo "merging origin $1 into $current_branch"
@@ -147,7 +147,7 @@ function _git-merge-from-origin() {
 
 # update branch from upstream and merge it into current branch
 function _git-merge-from-upstream() {
-  current_branch=$(git_branch_name)
+  current_branch=$(current_branch)
   echo "fetching from upstream $1"
   gfu $1:$1
   echo "merging upstream $1 into $current_branch"
@@ -156,7 +156,7 @@ function _git-merge-from-upstream() {
 
 # update branch from root and merge it into current branch
 function _git-merge-from-root() {
-  current_branch=$(git_branch_name)
+  current_branch=$(current_branch)
   echo "fetching from upstream $1"
   gfr $1:$1
   echo "merging root $1 into $current_branch"
@@ -186,6 +186,7 @@ function _git-clean-index() {
     cd $1
   fi
   git rm --cached -r .
+  git clean -fdx
   git reset HEAD --hard
   git add .
   cd "$current_location"

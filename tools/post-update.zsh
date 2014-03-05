@@ -2,64 +2,146 @@
 # name: post-update.zsh
 # author: Larry Gordon
 #
-# My post update script
-# ----------------------------------------------------------
-
-# Source Pretty Print
-[[ -f $ZSH_CUSTOM/plugins/pretty-print/pretty-print.plugin.zsh ]] && source $ZSH_CUSTOM/plugins/pretty-print/pretty-print.plugin.zsh
+# Post update script
+# ------------------------------------------------------------------------------
 
 
-# Run custom updates
-if [[ -d $ZSH_CUSTOM ]]; then
-  cp "$ZSH_CUSTOM/templates/.zshrc" "$HOME/.zshrc"
+# Sourcing pretty-print helpers
+#  ppsuccess - green
+#     ppinfo - light cyan
+#  ppwarning - brown
+#   ppdanger - red
+# ppemphasis - purple
+#  ppverbose - prints out message if PRETTY_PRINT_IS_VERBOSE="true"
+# ------------------------------------------------------------------------------
+psyrendust source "$ZSH_CUSTOM/plugins/pretty-print/pretty-print.plugin.zsh"
 
-  if [[ -n $SYSTEM_IS_MAC ]]; then
-    # Replace .gitconfig
-    [[ -s "$ZSH_CUSTOM/templates/.gitconfig_mac" ]] && cp "$ZSH_CUSTOM/templates/.gitconfig_mac" "$HOME/.gitconfig"
-    # Check to see if .gitconfig-includes has been created
-    [[ -d "$HOME/.gitconfig-includes" ]] || mkdir "$HOME/.gitconfig-includes"
+
+
+# Replace .zshrc
+# ------------------------------------------------------------------------------
+export PSYRENDUST_BACKUP_FOLDER="$ZSHRC_PERSONAL/backup/$(date '+%Y%m%d')"
+mkdir -p "$PSYRENDUST_BACKUP_FOLDER"
+
+
+
+# Replace dotfiles
+# ------------------------------------------------------------------------------
+cp "$ZSH_CUSTOM/templates/.gemrc" "$HOME/.gemrc"
+cp "$ZSH_CUSTOM/templates/.gitignore_global" "${HOME}/.gitignore_global"
+cp "$ZSH_CUSTOM/templates/.zlogin" "$HOME/.zlogin"
+cp "$ZSH_CUSTOM/templates/.zprofile" "$HOME/.zprofile"
+cp "$ZSH_CUSTOM/templates/.zshenv" "$HOME/.zshenv"
+cp "$ZSH_CUSTOM/templates/.zshrc" "$HOME/.zshrc"
+/usr/bin/env zsh
+
+
+
+# Starting post-update
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-start() {
+  pplightblue -i "[oh-my-zsh-psyrendust] Post update: "
+}
+
+
+
+# Migrate any legacy gitconfig-includes
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-migrate-existing-gitconfig-includes() {
+  if [[ -d "$HOME/.gitconfig-includes" ]]; then
+    [[ -s "$HOME/.gitconfig-includes/user.gitconfig" ]] && cp "$HOME/.gitconfig-includes/user.gitconfig" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/user.gitconfig"
+    [[ -s "$HOME/.gitconfig-includes/github-xero-username.conf" ]] && cp "$HOME/.gitconfig-includes/github-xero-username.conf" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/xero-username"
+    mv "$HOME/.gitconfig-includes" "$PSYRENDUST_BACKUP_FOLDER/.gitconfig-includes"
   fi
+}
 
+
+
+# Install .gitconfig
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-update-gitconfig() {
+  [[ -f "$HOME/.gitconfig" ]] && mv "$HOME/.gitconfig" "$PSYRENDUST_BACKUP_FOLDER/.gitconfig"
   if [[ -n $SYSTEM_IS_CYGWIN ]]; then
-    # Replace .gitconfig
-    [[ -s "$ZSH_CUSTOM/templates/.gitconfig_win" ]] && cp "$ZSH_CUSTOM/templates/.gitconfig_win" "$HOME/.gitconfig"
-    # Check to see if .gitconfig-includes has been symlinked in cygwin
-    [[ -d "/cygdrive/z/.gitconfig-includes" ]] && rm "/cygdrive/z/.gitconfig-includes"
-    ln -sf "/cygdrive/z/.gitconfig-includes" "$HOME/.gitconfig-includes"
+    # Replace win .gitconfig
+    cp "$ZSH_CUSTOM/templates/config/git/win.gitconfig" "$HOME/.gitconfig"
+  else
+    # Replace mac .gitconfig
+    cp "$ZSH_CUSTOM/templates/config/git/mac.gitconfig" "$HOME/.gitconfig"
   fi
+}
 
-  # Copy over gitconfig templates
-  [[ -s "$ZSH_CUSTOM/templates/core.gitconfig" ]] && cp "$ZSH_CUSTOM/templates/core.gitconfig" "$HOME/.gitconfig-includes/core.gitconfig"
-  [[ -s "$ZSH_CUSTOM/templates/diff.gitconfig" ]] && cp "$ZSH_CUSTOM/templates/diff.gitconfig" "$HOME/.gitconfig-includes/diff.gitconfig"
 
-  # Check to see if user.gitconfig has been created
-  if [[ ! -s "$HOME/.gitconfig-includes/user.gitconfig" ]]; then
-    [[ -s "$ZSH_CUSTOM/templates/user.gitconfig" ]] && cp "$ZSH_CUSTOM/templates/user.gitconfig" "$HOME/.gitconfig-includes/user.gitconfig"
+
+# Install git config templates
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-install-git-config-templates() {
+  if [[ -z $SYSTEM_IS_VM ]]; then
+    # Replace git configs
+    [[ -f "$ZSH_CUSTOM/templates/config/git/core.gitconfig" ]] && cp "$ZSH_CUSTOM/templates/config/git/core.gitconfig" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/core.gitconfig"
+    [[ -f "$ZSH_CUSTOM/templates/config/git/diff.gitconfig" ]] && cp "$ZSH_CUSTOM/templates/config/git/diff.gitconfig" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/diff.gitconfig"
+    [[ -f "$ZSH_CUSTOM/templates/config/git/windows.gitconfig" ]] && cp "$ZSH_CUSTOM/templates/config/git/windows.gitconfig" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/windows.gitconfig"
+    if [[ -n $SYSTEM_IS_CYGWIN ]]; then
+      [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/config/git/custom-win.gitconfig" ]] || cp "$ZSH_CUSTOM/templates/config/git/custom-win.gitconfig" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/custom-win.gitconfig"
+    else
+      [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/config/git/custom-mac.gitconfig" ]] || cp "$ZSH_CUSTOM/templates/config/git/custom-mac.gitconfig" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/custom-mac.gitconfig"
+    fi
   fi
+}
 
-  # Check to see if a Git global user.name has been set
-  if [[ $(git config user.name) == "" ]]; then
-    printf '\033[0;31m%s\033[0m\n' "One time setup to configure your Git user.name"
-    printf '\033[0;35m%s\033[0;31m%s\033[0m\n' "Please enter your first and last name " "[First Last]: "
-    read GIT_USER_NAME_FIRST GIT_USER_NAME_LAST
-    echo "  name = ${GIT_USER_NAME_FIRST} ${GIT_USER_NAME_LAST}" >> "$HOME/.gitconfig-includes/user.gitconfig"
-    printf '\033[0;35m%s\033[0;36m%s\033[0m\n' "Git config user.name saved to: " "$HOME/.gitconfig-includes/user.gitconfig"
+
+
+# Check to see if config/git/user has been created
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-oh-my-zsh-psyrendust-updates() {
+  if [[ ! -s "$PSYRENDUST_CONFIG_BASE_PATH/config/git/user.gitconfig" ]]; then
+    cp "$ZSH_CUSTOM/templates/config/git/user.gitconfig" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/user.gitconfig"
   fi
+}
 
+
+
+# Check to see if a Git global user.name has been set
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-git-user-name() {
+  psyrendust_config_git_user="$PSYRENDUST_CONFIG_BASE_PATH/config/git/user.gitconfig"
+  if [[ -d $ZSH_CUSTOM ]] && [[ $(git config user.name) == "" ]]; then
+    echo
+    ppinfo -i "We need to configure your "
+    pplightpurple "Git Global user.name"
+    ppinfo -i "Please enter your first and last name ["
+    pplightpurple -i "Firstname Lastname"
+    ppinfo -i "]: "
+    read git_user_name_first git_user_name_last
+    echo "  name = ${git_user_name_first} ${git_user_name_last}" >> "$psyrendust_config_git_user"
+    ppinfo -i "Git config user.name saved to: "
+    pplightcyan "$psyrendust_config_git_user"
+    unset git_user_name_first
+    unset git_user_name_last
+    echo
+  fi
+}
+
+
+
+# Check to see if a Git global user.email has been set
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-git-user-email() {
+  psyrendust_config_git_user="$PSYRENDUST_CONFIG_BASE_PATH/config/git/user.gitconfig"
   # Check to see if a Git global user.email has been set
-  if [[ $(git config user.email) == "" ]]; then
-    printf '\033[0;31m%s\033[0m\n' "One time setup to configure your Git user.email"
-    printf '\033[0;35m%s\033[0;31m%s\033[0m\n' "Please enter your work email address " "[first.last@domain.com]: "
-    read GIT_USER_EMAIL
-    echo "  email = ${GIT_USER_EMAIL}" >> "$HOME/.gitconfig-includes/user.gitconfig"
-    printf '\033[0;35m%s\033[0;36m%s\033[0m\n' "Git config user.email saved to: " "$HOME/.gitconfig-includes/user.gitconfig"
+  if [[ -d $ZSH_CUSTOM ]] && [[ $(git config user.email) == "" ]]; then
+    echo
+    ppinfo -i "We need to configure your "
+    pplightpurple "Git Global user.email"
+    ppinfo -i "Please enter your work email address ["
+    pplightpurple -i "first.last@domain.com"
+    ppinfo -i "]: "
+    read git_user_email
+    echo "  email = ${git_user_email}" >> "$psyrendust_config_git_user"
+    ppinfo -i "Git config user.email saved to: "
+    pplightcyan "$psyrendust_config_git_user"
+    unset git_user_email
+    echo
   fi
-fi
+}
 
 
-ppemphasis '       __                            __                                    __         __  '
-ppemphasis ' ___  / /     __ _  __ __   ___ ___ / /     ___  ___ __ _________ ___  ___/ /_ _____ / /_ '
-ppemphasis '/ _ \/ _ \   /  ` \/ // /  /_ /(_-</ _ \   / _ \(_-</ // / __/ -_) _ \/ _  / // (_-</ __/ '
-ppemphasis '\___/_//_/  /_/_/_/\_, /   /__/___/_//_/  / .__/___/\_, /_/  \__/_//_/\_,_/\_,_/___/\__/  '
-ppemphasis '                  /___/                  /_/       /___/                                  '
-ppsuccess  'Hooray!'

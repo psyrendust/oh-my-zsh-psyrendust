@@ -45,7 +45,7 @@ for ppfile in $(ls "$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/" | grep "^
   # Create status based symlinks
   # --------------------------------------------------------
   [[ $ppshortname = "green" ]]     && ln -sf "$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile" "/usr/local/bin/ppsuccess"
-  [[ $ppshortname = "lightcyan" ]] && ln -sf "$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile" "/usr/local/bin/ppinfo"
+  [[ $ppshortname = "cyan" ]] && ln -sf "$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile" "/usr/local/bin/ppinfo"
   [[ $ppshortname = "brown" ]]     && ln -sf "$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile" "/usr/local/bin/ppwarning"
   [[ $ppshortname = "red" ]]       && ln -sf "$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile" "/usr/local/bin/ppdanger"
   [[ $ppshortname = "purple" ]]    && ln -sf "$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/$ppfile" "/usr/local/bin/ppemphasis"
@@ -53,6 +53,21 @@ done
 unset ppshortname
 unset ppfile
 
+
+
+# pretty print helper function that will only output messages if verbose is true
+# ------------------------------------------------------------------------------
+function ppverbose() {
+  if [[ -n $PRETTY_PRINT_IS_VERBOSE ]]; then
+    if [[ $# < 2 ]]; then
+      ppblue "$1"
+    else
+      ppblue -i "$1: "
+      shift
+      pplightblue "$@"
+    fi
+  fi
+}
 
 
 # Test colors
