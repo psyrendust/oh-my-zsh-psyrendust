@@ -25,24 +25,22 @@ mkdir -p "$PSYRENDUST_BACKUP_FOLDER"
 
 
 
+# Replace dotfiles
+# ------------------------------------------------------------------------------
+cp "$ZSH_CUSTOM/templates/.gemrc" "$HOME/.gemrc"
+cp "$ZSH_CUSTOM/templates/.gitignore_global" "${HOME}/.gitignore_global"
+cp "$ZSH_CUSTOM/templates/.zlogin" "$HOME/.zlogin"
+cp "$ZSH_CUSTOM/templates/.zprofile" "$HOME/.zprofile"
+cp "$ZSH_CUSTOM/templates/.zshenv" "$HOME/.zshenv"
+cp "$ZSH_CUSTOM/templates/.zshrc" "$HOME/.zshrc"
+/usr/bin/env zsh
+
+
+
 # Starting post-update
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-start() {
   pplightblue -i "[oh-my-zsh-psyrendust] Post update: "
-}
-
-
-
-# Check to see if config path has been created
-# ------------------------------------------------------------------------------
-_psyrendust-procedure-update-config-path() {
-  [[ -d $PSYRENDUST_CONFIG_BASE_PATH ]] || mkdir -p $PSYRENDUST_CONFIG_BASE_PATH
-  [[ -n $SYSTEM_IS_VM ]] || mkdir -p $PSYRENDUST_CONFIG_BASE_PATH/config/{git,win}
-  # if [[ -n $SYSTEM_IS_VM ]]; then
-  #   Symlink config path
-  #   Don't process this for now. Use the link extension to create symlinks
-  #   [[ -d "$SYSTEM_VM_HOME/.psyrendust/config" ]] && ln -sf "$SYSTEM_VM_HOME/.psyrendust/config" "$PSYRENDUST_CONFIG_BASE_PATH/config"
-  # fi
 }
 
 
@@ -70,16 +68,6 @@ _psyrendust-procedure-update-gitconfig() {
     # Replace mac .gitconfig
     cp "$ZSH_CUSTOM/templates/config/git/mac.gitconfig" "$HOME/.gitconfig"
   fi
-}
-
-
-
-# Replace dotfiles
-# ------------------------------------------------------------------------------
-_psyrendust-procedure-update-dotfiles() {
-  cp "$ZSH_CUSTOM/templates/.gemrc" "$HOME/.gemrc"
-  cp "$ZSH_CUSTOM/templates/.gitignore_global" "${HOME}/.gitignore_global"
-  cp "$ZSH_CUSTOM/templates/.zshrc" "$HOME/.zshrc"
 }
 
 

@@ -1,7 +1,10 @@
 #!/usr/bin/env zsh
-
-
-
+#
+# Initialize which plugins to load into oh-my-zsh
+#
+# Authors:
+#   Larry Gordon
+#
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
@@ -61,7 +64,8 @@ elif [[ -n $SYSTEM_IS_CYGWIN ]]; then
   # ----------------------------------------------------------------------------
   plugins=(
     "${plugins[@]}"
+    cygwin-gem
+    cygwin-ln
     kdiff3
-    psyrendust-gem
   )
 fi

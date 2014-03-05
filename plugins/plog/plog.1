@@ -1,70 +1,61 @@
-.\" Generated with Ronnjs 0.3.8
-.\" http://github.com/kapouer/ronnjs/
-.
-.TH "PLOG" "1" "February 2014" "" ""
-.
-.SH "NAME"
-\fBplog\fR \-\- logfile helper function
-.
-.SH "SYNOPSIS"
-\fBplog\fR \fINAMESPACE\fR \fIMESSAGE\fR
-.
-.br
-\fBplog\fR [\fI\-l\fR | \fI\-e\fR] \fINAMESPACE\fR \fIMESSAGE\fR
-.
-.br
-\fBplog\fR [\-d\fI] \fRNAMESPACE_  
-.
-.SH "DESCRIPTION"
-Output to a logfile located in \fI$HOME/\.psyrendust\fR\|\. The \fINAMESPACE\fR argument is appended to the name of the logfile\.
-.
+.TH "" "" "" "" ""
+.SH plog(1) \-\- logfile helper function
+.SS SYNOPSIS
+.PP
+\f[B]plog\f[] \f[I]NAMESPACE\f[] \f[I]MESSAGE\f[]
+.PD 0
 .P
-\fB\-l\fR      Append a \fIMESSAGE\fR to a logfile for a given \fINAMESPACE\fR
-.
+.PD
+\f[B]plog\f[] [\f[I]\-l\f[] | \f[I]\-e\f[]] \f[I]NAMESPACE\f[]
+\f[I]MESSAGE\f[]
+.PD 0
 .P
-\fB\-e\fR      Append a \fIMESSAGE\fR to an error logfile for a given \fINAMESPACE\fR
-.
-.P
-\fB\-d\fR      Delete the log and error logfile for a given \fINAMESPACE\fR
-.
-.P
-\fB\-\-help\fR  Display this help and exit
-.
-.SH "EXAMPLES"
-\fBplog\fR \fI\-l\fR foobar "Logging foobar message"
-.
-.br
-    Log a message to a logfile named \fIfoobar\fR (saves to \fI$HOME/\.psyrendust/log\-foobar\.log\fR)\.
-.
-.P
-\fBplog\fR foobar "Logging foobar message"
-.
-.br
-    You can optionally choose to pass no \fIOPTION\fR which is equivalent to \fBplog\fR \fI\-l\fR\|\.
-.
-.P
-\fBplog\fR \fI\-e\fR foobar "Logging foobar message"
-.
-.br
-    Log an error message to a logfile named \fIfoobar\fR (saves to _$HOME/\.psyrendust/log\-error\-foobar\.log)\.
-.
-.P
-\fBplog\fR \fI\-d\fR foobar
-.
-.br
-    Delete all \fIfoobar\fR logfiles (deletes \fI$HOME/\.psyrendust/log\-foobar\.log\fR and \fI$HOME/\.psyrendust/log\-error\-foobar\.log\fR)\.
-.
-.SH "AUTHOR"
-.
+.PD
+\f[B]plog\f[] [\f[I]\-d\f[]] \f[I]NAMESPACE\f[]
+.SS DESCRIPTION
+.PP
+Output to a logfile located in \f[I]$HOME/.psyrendust\f[].
+The \f[I]NAMESPACE\f[] argument is appended to the name of the logfile.
+.PP
+\f[B]\-l\f[] append a \f[I]MESSAGE\f[] to a logfile for a given
+\f[I]NAMESPACE\f[]
+.PP
+\f[B]\-e\f[] append a \f[I]MESSAGE\f[] to an error logfile for a given
+\f[I]NAMESPACE\f[]
+.PP
+\f[B]\-d\f[] delete the log and error logfile for a given
+\f[I]NAMESPACE\f[]
+.PP
+\f[B]\-\-help\f[] display this help and exit
+.SS EXAMPLES
+.PP
+Log a message to a logfile named \f[I]foobar\f[] (saves to
+\f[I]$HOME/.psyrendust/log\-foobar.log\f[]).
+\f[B]plog\f[] \f[I]\-l\f[] foobar "Logging foobar message"
+.PP
+You can optionally choose to pass no \f[I]OPTION\f[] which is equivalent
+to \f[B]plog\f[] \f[I]\-l\f[].
+\f[B]plog\f[] foobar "Logging foobar message"
+.PP
+Log an error message to a logfile named \f[I]foobar\f[] (saves to
+\f[I]$HOME/.psyrendust/log\-error\-foobar.log). \f[B]plog\f[] \f[]\-e_
+foobar "Logging foobar message"
+.PP
+Delete all \f[I]foobar\f[] logfiles (deletes
+\f[I]$HOME/.psyrendust/log\-foobar.log_ and _$HOME/.psyrendust/log\-error\-foobar.log\f[]).
+\f[B]plog\f[] \f[I]\-d\f[] foobar
+.SS AUTHOR
+.IP
 .nf
-Written by Larry Gordon
-.
+\f[C]
+Written\ by\ Larry\ Gordon
+\f[]
 .fi
-.
-.SH "COPYRIGHT"
-.
+.SS COPYRIGHT
+.IP
 .nf
-Copyright (C) 2013 Free Software Foundation, Inc\.  License GPLv3+: GNU GPL version 3 or later <http://gnu\.org/licenses/gpl\.html>\.  
-This is free software: you are free to change and redistribute it\.  There is NO WARRANTY, to the extent permitted by law\.
-.
+\f[C]
+Copyright\ (C)\ 2013\ Free\ Software\ Foundation,\ Inc.\ \ License\ GPLv3+:\ GNU\ GPL\ version\ 3\ or\ later\ <http://gnu.org/licenses/gpl.html>.\ \ 
+This\ is\ free\ software:\ you\ are\ free\ to\ change\ and\ redistribute\ it.\ \ There\ is\ NO\ WARRANTY,\ to\ the\ extent\ permitted\ by\ law.
+\f[]
 .fi

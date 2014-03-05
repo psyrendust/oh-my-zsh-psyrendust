@@ -12,15 +12,6 @@ alias npmlist="npm -g ls --depth=0 2>NUL"
 
 
 # ------------------------------------------------------------------------------
-# Update all global npm packages except for npm, because updating npm using npm
-# always breaks. Running npm -g update will result in having to reinstall node.
-# This little script will update all global npm packages except for npm.
-# ------------------------------------------------------------------------------
-alias npmupdate="npm -g ls --depth=0 2>NUL | awk -F'@' '{print $1}' | awk '{print $2}' | awk  '!/npm/'> $PSYRENDUST_CONFIG_BASE_PATH/npm-g-ls && xargs -0 -n 1 npm -g update < <(tr \\n \\0 <$PSYRENDUST_CONFIG_BASE_PATH/npm-g-ls) && rm $PSYRENDUST_CONFIG_BASE_PATH/npm-g-ls"
-
-
-
-# ------------------------------------------------------------------------------
 # Add some OS related configuration
 # ------------------------------------------------------------------------------
 if [[ -n $SYSTEM_IS_MAC ]]; then

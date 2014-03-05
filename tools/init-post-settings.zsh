@@ -22,39 +22,19 @@ fi
 
 # Settings for zsh-syntax-highlighting plugin
 if [[ -n $SYSTEM_IS_MAC ]]; then
-  # --------------------------------------------------------------------------------------------------------------------
-  # ASSIGNMENTS                                                               # DEFAULT VALUE         DESCRIPTION
-  # --------------------------------------------------------------------------------------------------------------------
-  ZSH_HIGHLIGHT_STYLES[default]=none                                          # none                  : parts of the buffer that do not match anything
-  ZSH_HIGHLIGHT_STYLES[unknown-token]=fg=red,bold                             # fg=red,bold           : unknown tokens / errors
-  ZSH_HIGHLIGHT_STYLES[reserved-word]=yellow,bold                             # fg=yellow             : shell reserved words
+  # Set highlighters.
+  zstyle -a ':psyrendust:module:syntax-highlighting' highlighters 'ZSH_HIGHLIGHT_HIGHLIGHTERS'
+  if (( ${#ZSH_HIGHLIGHT_HIGHLIGHTERS[@]} == 0 )); then
+    ZSH_HIGHLIGHT_HIGHLIGHTERS=(main)
+  fi
 
-  ZSH_HIGHLIGHT_STYLES[alias]=fg=green                                        # fg=green              : aliases
-  ZSH_HIGHLIGHT_STYLES[builtin]=fg=green                                      # fg=green              : shell builtin commands
-  ZSH_HIGHLIGHT_STYLES[command]=fg=green                                      # fg=green              : commands
-  ZSH_HIGHLIGHT_STYLES[commandseparator]=fg=green                             # none                  : command separation tokens
-  ZSH_HIGHLIGHT_STYLES[precommand]=fg=green                                   # fg=green,underline    : precommands (i.e. exec, builtin, ...)
-  ZSH_HIGHLIGHT_STYLES[function]=fg=green                                     # fg=green              : functions
-  ZSH_HIGHLIGHT_STYLES[hashed-command]=fg=green                               # fg=green              : hashed commands
-  ZSH_HIGHLIGHT_STYLES[single-hyphen-option]=fg=green,bold                    # none                  : single hyphen options
-  ZSH_HIGHLIGHT_STYLES[double-hyphen-option]=fg=green,bold                    # none                  : double hyphen options
-
-
-  ZSH_HIGHLIGHT_STYLES[assign]=fg=magenta,bold                                # none                  : variable assignments
-  ZSH_HIGHLIGHT_STYLES[globbing]=fg=magenta,bold                              # fg=blue               : globbing expressions
-  ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]=fg=magenta              # fg=cyan               : dollar double quoted arguments
-
-
-  ZSH_HIGHLIGHT_STYLES[single-quoted-argument]=fg=blue,bold                   # fg=yellow             : single quoted arguments
-  ZSH_HIGHLIGHT_STYLES[double-quoted-argument]=fg=blue,bold                   # fg=yellow             : double quoted arguments
-
-  ZSH_HIGHLIGHT_STYLES[back-quoted-argument]=fg=cyan,bold                     # none                  : backquoted expressions
-  ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]=fg=cyan,bold              # fg=cyan               : back double quoted arguments
-  ZSH_HIGHLIGHT_STYLES[history-expansion]=fg=cyan,bold                        # fg=blue               : history expansion expressions
-
-  ZSH_HIGHLIGHT_STYLES[path]=fg=blue,bold                                     # underline             : paths
-  ZSH_HIGHLIGHT_STYLES[path_approx]=fg=blue,bold                              # fg=yellow,underline   : approximated paths
-  ZSH_HIGHLIGHT_STYLES[path_prefix]=fg=blue,bold                              # underline             : path prefixes
+  # Set highlighting styles.
+  typeset -A syntax_highlighting_styles
+  zstyle -a ':prezto:module:syntax-highlighting' styles 'syntax_highlighting_styles'
+  for syntax_highlighting_style in "${(k)syntax_highlighting_styles[@]}"; do
+    ZSH_HIGHLIGHT_STYLES[$syntax_highlighting_style]="$syntax_highlighting_styles[$syntax_highlighting_style]"
+  done
+  unset syntax_highlighting_style{s,}
 fi
 
 
