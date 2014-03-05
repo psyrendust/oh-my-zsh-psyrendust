@@ -1,11 +1,17 @@
 # Init plugins
-psyrendust source "$ZSH_CUSTOM/tools/init-plugins.zsh"
+if [[ -s "$ZSH_CUSTOM/tools/init-plugins.zsh" ]]; then
+  source "$ZSH_CUSTOM/tools/init-plugins.zsh"
+fi
 
 # Init aliases
-psyrendust source "$ZSH_CUSTOM/tools/init-aliases.zsh"
+if [[ -s "$ZSH_CUSTOM/tools/init-aliases.zsh" ]]; then
+  source "$ZSH_CUSTOM/tools/init-aliases.zsh"
+fi
 
 # Init functions
-psyrendust source "$ZSH_CUSTOM/tools/init-functions.zsh"
+if [[ -s "$ZSH_CUSTOM/tools/init-functions.zsh" ]]; then
+  source "$ZSH_CUSTOM/tools/init-functions.zsh"
+fi
 
 
 
@@ -15,25 +21,35 @@ psyrendust source "$ZSH_CUSTOM/tools/init-functions.zsh"
 # this file.
 # ------------------------------------------------------------------------------
 # Load custom work zshrc
-psyrendust source "$ZSHRC_WORK/.zshrc"
+if [[ -s "$ZSHRC_WORK/.zshrc" ]]; then
+  source "$ZSHRC_WORK/.zshrc"
+fi
 
 # Load custom personal zshrc
-psyrendust source "$ZSHRC_PERSONAL/.zshrc"
+if [[ -s "$ZSHRC_PERSONAL/.zshrc" ]]; then
+  source "$ZSHRC_PERSONAL/.zshrc"
+fi
 
 
 
 # Source oh-my-zsh and get things started
-psyrendust source "$ZSH/oh-my-zsh.sh"
+if [[ -s "$ZSH/oh-my-zsh.sh" ]]; then
+  source "$ZSH/oh-my-zsh.sh"
+fi
 
 
 
 # ------------------------------------------------------------------------------
 # Post initialization
 # ------------------------------------------------------------------------------
-psyrendust source "$ZSH_CUSTOM/tools/init-post-settings.zsh"
+if [[ -s "$ZSH_CUSTOM/tools/init-post-settings.zsh" ]]; then
+  source "$ZSH_CUSTOM/tools/init-post-settings.zsh"
+fi
 
 # Last run helper functions
-psyrendust source "$ZSH_CUSTOM/tools/last-run.zsh"
+if [[ -s "$ZSH_CUSTOM/tools/last-run.zsh" ]]; then
+  source "$ZSH_CUSTOM/tools/last-run.zsh"
+fi
 
 # Output our version number
 psyrendust  --version
