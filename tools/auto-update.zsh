@@ -134,30 +134,6 @@ fi
 
 
 
-# Check to see if cygwin-start has been created
-# ------------------------------------------------------------------------------
-if [[ -n $SYSTEM_IS_CYGWIN ]]; then
-  psyrendust_au_cygwin_start_bat="$PSYRENDUST_CONFIG_BASE_PATH/config/win/cygwin-start.bat"
-  psyrendust_au_cygwin_start_vbs="$PSYRENDUST_CONFIG_BASE_PATH/config/win/cygwin-start.vbs"
-  psyrendust_au_cygwin_start_bat_src="$ZSH_CUSTOM/templates/config/win/cygwin-start.bat"
-  psyrendust_au_cygwin_start_vbs_src="$ZSH_CUSTOM/templates/config/win/cygwin-start.vbs"
-  if [[ ! -d "$PSYRENDUST_CONFIG_BASE_PATH/config/win" ]]; then
-    mkdir "$PSYRENDUST_CONFIG_BASE_PATH/config/win"
-  fi
-  if [[ ! -f "$psyrendust_au_cygwin_start_vbs" ]]; then
-    sed "s/CURRENT_USER_NAME/$(whoami)/g" "$psyrendust_au_cygwin_start_vbs_src" > "$psyrendust_au_cygwin_start_vbs"
-  fi
-  if [[ ! -f "$psyrendust_au_cygwin_start_bat" ]]; then
-    sed "s/CURRENT_USER_NAME/$(whoami)/g" "$psyrendust_au_cygwin_start_bat_src" > "$psyrendust_au_cygwin_start_bat"
-  fi
-  unset -m psyrendust_au_cygwin_start_bat
-  unset -m psyrendust_au_cygwin_start_bat_src
-  unset -m psyrendust_au_cygwin_start_vbs
-  unset -m psyrendust_au_cygwin_start_vbs_src
-fi
-
-
-
 # Reset logs
 # ------------------------------------------------------------------------------
 _psyrendust-au-log-delete
@@ -340,26 +316,7 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
     fi
     prprompt -x
     sleep 1
-    if [[ -n $SYSTEM_IS_MAC ]]; then
-      # If we are running OS X we can use applescript to create a new tab and
-      # close the current tab we are on
-      osascript &>/dev/null <<EOF
-tell application "iTerm"
-activate
-tell application "System Events"
-  keystroke "t" using command down
-  key code 123 using {command down, option down}
-  keystroke "w" using command down
-  key code 124 using {command down, option down}
-end tell
-end tell
-EOF
-    elif [[ -n $SYSTEM_IS_CYGWIN ]] && [[ -f "$psyrendust_au_cygwin_start_vbs" ]]; then
-      # If we are running cygwin we can start a new console and exit the
-      # previous one
-      cygstart "$psyrendust_au_cygwin_start_vbs"
-      exit
-    fi
+    psy restartshell
   } &!
 else
   {

@@ -1,6 +1,6 @@
  ConEmuLn.x64
 
- Timestamp is 52f2b0de (Thu Feb 06 01:45:02 2014)
+ Timestamp is 52e2d81c (Sat Jan 25 01:16:12 2014)
 
  Preferred load address is 0000000180000000
 
@@ -16,7 +16,7 @@
  0002:000008f8 00000226H .idata$6                DATA
  0002:00000b20 0000018fH .edata                  DATA
  0003:00000000 00000128H .data                   DATA
- 0003:00000130 000007c0H .bss                    DATA
+ 0003:00000130 000007b8H .bss                    DATA
  0004:00000000 00000348H .pdata                  DATA
  0005:00000000 00000058H .rsrc$01                DATA
  0005:00000060 00000298H .rsrc$02                DATA
@@ -64,8 +64,8 @@
  0001:000024e0       GetGlobalInfoW             00000001800034e0 f   ConEmuLn2800.obj
  0001:00002598       ?GetPluginInfoW2800@@YAXPEAX@Z 0000000180003598 f   ConEmuLn2800.obj
  0001:00002608       ?SetStartupInfoW2800@@YAXPEAX@Z 0000000180003608 f   ConEmuLn2800.obj
- 0001:00002744       ?OpenW2800@@YAPEAXPEBX@Z   0000000180003744 f   ConEmuLn2800.obj
  0001:00002744       ?OpenW1900@@YAPEAXPEBX@Z   0000000180003744 f   ConEmuLn1900.obj
+ 0001:00002744       ?OpenW2800@@YAPEAXPEBX@Z   0000000180003744 f   ConEmuLn2800.obj
  0001:00002768       ?ExitFARW2800@@YAXXZ       0000000180003768 f   ConEmuLn2800.obj
  0001:000027a4       ?GetMsgW2800@@YAPEB_WH@Z   00000001800037a4 f   ConEmuLn2800.obj
  0001:00003050       ?ConfigureW2800@@YAHH@Z    0000000180004050 f   ConEmuLn2800.obj
@@ -91,8 +91,8 @@
  0001:0000438c       VerQueryValueW             000000018000538c f   version:VERSION.dll
  0001:00004392       GetFileVersionInfoW        0000000180005392 f   version:VERSION.dll
  0001:00004398       GetFileVersionInfoSizeW    0000000180005398 f   version:VERSION.dll
- 0001:000043b0       __chkstk                   00000001800053b0 f   chkstk.obj
  0001:000043b0       _alloca_probe              00000001800053b0     chkstk.obj
+ 0001:000043b0       __chkstk                   00000001800053b0 f   chkstk.obj
  0002:00000000       __imp_RegQueryValueExW     0000000180006000     advapi32:ADVAPI32.dll
  0002:00000008       __imp_RegOpenKeyExW        0000000180006008     advapi32:ADVAPI32.dll
  0002:00000010       __imp_RegSetValueExW       0000000180006010     advapi32:ADVAPI32.dll
@@ -183,8 +183,7 @@
  0003:000005a8       ?FSFW2800@@3PEAUFarStandardFunctions@@EA 00000001800075a8     ConEmuLn2800.obj
  0003:000007c0       ?InfoA@@3PEAUPluginStartupInfo@@EA 00000001800077c0     ConEmuLnA.obj
  0003:000007c8       ?FSFA@@3PEAUFarStandardFunctions@@EA 00000001800077c8     ConEmuLnA.obj
- 0003:000008e0       ?AssertMsgBox@@3P6AHPEB_WI0PEAUHWND__@@_N@ZEA 00000001800078e0     MAssert.obj
- 0003:000008e8       ?ghHeap@@3PEAXEA           00000001800078e8     Memory.obj
+ 0003:000008e0       ?ghHeap@@3PEAXEA           00000001800078e0     Memory.obj
 
  entry point at        0001:00000c20
 
