@@ -37,16 +37,10 @@ cp "$ZSH_CUSTOM/templates/.zshrc" "$HOME/.zshrc"
 
 
 
-# Check to see if config path has been created
+# Starting post-update
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-update-config-path() {
-  [[ -d $PSYRENDUST_CONFIG_BASE_PATH ]] || mkdir -p $PSYRENDUST_CONFIG_BASE_PATH
-  [[ -n $SYSTEM_IS_VM ]] || mkdir -p $PSYRENDUST_CONFIG_BASE_PATH/config/{git,win}
-  # if [[ -n $SYSTEM_IS_VM ]]; then
-  #   Symlink config path
-  #   Don't process this for now. Use the link extension to create symlinks
-  #   [[ -d "$SYSTEM_VM_HOME/.psyrendust/config" ]] && ln -sf "$SYSTEM_VM_HOME/.psyrendust/config" "$PSYRENDUST_CONFIG_BASE_PATH/config"
-  # fi
+_psyrendust-procedure-start() {
+  pplightblue -i "[oh-my-zsh-psyrendust] Post update: "
 }
 
 
