@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <key name="Software">
 	<key name="ConEmu">
-		<key name=".Vanilla" modified="2014-03-04 19:36:00" build="140205">
+		<key name=".Vanilla" modified="2014-03-05 13:53:14" build="140205">
 			<value name="ColorTable00" type="dword" data="00000000"/>
 			<value name="ColorTable01" type="dword" data="00a67047"/>
 			<value name="ColorTable02" type="dword" data="004cd037"/>
@@ -66,7 +66,7 @@
 			<value name="SetDefaultTerminalStartup" type="hex" data="01"/>
 			<value name="SetDefaultTerminalStartupTSA" type="hex" data="01"/>
 			<value name="DefaultTerminalNoInjects" type="hex" data="00"/>
-			<value name="DefaultTerminalConfirm" type="hex" data="01"/>
+			<value name="DefaultTerminalConfirm" type="hex" data="02"/>
 			<value name="DefaultTerminalApps" type="string" data="explorer.exe"/>
 			<value name="ProcessAnsi" type="hex" data="01"/>
 			<value name="ProcessNewConArg" type="hex" data="01"/>
@@ -81,7 +81,7 @@
 			<value name="StoreTaskbarkTasks" type="hex" data="01"/>
 			<value name="StoreTaskbarCommands" type="hex" data="01"/>
 			<value name="SaveCmdHistory" type="hex" data="01"/>
-			<value name="CmdLineHistory" type="multi"/>
+			<value name="CmdLineHistory" type="multi"><line data="&quot;C:\cygwin64\bin\zsh&quot; --login -i"/></value>
 			<value name="SingleInstance" type="hex" data="01"/>
 			<value name="ShowHelpTooltips" type="hex" data="01"/>
 			<value name="Multi" type="hex" data="01"/>
@@ -127,12 +127,12 @@
 			<value name="ColorKeyTransparent" type="hex" data="00"/>
 			<value name="ColorKeyValue" type="dword" data="00010101"/>
 			<value name="UseCurrentSizePos" type="hex" data="01"/>
-			<value name="WindowMode" type="dword" data="00000520"/>
-			<value name="ConWnd Width" type="dword" data="0000006d"/>
-			<value name="ConWnd Height" type="dword" data="00000029"/>
+			<value name="WindowMode" type="dword" data="0000051f"/>
+			<value name="ConWnd Width" type="dword" data="00000064"/>
+			<value name="ConWnd Height" type="dword" data="0000002f"/>
 			<value name="Cascaded" type="hex" data="01"/>
-			<value name="ConWnd X" type="dword" data="0000018f"/>
-			<value name="ConWnd Y" type="dword" data="00000005"/>
+			<value name="ConWnd X" type="dword" data="00000000"/>
+			<value name="ConWnd Y" type="dword" data="00000000"/>
 			<value name="16bit Height" type="dword" data="00000000"/>
 			<value name="AutoSaveSizePos" type="hex" data="00"/>
 			<value name="IntegralSize" type="hex" data="00"/>
@@ -385,7 +385,7 @@
 			<value name="Multi.NewAttach" type="dword" data="00005b47"/>
 			<value name="Multi.Next" type="dword" data="00005b51"/>
 			<value name="Multi.NextShift" type="dword" data="00105b51"/>
-			<value name="Multi.Recreate" type="dword" data="00005bc0"/>
+			<value name="Multi.Recreate" type="dword" data="00101152"/>
 			<value name="Multi.AltCon" type="dword" data="00005b41"/>
 			<value name="Multi.Scroll" type="dword" data="00005b53"/>
 			<value name="Multi.Close" type="dword" data="00005b2e"/>
@@ -518,9 +518,9 @@
 			<value name="DndLKey" type="hex" data="00"/>
 			<value name="DndRKey" type="hex" data="a2"/>
 			<value name="WndDragKey" type="dword" data="00121101"/>
-				<key name="Tasks" modified="2014-03-04 19:36:00" build="140205">
+				<key name="Tasks" modified="2014-03-05 13:53:14" build="140205">
 				<value name="Count" type="dword" data="00000006"/>
-						<key name="Task1" modified="2014-03-04 19:36:00" build="140205">
+						<key name="Task1" modified="2014-03-05 13:53:14" build="140205">
 					<value name="Name" type="string" data="{CygwinShell}"/>
 					<value name="Hotkey" type="dword" data="00001154"/>
 					<value name="GuiArgs" type="string" data=""/>
@@ -528,7 +528,7 @@
 					<value name="Active" type="dword" data="00000000"/>
 					<value name="Count" type="dword" data="00000001"/>
 				</key>
-						<key name="Task2" modified="2014-03-04 19:36:00" build="140205">
+						<key name="Task2" modified="2014-03-05 13:53:14" build="140205">
 					<value name="Name" type="string" data="{PowerShell}"/>
 					<value name="Hotkey" type="dword" data="00000000"/>
 					<value name="GuiArgs" type="string" data=""/>
@@ -536,7 +536,7 @@
 					<value name="Active" type="dword" data="00000000"/>
 					<value name="Count" type="dword" data="00000001"/>
 				</key>
-						<key name="Task3" modified="2014-03-04 19:36:00" build="140205">
+						<key name="Task3" modified="2014-03-05 13:53:14" build="140205">
 					<value name="Name" type="string" data="{PowerShell (Admin)}"/>
 					<value name="Hotkey" type="dword" data="00000000"/>
 					<value name="GuiArgs" type="string" data=""/>
@@ -544,7 +544,7 @@
 					<value name="Active" type="dword" data="00000000"/>
 					<value name="Count" type="dword" data="00000001"/>
 				</key>
-						<key name="Task4" modified="2014-03-04 19:36:00" build="140205">
+						<key name="Task4" modified="2014-03-05 13:53:14" build="140205">
 					<value name="Name" type="string" data="{cmd}"/>
 					<value name="Hotkey" type="dword" data="00000000"/>
 					<value name="GuiArgs" type="string" data=""/>
@@ -552,7 +552,7 @@
 					<value name="Active" type="dword" data="00000000"/>
 					<value name="Count" type="dword" data="00000001"/>
 				</key>
-						<key name="Task5" modified="2014-03-04 19:36:00" build="140205">
+						<key name="Task5" modified="2014-03-05 13:53:14" build="140205">
 					<value name="Name" type="string" data="{cmd (Admin)}"/>
 					<value name="Hotkey" type="dword" data="00000000"/>
 					<value name="GuiArgs" type="string" data=""/>
@@ -560,7 +560,7 @@
 					<value name="Active" type="dword" data="00000000"/>
 					<value name="Count" type="dword" data="00000001"/>
 				</key>
-						<key name="Task6" modified="2014-03-04 19:36:00" build="140205">
+						<key name="Task6" modified="2014-03-05 13:53:14" build="140205">
 					<value name="Name" type="string" data="{Git bash}"/>
 					<value name="Hotkey" type="dword" data="00000000"/>
 					<value name="GuiArgs" type="string" data=""/>
@@ -569,10 +569,10 @@
 					<value name="Count" type="dword" data="00000001"/>
 				</key>
 			</key>
-				<key name="Apps" modified="2014-03-04 19:36:00" build="140205">
+				<key name="Apps" modified="2014-03-05 13:53:14" build="140205">
 				<value name="Count" type="dword" data="00000000"/>
 			</key>
-				<key name="Colors" modified="2014-03-04 19:36:00" build="140205">
+				<key name="Colors" modified="2014-03-05 13:53:14" build="140205">
 				<value name="Count" type="dword" data="00000000"/>
 			</key>
 		</key>
