@@ -6,7 +6,7 @@ INSTALLDIR= ${INSTALL} -d
 INSTALLBIN= ${INSTALL} -m 755
 INSTALLMAN= ${INSTALL} -m 644
 
-all: plog.1
+all: uninstall man install
 
 uninstall:
 	rm -f ${DESTDIR}${BINDIR}/plog
@@ -23,4 +23,4 @@ man: plog.1
 plog.1: plog.1.md
 	pandoc -s -w man plog.1.md -o plog.1
 
-.PHONY: all install uninstall man
+.PHONY: all man uninstall install
