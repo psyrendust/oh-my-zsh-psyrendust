@@ -65,6 +65,7 @@ elif [[ -n $SYSTEM_IS_CYGWIN ]]; then
   plugins=(
     "${plugins[@]}"
     cygwin-gem
+    cygwin-ln
     kdiff3
   )
 fi
