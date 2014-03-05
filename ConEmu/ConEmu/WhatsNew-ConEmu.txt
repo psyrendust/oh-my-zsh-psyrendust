@@ -15,63 +15,6 @@ http://code.google.com/p/conemu-maximus5/wiki/Awards
 *****************
 
 
-2014.02.05
-[%] Was not working: "set ConEmuFakeDT=2013-11-30".
-[*] New status line cursor info format: ‘(col,row) height [V|H]’.
-[*] Show one info col instead of three cursor columns (by default).
-[*] Issue 1431: Auto disable ‘Desktop’ mode when enabling ‘Quake’ mode.
-[%] Long console output may fails in Windows 8 (Far Manager).
-[*] Use static link of user32 in ConEmuHk.
-[%] After "cmd -new_console" from "far /w" prompt, buffer was disabled unexpectedly.
-[*] Issue 1464: Takes care of system ‘Active window tracking’ on 3rd-state of ‘Activate split on mouse over’.
-[%] Issue 1165: Scrolling console buffer with mouse wheel in Far only works when mouse is over scroll bar.
-
-
-2014.02.03
-[*] Vim fails to react for window size change in the xterm terminal mode.
-
-
-2014.02.02
-[+] New ‘Intelligent selection’ mode.
-    Now, you may start both block or text selection with mouse without modifier pressed.
-    Type of selection will be determined by the direction of LButton mouse drag,
-    when you start drag vertically - block selection, horizontally - text selection.
-    If you set up and press selection modifier - mouse selection will start even
-    if ‘Intelligent selection’ is disabled with exceptions.
-    New mode may be disabled ‘totally’ or for specified processes only.
-    For example, Vim knows about text selection and can process mouse internally,
-    and Far Manager can use mouse for dragging files or text selection in Editors.
-    When "far" specified in the exceptions without extension, you can use new mode
-    in the ‘User screen’ (panels are off) and in Viewers.
-[*] So, ‘Mark/Copy’ settings page redesigned
-[*] GuiMacro. Paste(9), Paste(10) - One-line paste with or without confirmation.
-[*] ‘Change prompt position with LClick’ works on left button release.
-[*] Some internal changes.
-
-
-2014.01.28
-[+] New pasting mode ‘One line’ (useful with "git status" & "git add").
-    When ‘Right mouse button action’ is set to ‘Auto’ you may press it during
-    selection (when Left mouse button is still pressed) to paste all copies
-    lines as a ONE space-delimited line.
-[%] Issue 1416: ReAttach after Detach fails for non-console applications
-[*] One more icon fix in MessageBox dialogs
-
-
-2014.01.27
-[+] AnsiColors24bit.ps1 - example how to print with 24bit color with PowerShell script.
-[+] Support cppcheck erors in hyperlink detector.
-[+] Issue 992: Support ‘file:///c:\...’ hyperlinks.
-[%] Issue 1053: Disable hyperlinks detector on Far panels.
-[%] Settings. Mouse button action fails to be changed.
-[+] Allow ‘-’style switches in task params
-[+] Hints in ‘Settings\Tasks’ and ‘Settings\Integration’.
-[*] Small redesign of ‘Settings\Tasks’.
-[%] Fix icon in some dialogs captions.
-[%] Don't update xml if <CmdLineHistory> was not changed actually.
-[*] Some internal changes.
-
-
 2014.01.24
 [*] Checkbox 'New window' in create dialog was ignored in 'Single instance mode'.
 [*] Wrong error message was displayed if empty passwords are disabled in system policy.

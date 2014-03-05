@@ -1,6 +1,6 @@
  ConEmuLn
 
- Timestamp is 52f2aff2 (Thu Feb 06 01:41:06 2014)
+ Timestamp is 52e2d6de (Sat Jan 25 01:10:54 2014)
 
  Preferred load address is 10000000
 
@@ -14,14 +14,14 @@
  0002:00000558 00000226H .idata$6                DATA
  0002:00000780 0000018bH .edata                  DATA
  0003:00000000 000000ccH .data                   DATA
- 0003:000000d0 00000770H .bss                    DATA
+ 0003:000000d0 0000076cH .bss                    DATA
  0004:00000000 00000058H .rsrc$01                DATA
  0004:00000060 00000298H .rsrc$02                DATA
 
   Address         Publics by Value              Rva+Base       Lib:Object
 
- 0000:00000000       ___safe_se_handler_count   00000000     <absolute>
  0000:00000000       ___safe_se_handler_table   00000000     <absolute>
+ 0000:00000000       ___safe_se_handler_count   00000000     <absolute>
  0001:00000000       __chkstk                   10001000 f   chkstk.obj
  0001:00000000       __alloca_probe             10001000     chkstk.obj
  0001:000001c8       _GetMinFarVersionW@0       100011c8 f   ConEmuLn.obj
@@ -55,8 +55,8 @@
  0001:00001295       ?SettingsSaveW995@@YIXXZ   10002295 f   ConEmuLn995.obj
  0001:000012a0       ?GetPluginInfoW1900@@YIXPAX@Z 100022a0 f   ConEmuLn1900.obj
  0001:000012f0       ?SetStartupInfoW1900@@YIXPAX@Z 100022f0 f   ConEmuLn1900.obj
- 0001:000013de       ?OpenW1900@@YGPAXPBX@Z     100023de f   ConEmuLn1900.obj
  0001:000013de       ?OpenW2800@@YGPAXPBX@Z     100023de f   ConEmuLn2800.obj
+ 0001:000013de       ?OpenW1900@@YGPAXPBX@Z     100023de f   ConEmuLn1900.obj
  0001:000013fd       ?ExitFARW1900@@YIXXZ       100023fd f   ConEmuLn1900.obj
  0001:0000142c       ?GetMsgW1900@@YIPB_WH@Z    1000242c f   ConEmuLn1900.obj
  0001:00001a51       ?ConfigureW1900@@YIHH@Z    10002a51 f   ConEmuLn1900.obj
@@ -179,8 +179,7 @@
  0003:0000051c       ?FSFW2800@@3PAUFarStandardFunctions@@A 1000651c     ConEmuLn2800.obj
  0003:00000728       ?InfoA@@3PAUPluginStartupInfo@@A 10006728     ConEmuLnA.obj
  0003:0000072c       ?FSFA@@3PAUFarStandardFunctions@@A 1000672c     ConEmuLnA.obj
- 0003:00000838       ?AssertMsgBox@@3P6IHPB_WI0PAUHWND__@@_N@ZA 10006838     MAssert.obj
- 0003:0000083c       ?ghHeap@@3PAXA             1000683c     Memory.obj
+ 0003:00000838       ?ghHeap@@3PAXA             10006838     Memory.obj
 
  entry point at        0001:00000a35
 

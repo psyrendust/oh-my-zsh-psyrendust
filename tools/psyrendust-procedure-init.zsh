@@ -104,11 +104,12 @@ fi
 
 # Get all procedure functions in calling script
 # ------------------------------------------------------------------------------
-psyrendust_pi_total_functions=(`cat $psyrendust_pi_script_path | grep "^_psyrendust-procedure-" | cut -d\( -f 1`)
-psyrendust_pi_total_functions+=(`cat $psyrendust_pi_script_path | grep "^function _psyrendust-procedure-" | cut -d\  -f 2 | cut -d\( -f 1`)
-ppverbose "psyrendust_pi_total_functions: " "$psyrendust_pi_total_functions"
+psyrendust_pi_functions_array=(`cat $psyrendust_pi_script_path | grep "^_psyrendust-procedure-" | cut -d\( -f 1`)
+ppverbose "psyrendust_pi_functions_array 1: " "$psyrendust_pi_functions_array"
+psyrendust_pi_functions_array+=(`cat $psyrendust_pi_script_path | grep "^function _psyrendust-procedure-" | cut -d\  -f 2 | cut -d\( -f 1`)
+ppverbose "psyrendust_pi_functions_array 2: " "$psyrendust_pi_functions_array"
 
-psyrendust_pi_max_breakpoints=$((${#psyrendust_pi_total_functions[@]}))
+psyrendust_pi_max_breakpoints=$((${#psyrendust_pi_functions_array[@]}))
 ppverbose "psyrendust_pi_max_breakpoints: " "$psyrendust_pi_max_breakpoints"
 
 
@@ -148,15 +149,15 @@ for (( psyrendust_pi_procedure_count=$psyrendust_pi_current_breakpoint; psyrendu
 
   # Exit if the next function doesn't exist
   ppverbose "Let's see if the next function exists and exit if it doesn't"
-  if [[ -n `whence -w ${psyrendust_pi_total_functions[$psyrendust_pi_procedure_count]} | grep "function"` ]]; then
+  if [[ -n `whence -w ${psyrendust_pi_functions_array[$psyrendust_pi_procedure_count]} | grep "function"` ]]; then
     # Saving the current psyrendust_pi_current_breakpoint for auto resuming of this script
     ppverbose "Saving the current psyrendust_pi_current_breakpoint for auto resuming of this script"
     ppverbose "- psyrendust_pi_current_breakpoint = " "$psyrendust_pi_procedure_count"
     echo "psyrendust_pi_current_breakpoint=$psyrendust_pi_procedure_count" > $psyrendust_pi_config_breakpoint
 
     # Execute the current procedure function
-    ppverbose "Execute procedure function: " "${psyrendust_pi_total_functions[$psyrendust_pi_procedure_count]}"
-    ${psyrendust_pi_total_functions[$psyrendust_pi_procedure_count]} 2> $psyrendust_pi_procedure_result
+    ppverbose "Execute procedure function: " "${psyrendust_pi_functions_array[$psyrendust_pi_procedure_count]}"
+    ${psyrendust_pi_functions_array[$psyrendust_pi_procedure_count]} 2> $psyrendust_pi_procedure_result
 
     # Output error and exit if there was a problem
     if [[ -n `cat $psyrendust_pi_procedure_result` ]]; then
@@ -168,11 +169,11 @@ for (( psyrendust_pi_procedure_count=$psyrendust_pi_current_breakpoint; psyrendu
     fi
 
     # Remove the shell function from the command hash table
-    ppverbose "Removing shell function from the command hash table: " "${psyrendust_pi_total_functions[$psyrendust_pi_procedure_count]}"
-    unfunction -m ${psyrendust_pi_total_functions[$psyrendust_pi_procedure_count]}
+    ppverbose "Removing shell function from the command hash table: " "${psyrendust_pi_functions_array[$psyrendust_pi_procedure_count]}"
+    unfunction -m ${psyrendust_pi_functions_array[$psyrendust_pi_procedure_count]}
   else
     ppdanger -i "The following function does not exist:"
-    ppwarning " ${psyrendust_pi_total_functions[$psyrendust_pi_procedure_count]}"
+    ppwarning " ${psyrendust_pi_functions_array[$psyrendust_pi_procedure_count]}"
     return 0
   fi
 done
@@ -223,14 +224,14 @@ pprocess -x "$psyrendust_pi_script_namespace"
 
 # Remove any local vars and functions from the command hash table
 # ------------------------------------------------------------------------------
-unset psyrendust_pi_option
 unset psyrendust_pi_config_breakpoint
 unset psyrendust_pi_config_user_info
 unset psyrendust_pi_current_breakpoint
+unset psyrendust_pi_functions_array
 unset psyrendust_pi_max_breakpoints
+unset psyrendust_pi_option
 unset psyrendust_pi_procedure_count
 unset psyrendust_pi_procedure_processing
 unset psyrendust_pi_procedure_result
 unset psyrendust_pi_script_namespace
 unset psyrendust_pi_script_path
-unset psyrendust_pi_total_functions
