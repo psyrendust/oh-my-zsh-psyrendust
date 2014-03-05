@@ -35,8 +35,5 @@ psyrendust source "$ZSH_CUSTOM/tools/init-post-settings.zsh"
 # Last run helper functions
 psyrendust source "$ZSH_CUSTOM/tools/last-run.zsh"
 
-# Load fasd
-eval "$(fasd --init zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install)"
-
 # Output our version number
 psyrendust  --version
