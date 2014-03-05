@@ -734,6 +734,9 @@ _psyrendust-procedure-copy-templates() {
   ppinfo "Copy over template files to your home folder"
   [[ -f "$ZSH_CUSTOM/templates/.gemrc" ]] && cp "$ZSH_CUSTOM/templates/.gemrc" "$HOME/.gemrc"
   [[ -f "$ZSH_CUSTOM/templates/.gitignore_global" ]] && cp "$ZSH_CUSTOM/templates/.gitignore_global" "${HOME}/.gitignore_global"
+  [[ -f "$ZSH_CUSTOM/templates/.zlogin" ]] && cp "$ZSH_CUSTOM/templates/.zlogin" "$HOME/.zlogin"
+  [[ -f "$ZSH_CUSTOM/templates/.zprofile" ]] && cp "$ZSH_CUSTOM/templates/.zprofile" "$HOME/.zprofile"
+  [[ -f "$ZSH_CUSTOM/templates/.zshenv" ]] && cp "$ZSH_CUSTOM/templates/.zshenv" "$HOME/.zshenv"
   [[ -f "$ZSH_CUSTOM/templates/.zshrc" ]] && cp "$ZSH_CUSTOM/templates/.zshrc" "$HOME/.zshrc"
   if [[ -n $SYSTEM_IS_CYGWIN ]]; then
     # Replace win .gitconfig

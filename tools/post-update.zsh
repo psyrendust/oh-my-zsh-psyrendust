@@ -25,24 +25,32 @@ mkdir -p "$PSYRENDUST_BACKUP_FOLDER"
 
 
 
-# Replace dotfiles
-# ------------------------------------------------------------------------------
-cp "$ZSH_CUSTOM/templates/.gemrc" "$HOME/.gemrc"
-cp "$ZSH_CUSTOM/templates/.gitignore_global" "${HOME}/.gitignore_global"
-cp "$ZSH_CUSTOM/templates/.zlogin" "$HOME/.zlogin"
-cp "$ZSH_CUSTOM/templates/.zprofile" "$HOME/.zprofile"
-cp "$ZSH_CUSTOM/templates/.zshenv" "$HOME/.zshenv"
-cp "$ZSH_CUSTOM/templates/.zshrc" "$HOME/.zshrc"
-/usr/bin/env zsh
-
-
-
 # Starting post-update
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-start() {
   pplightblue -i "[oh-my-zsh-psyrendust] Post update: "
 }
 
+
+
+# Replace dotfiles
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-replace-dotfiles() {
+  cp "$ZSH_CUSTOM/templates/.gemrc" "$HOME/.gemrc"
+  cp "$ZSH_CUSTOM/templates/.gitignore_global" "${HOME}/.gitignore_global"
+  cp "$ZSH_CUSTOM/templates/.zlogin" "$HOME/.zlogin"
+  cp "$ZSH_CUSTOM/templates/.zprofile" "$HOME/.zprofile"
+  cp "$ZSH_CUSTOM/templates/.zshenv" "$HOME/.zshenv"
+  cp "$ZSH_CUSTOM/templates/.zshrc" "$HOME/.zshrc"
+}
+
+
+
+# Source shell
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-source-shell() {
+  /usr/bin/env zsh
+}
 
 
 # Migrate any legacy gitconfig-includes
@@ -143,5 +151,3 @@ _psyrendust-procedure-git-user-email() {
     echo
   fi
 }
-
-
