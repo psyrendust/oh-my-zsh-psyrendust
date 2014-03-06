@@ -1,0 +1,55 @@
+plog(1) -- logfile helper function
+==================================
+
+## SYNOPSIS
+
+`plog` <NAMESPACE> <MESSAGE>  
+`plog` [`-l` | `-e`] <NAMESPACE> <MESSAGE>  
+`plog` [`-d`] <NAMESPACE>  
+
+## DESCRIPTION
+
+Output to a logfile located in `$HOME/.psyrendust`. The <NAMESPACE> argument is appended to the name of the logfile.
+
+* `-l`:
+  Append a <MESSAGE> to a logfile for a given <NAMESPACE>.
+
+* `-e`:
+  Append a <MESSAGE> to an error logfile for a given <NAMESPACE>.
+
+* `-d`:
+  Delete the log and error logfile for a given <NAMESPACE>.
+
+* `--help`:
+  Display this help and exit.
+
+## EXAMPLES
+
+Log a message to a logfile named `foobar` (saves to `$HOME/.psyrendust/log-foobar.log`):
+
+    plog -l foobar "Logging foobar message"  
+
+You can optionally choose to pass no `OPTION` which is equivalent to `plog-l`:
+
+    plog foobar "Logging foobar message"  
+
+
+Log an error message to a logfile named `foobar` (saves to `$HOME/.psyrendust/log-error-foobar.log`):
+
+    plog -e foobar "Logging foobar message"  
+
+
+Delete all `foobar` logfiles (deletes `$HOME/.psyrendust/log-foobar.log` and `$HOME/.psyrendust/log-error-foobar.log`):
+
+    plog -d foobar  
+
+## AUTHOR
+
+    Written by Larry Gordon
+
+## COPYRIGHT
+
+    Copyright (C) 2013 Free Software Foundation, Inc.
+    License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.  
+    This is free software: you are free to change and redistribute it.
+    There is NO WARRANTY, to the extent permitted by law.

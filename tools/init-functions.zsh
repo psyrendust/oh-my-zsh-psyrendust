@@ -35,15 +35,14 @@ psyrendust-restartshell() {
   if [[ -n $SYSTEM_IS_MAC ]]; then
     # If we are running OS X we can use applescript to create a new tab and
     # close the current tab we are on
-    ppemphasis "Restarting iTerm Shell in 2 seconds"
-    sleep 2
+    ppemphasis "Restarting iTerm Shell..."
+    sleep 1
     osascript "$ZSH_CUSTOM/tools/restart-iterm.scpt"
   elif [[ -n $SYSTEM_IS_CYGWIN ]]; then
     # If we are running cygwin we can restart the current console
-    ppemphasis "Restarting Cygwin Shell in 2 seconds"
-    sleep 2
+    ppemphasis "Restarting Cygwin Shell..."
+    sleep 1
     cygstart "$ZSH_CUSTOM/tools/restart-cygwin.vbs"
-    exit
   fi
 }
 
@@ -88,6 +87,56 @@ psyrendust-npmupdate() {
     npm -g update $pkg
   done
   rm "$PSYRENDUST_CONFIG_BASE_PATH/npm-g-ls"
+}
+
+# Helper function: Strips ansi color codes from string
+psyrendust-stripansi() {
+  if [[ -n $SYSTEM_IS_LINUX ]]; then
+    echo $(echo $1 >1 | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})*)?m//g")
+  else
+    echo $(echo $1 >1 | sed -E "s/"$'\E'"\[([0-9]{1,2}(;[0-9]{1,2})*)?m//g")
+  fi
+}
+
+# Helper function: Initializes a given plugin if there is a difference in the version info
+psyrendust-plugin() {
+  local arg_flag="${1}"
+  local arg_name="${2}"
+  local namespace="plugin-init-$arg_name"
+  local plugin_version="$(_psyrendust-version --get "$namespace")"
+  local system_version="$(psy stripansi "$(_psyrendust-version --get)")"
+  if [[ "$plugin_version" != "$system_version" ]]; then
+    if [[ $arg_flag == "--init" ]]; then
+      psyrendust-plugin-${arg_name}
+      _psyrendust-version --set "$namespace"
+    fi
+  fi
+}
+
+# Helper function: Helps with getting what you want out of a path
+# -p: base path
+# -e: file extension
+# -f: file name with no extension
+# -F: file name with extension
+psyrendust-path() {
+  while getopts "pfFe" opts; do
+    [[ $opts == "p" ]] && local option="p" && continue
+    [[ $opts == "f" ]] && local option="f" && continue
+    [[ $opts == "F" ]] && local option="F" && continue
+    [[ $opts == "e" ]] && local option="e" && continue
+  done
+  shift
+  local path_p=${1%/*}
+  local path_f=${1##*/}
+  local path_F=${path_f%.*}
+  local path_e=${path_f##*.}
+  case $option in
+    p) echo $path_p;;
+    f) echo $path_f;;
+    F) echo $path_F;;
+    e) echo $path_e;;
+    *) echo $1;;
+  esac
 }
 
 # Helper function: Same as `[[ -f $1 ]] && source $1`, but will only happen
@@ -192,11 +241,15 @@ psyrendust() {
 # Get or set oh-my-zsh-psyrendust version number
 _psyrendust-version() {
   local arg_flag="$1"
+  local arg_target="${2:-oh-my-zsh-psyrendust}"
+  local version_file="$PSYRENDUST_CONFIG_BASE_PATH/version-$arg_target.info"
   if [[ $arg_flag == "--set" ]]; then
-    cd "$ZSH_CUSTOM"
-    local version_file="$PSYRENDUST_CONFIG_BASE_PATH/version"
+    __psyrendust_helper_git() {
+      cd "$ZSH_CUSTOM"
+      echo "$(git $@)"
+    }
     # Get the version string from git (eg. v0.1.4-248-g5840656)
-    local version=$(git describe)
+    local version=$(__psyrendust_helper_git describe)
     # Get the tag number (eg. v0.1.4)
     local version_tag=$(echo $version | cut -d- -f 1)
     # Get the total number of commits (eg. 248)
@@ -204,14 +257,23 @@ _psyrendust-version() {
     # Get the latest sha (eg. g5840656)
     local version_sha=$(echo $version | cut -d- -f 3)
     # Get the date of the latest commit (eg. 2014-03-03)
-    local version_date=$(echo $(git show -s --format=%ci | cut -d\  -f 1))
+    local version_date=$(echo $(__psyrendust_helper_git show -s --format=%ci | cut -d\  -f 1))
+    # Save version info (eg. v0.1.4p244 (2014-03-03 revision g67cfc97))
+    local version_string="${version_tag}p${version_commit} (${version_date} revision ${version_sha})"
+    # Save version prefix
+    local version_prefix="${2:-oh-my-zsh-psyrendust}"
     # Output version info to a file (eg. oh-my-zsh-psyrendust v0.1.4p244 (2014-03-03 revision g67cfc97))
-    echo "pppurple -i \"oh-my-zsh-psyrendust \"" > "$version_file"
-    echo "pplightpurple \"${version_tag}p${version_commit} (${version_date} revision ${version_sha})\"" >> "$version_file"
+    if [[ "$arg_target" == "oh-my-zsh-psyrendust" ]]; then
+      echo "pppurple -i \"$version_prefix \"" > "$version_file"
+      echo "pplightpurple \"$version_string\"" >> "$version_file"
+    else
+      echo "$version_prefix $version_string" > "$version_file"
+    fi
+    unfunction __psyrendust_helper_git
   else
     # Get the version info, if it doesn't exist create one
-    [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/version" ]] || _psyrendust-version --set
-    source "$PSYRENDUST_CONFIG_BASE_PATH/version"
+    [[ -f "$version_file" ]] || _psyrendust-version --set "$arg_target"
+    [[ "$arg_target" == "oh-my-zsh-psyrendust" ]] && source "$version_file" || cat "$version_file"
   fi
 }
 

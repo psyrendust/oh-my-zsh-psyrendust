@@ -9,63 +9,42 @@
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # ------------------------------------------------------------------------------
+
+# Set default plugins from oh-my-zsh
+zstyle -a ':psyrendust:load:oh-my-zsh:default' plugins 'plugins_oh_my_zsh_default'
+if (( ${#plugins_oh_my_zsh_default[@]} == 0 )); then
+  plugins_oh_my_zsh_default=(git gitfast)
+fi
+
+# Set default plugins from oh-my-zsh-psyrendust
+zstyle -a ':psyrendust:load:oh-my-zsh-psyrendust:default' plugins 'plugins_oh_my_zsh_psyrendust_default'
+if (( ${#plugins_oh_my_zsh_psyrendust_default[@]} == 0 )); then
+  plugins_oh_my_zsh_psyrendust_default=()
+fi
+
+# Set default system plugins from oh-my-zsh-psyrendust
+if [[ -n $SYSTEM_IS_MAC ]]; then
+  # Set default plugins from oh-my-zsh-psyrendust
+  zstyle -a ':psyrendust:load:oh-my-zsh-psyrendust:mac' plugins 'plugins_oh_my_zsh_psyrendust_system'
+  if (( ${#plugins_oh_my_zsh_psyrendust_system[@]} == 0 )); then
+    plugins_oh_my_zsh_psyrendust_system=()
+  fi
+elif [[ -n $SYSTEM_IS_CYGWIN ]]; then
+  # Set default plugins from oh-my-zsh-psyrendust
+  zstyle -a ':psyrendust:load:oh-my-zsh-psyrendust:win' plugins 'plugins_oh_my_zsh_psyrendust_system'
+  if (( ${#plugins_oh_my_zsh_psyrendust_system[@]} == 0 )); then
+    plugins_oh_my_zsh_psyrendust_system=(cygwin-gem cygwin-ln)
+  fi
+fi
+
+
+
 plugins=(
-  # Default plugins from oh-my-zsh
-  bower
-  colored-man
-  colorize
-  compleat
-  copydir
-  copyfile
-  cp
-  encode64
-  extract
-  fasd
-  gem
-  git
-  gitfast
-  git-flow-avh
-  history
-  history-substring-search
-  node
-  npm
-  ruby
-  systemadmin
-  urltools
-  # Custom plugins from oh-my-zsh-psyrendust
-  alias-grep
-  git-psyrendust
-  grunt-autocomplete
-  kill-process
-  mkcd
-  plog
-  pprocess
-  pretty-print
-  refresh
-  sublime
+  "${plugins_oh_my_zsh_default[@]}"
+  "${plugins_oh_my_zsh_psyrendust_default[@]}"
+  "${plugins_oh_my_zsh_psyrendust_system[@]}"
 )
 
-# Add some OS related configuration
-# ------------------------------------------------------------------------------
-if [[ -n $SYSTEM_IS_MAC ]]; then
-  # Add some OS X related configuration
-  # ----------------------------------------------------------------------------
-  plugins=(
-    "${plugins[@]}"
-    apache2
-    brew
-    osx
-    server
-    sudo
-    zsh-syntax-highlighting
-  )
-elif [[ -n $SYSTEM_IS_CYGWIN ]]; then
-  # Add some cygwin related configuration
-  # ----------------------------------------------------------------------------
-  plugins=(
-    "${plugins[@]}"
-    cygwin-gem
-    cygwin-ln
-    kdiff3
-  )
-fi
+unset plugins_oh_my_zsh_default
+unset plugins_oh_my_zsh_psyrendust_default
+unset plugins_oh_my_zsh_psyrendust_system

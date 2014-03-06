@@ -159,6 +159,57 @@ export PSYRENDUST_UPDATE_DAYS=1
 # Uncomment this to set your own custom right prompt id
 export PSYRENDUST_CONFIG_PRPROMPT_ID="%F{magenta}[ Psyrendust ]%f"
 
+# Set default plugins from oh-my-zsh
+zstyle ':psyrendust:load:oh-my-zsh:default' plugins \
+  'bower' \
+  'colorize' \
+  'colored-man' \
+  'compleat' \
+  'copydir' \
+  'copyfile' \
+  'cp' \
+  'encode64' \
+  'extract' \
+  'fasd' \
+  'gem' \
+  'git' \
+  'gitfast' \
+  'git-flow-avh' \
+  'history' \
+  'history-substring-search' \
+  'node' \
+  'npm' \
+  'ruby' \
+  'systemadmin' \
+  'urltools'
+
+# Set default plugins from oh-my-zsh-psyrendust
+zstyle ':psyrendust:load:oh-my-zsh-psyrendust:default' plugins \
+  'alias-grep' \
+  'git-psyrendust' \
+  'grunt-autocomplete' \
+  'kill-process' \
+  'mkcd' \
+  'plog' \
+  'pprocess' \
+  'refresh' \
+  'sublime'
+
+# Set default plugins from oh-my-zsh-psyrendust
+zstyle ':psyrendust:load:oh-my-zsh-psyrendust:mac' plugins \
+  'apache2' \
+  'brew' \
+  'osx' \
+  'server' \
+  'sudo' \
+  'zsh-syntax-highlighting'
+
+# Set default plugins from oh-my-zsh-psyrendust
+zstyle ':psyrendust:load:oh-my-zsh-psyrendust:win' plugins \
+  'cygwin-gem' \
+  'cygwin-ln' \
+  'kdiff3'
+
 # Set syntax highlighters.
 # By default, only the main highlighter is enabled.
 zstyle ':psyrendust:module:syntax-highlighting' highlighters \
@@ -259,3 +310,6 @@ DISABLE_UNTRACKED_FILES_DIRTY="true"
 # in the history command output. The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|
 # yyyy-mm-dd
 # HIST_STAMPS="mm/dd/yyyy"
+
+# Ensure that pretty-print is available
+source "${ZSH_CUSTOM:-$HOME/.oh-my-zsh-psyrendust}/plugins/pretty-print/pretty-print.plugin.zsh"
