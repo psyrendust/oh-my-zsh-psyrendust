@@ -21,6 +21,8 @@ install:
 man: plog.1
 
 plog.1: plog.1.md
-	pandoc -s -w man plog.1.md -o plog.1
+	ronn plog.1.ronn
+	mv plog.1 man1/plog.1
+	mv plog.1.html man1/plog.1.html
 
 .PHONY: all man uninstall install

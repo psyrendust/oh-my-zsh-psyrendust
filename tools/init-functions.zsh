@@ -35,15 +35,14 @@ psyrendust-restartshell() {
   if [[ -n $SYSTEM_IS_MAC ]]; then
     # If we are running OS X we can use applescript to create a new tab and
     # close the current tab we are on
-    ppemphasis "Restarting iTerm Shell in 2 seconds"
-    sleep 2
+    ppemphasis "Restarting iTerm Shell..."
+    sleep 1
     osascript "$ZSH_CUSTOM/tools/restart-iterm.scpt"
   elif [[ -n $SYSTEM_IS_CYGWIN ]]; then
     # If we are running cygwin we can restart the current console
-    ppemphasis "Restarting Cygwin Shell in 2 seconds"
-    sleep 2
+    ppemphasis "Restarting Cygwin Shell..."
+    sleep 1
     cygstart "$ZSH_CUSTOM/tools/restart-cygwin.vbs"
-    exit
   fi
 }
 
@@ -245,9 +244,12 @@ _psyrendust-version() {
   local arg_target="${2:-oh-my-zsh-psyrendust}"
   local version_file="$PSYRENDUST_CONFIG_BASE_PATH/version-$arg_target.info"
   if [[ $arg_flag == "--set" ]]; then
-    cd "$ZSH_CUSTOM"
+    __psyrendust_helper_git() {
+      cd "$ZSH_CUSTOM"
+      echo "$(git $@)"
+    }
     # Get the version string from git (eg. v0.1.4-248-g5840656)
-    local version=$(git describe)
+    local version=$(__psyrendust_helper_git describe)
     # Get the tag number (eg. v0.1.4)
     local version_tag=$(echo $version | cut -d- -f 1)
     # Get the total number of commits (eg. 248)
@@ -255,7 +257,7 @@ _psyrendust-version() {
     # Get the latest sha (eg. g5840656)
     local version_sha=$(echo $version | cut -d- -f 3)
     # Get the date of the latest commit (eg. 2014-03-03)
-    local version_date=$(echo $(git show -s --format=%ci | cut -d\  -f 1))
+    local version_date=$(echo $(__psyrendust_helper_git show -s --format=%ci | cut -d\  -f 1))
     # Save version info (eg. v0.1.4p244 (2014-03-03 revision g67cfc97))
     local version_string="${version_tag}p${version_commit} (${version_date} revision ${version_sha})"
     # Save version prefix
@@ -267,6 +269,7 @@ _psyrendust-version() {
     else
       echo "$version_prefix $version_string" > "$version_file"
     fi
+    unfunction __psyrendust_helper_git
   else
     # Get the version info, if it doesn't exist create one
     [[ -f "$version_file" ]] || _psyrendust-version --set "$arg_target"

@@ -33,39 +33,47 @@ if [[ -n $SYSTEM_IS_CYGWIN ]]; then
     local arg_link_name=$2
     if [[ -n $opt_s ]] || [[ -n $opt_P ]]; then
       if [[ -a $arg_target ]]; then
-        local link_type=""
-        if [[ -d $arg_target ]]; then
-          link_type="/D"
-        elif [[ -f $arg_target ]]; then
+        if [[ -n $arg_link_name ]]; then
+          # Remove the arg_link_name so that we can replace it
+          [[ -n $opt_f ]] && rm -rf "$arg_link_name"
+          if [[ -d $arg_target ]]; then
+            local link_type="D"
+          elif [[ -n $opt_P ]]; then
+            local link_type="H"
+          fi
         fi
+        local namespace=$(psy path -F "$arg_link_name")
         local target=$(cygpath -ma ${arg_target} | sed "s/\//\\\\/g")
         local link_name=$(cygpath -ma ${arg_link_name} | sed "s/\//\\\\/g")
-        local symlink_bat="$PSYRENDUST_CONFIG_BASE_PATH/symlink.bat"
-        local symlink_vbs="$PSYRENDUST_CONFIG_BASE_PATH/symlink.vbs"
+        local symlink_bat="$PSYRENDUST_CONFIG_BASE_PATH/symlink-$namespace.bat"
+        local symlink_vbs="$PSYRENDUST_CONFIG_BASE_PATH/symlink-$namespace.vbs"
         local cygwin_bat=$(cygpath -ma ${symlink_bat} | sed "s/\//\\\\/g")
-        [[ -a $symlink_bat ]] && rm $symlink_bat
-        [[ -a $symlink_vbs ]] && rm $symlink_vbs
+        ppinfo "namespace: $namespace"
+        ppinfo "target: $target"
+        ppinfo "link_name: $link_name"
+        ppinfo "symlink_bat: $symlink_bat"
+        ppinfo "symlink_vbs: $symlink_vbs"
+        ppinfo "cygwin_bat: $cygwin_bat"
         printf "%s\n" "@echo off" > $symlink_bat
-        printf "%s" "cmd /c mklink /D" >> $symlink_bat
+        printf "%s" "cmd /c mklink" >> $symlink_bat
+        if [[ -n $link_type ]]; then
+          printf " /%s" "$link_type" >> $symlink_bat
+        fi
         printf " \"%s\"" "$link_name" >> $symlink_bat
         printf " \"%s\"" "$target" >> $symlink_bat
-        cat > $symlink_vbs <<EOF
-Set WinScriptHost = CreateObject("WScript.Shell")
-WinScriptHost.Run Chr(34) & "$cygwin_bat" & Chr(34), 0
-Set WinScriptHost = Nothing
-EOF
+        printf "%s\n" "Set WinScriptHost = CreateObject(\"WScript.Shell\")" > $symlink_vbs
+        printf "%s \"%s\" %s" "WinScriptHost.Run Chr(34) &" "$cygwin_bat" "& Chr(34), 0" >> $symlink_vbs
+        printf "%s" "Set WinScriptHost = Nothing" >> $symlink_vbs
         chmod a+x $symlink_vbs $symlink_bat
-        # Remove the arg_link_name so that we can replace it
-        [[ -n $opt_f ]] rm -rf "$arg_link_name"
         # Create the symlink
-        cygstart $symlink_vbs
-        {
-          sleep 1
-          rm $symlink_vbs $symlink_bat
-        } &!
+        # cygstart $symlink_vbs
+        # {
+        #   sleep 1
+        #   rm $symlink_vbs $symlink_bat
+        # } &!
       fi
     else
       \ln $@
     fi
   }
-}
+fi
