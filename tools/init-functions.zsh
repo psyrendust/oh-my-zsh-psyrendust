@@ -90,6 +90,56 @@ psyrendust-npmupdate() {
   rm "$PSYRENDUST_CONFIG_BASE_PATH/npm-g-ls"
 }
 
+# Helper function: Strips ansi color codes from string
+psyrendust-stripansi() {
+  if [[ -n $SYSTEM_IS_LINUX ]]; then
+    echo $(echo $1 >1 | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})*)?m//g")
+  else
+    echo $(echo $1 >1 | sed -E "s/"$'\E'"\[([0-9]{1,2}(;[0-9]{1,2})*)?m//g")
+  fi
+}
+
+# Helper function: Initializes a given plugin if there is a difference in the version info
+psyrendust-plugin() {
+  local arg_flag="${1}"
+  local arg_name="${2}"
+  local namespace="plugin-init-$arg_name"
+  local plugin_version="$(_psyrendust-version --get "$namespace")"
+  local system_version="$(psy stripansi "$(_psyrendust-version --get)")"
+  if [[ "$plugin_version" != "$system_version" ]]; then
+    if [[ $arg_flag == "--init" ]]; then
+      psyrendust-plugin-${arg_name}
+      _psyrendust-version --set "$namespace"
+    fi
+  fi
+}
+
+# Helper function: Helps with getting what you want out of a path
+# -p: base path
+# -e: file extension
+# -f: file name with no extension
+# -F: file name with extension
+psyrendust-path() {
+  while getopts "pfFe" opts; do
+    [[ $opts == "p" ]] && local option="p" && continue
+    [[ $opts == "f" ]] && local option="f" && continue
+    [[ $opts == "F" ]] && local option="F" && continue
+    [[ $opts == "e" ]] && local option="e" && continue
+  done
+  shift
+  local path_p=${1%/*}
+  local path_f=${1##*/}
+  local path_F=${path_f%.*}
+  local path_e=${path_f##*.}
+  case $option in
+    p) echo $path_p;;
+    f) echo $path_f;;
+    F) echo $path_F;;
+    e) echo $path_e;;
+    *) echo $1;;
+  esac
+}
+
 # Helper function: Same as `[[ -f $1 ]] && source $1`, but will only happen
 # if the file specified by `$1` is present.
 psyrendust-source() {
