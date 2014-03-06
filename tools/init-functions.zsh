@@ -242,9 +242,10 @@ psyrendust() {
 # Get or set oh-my-zsh-psyrendust version number
 _psyrendust-version() {
   local arg_flag="$1"
+  local arg_target="${2:-oh-my-zsh-psyrendust}"
+  local version_file="$PSYRENDUST_CONFIG_BASE_PATH/version-$arg_target.info"
   if [[ $arg_flag == "--set" ]]; then
     cd "$ZSH_CUSTOM"
-    local version_file="$PSYRENDUST_CONFIG_BASE_PATH/version"
     # Get the version string from git (eg. v0.1.4-248-g5840656)
     local version=$(git describe)
     # Get the tag number (eg. v0.1.4)
@@ -255,13 +256,21 @@ _psyrendust-version() {
     local version_sha=$(echo $version | cut -d- -f 3)
     # Get the date of the latest commit (eg. 2014-03-03)
     local version_date=$(echo $(git show -s --format=%ci | cut -d\  -f 1))
+    # Save version info (eg. v0.1.4p244 (2014-03-03 revision g67cfc97))
+    local version_string="${version_tag}p${version_commit} (${version_date} revision ${version_sha})"
+    # Save version prefix
+    local version_prefix="${2:-oh-my-zsh-psyrendust}"
     # Output version info to a file (eg. oh-my-zsh-psyrendust v0.1.4p244 (2014-03-03 revision g67cfc97))
-    echo "pppurple -i \"oh-my-zsh-psyrendust \"" > "$version_file"
-    echo "pplightpurple \"${version_tag}p${version_commit} (${version_date} revision ${version_sha})\"" >> "$version_file"
+    if [[ "$arg_target" == "oh-my-zsh-psyrendust" ]]; then
+      echo "pppurple -i \"$version_prefix \"" > "$version_file"
+      echo "pplightpurple \"$version_string\"" >> "$version_file"
+    else
+      echo "$version_prefix $version_string" > "$version_file"
+    fi
   else
     # Get the version info, if it doesn't exist create one
-    [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/version" ]] || _psyrendust-version --set
-    source "$PSYRENDUST_CONFIG_BASE_PATH/version"
+    [[ -f "$version_file" ]] || _psyrendust-version --set "$arg_target"
+    [[ "$arg_target" == "oh-my-zsh-psyrendust" ]] && source "$version_file" || cat "$version_file"
   fi
 }
 
