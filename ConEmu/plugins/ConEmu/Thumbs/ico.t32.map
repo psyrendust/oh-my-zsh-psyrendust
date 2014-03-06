@@ -1,6 +1,6 @@
  ico
 
- Timestamp is 52e2d6d5 (Sat Jan 25 01:10:45 2014)
+ Timestamp is 53162d5d (Tue Mar 04 23:45:33 2014)
 
  Preferred load address is 10000000
 
@@ -15,14 +15,14 @@
  0001:000022f0 00000200H .idata$6                CODE
  0001:000024f0 00000091H .edata                  CODE
  0002:00000000 00000000H .data                   DATA
- 0002:00000000 00000040H .bss                    DATA
+ 0002:00000000 00000044H .bss                    DATA
  0003:00000000 00000058H .rsrc$01                DATA
  0003:00000060 00000258H .rsrc$02                DATA
 
   Address         Publics by Value              Rva+Base       Lib:Object
 
- 0000:00000000       ___safe_se_handler_table   00000000     <absolute>
  0000:00000000       ___safe_se_handler_count   00000000     <absolute>
+ 0000:00000000       ___safe_se_handler_table   00000000     <absolute>
  0001:00000000       __imp__HeapFree@12         10001000     kernel32:KERNEL32.dll
  0001:00000004       __imp__GetProcessHeap@0    10001004     kernel32:KERNEL32.dll
  0001:00000008       __imp__HeapAlloc@12        10001008     kernel32:KERNEL32.dll
@@ -156,8 +156,8 @@
  0001:000006fc       _IID_IComThreadingInfo     100016fc     uuid:objidl_i.obj
  0001:0000070c       _IID_IProcessInitControl   1000170c     uuid:objidl_i.obj
  0001:0000071c       _IID_IInitializeSpy        1000171c     uuid:objidl_i.obj
- 0001:00000790       __alloca_probe             10001790     chkstk.obj
  0001:00000790       __chkstk                   10001790 f   chkstk.obj
+ 0001:00000790       __alloca_probe             10001790     chkstk.obj
  0001:000007bb       ??2GdiplusBase@Gdiplus@@SIPAXI@Z 100017bb f i ico.obj
  0001:000007c2       ??0Rect@Gdiplus@@QAE@HHHH@Z 100017c2 f i ico.obj
  0001:000007e2       ??0GdiplusStartupInput@Gdiplus@@QAE@P6GXW4DebugEventLevel@1@PAD@ZHH@Z 100017e2 f i ico.obj
@@ -207,8 +207,8 @@
  0001:00001645       ?CET_Done@@YGXPAUCET_Init@@@Z 10002645 f   ico.obj
  0001:00001669       ?CET_Free@@YGXPAUCET_LoadInfo@@@Z 10002669 f   ico.obj
  0001:0000169f       ?CET_Cancel@@YGXPAX@Z      1000269f f   ico.obj
- 0001:000016b9       ??_EImage@Gdiplus@@UAEPAXI@Z 100026b9 f i ico.obj
  0001:000016b9       ??_GImage@Gdiplus@@UAEPAXI@Z 100026b9 f i ico.obj
+ 0001:000016b9       ??_EImage@Gdiplus@@UAEPAXI@Z 100026b9 f i ico.obj
  0001:000016dd       ??0Image@Gdiplus@@IAE@PAVGpImage@1@W4Status@1@@Z 100026dd f i ico.obj
  0001:000016f6       ??_EBitmap@Gdiplus@@UAEPAXI@Z 100026f6 f i ico.obj
  0001:000016f6       ??_GBitmap@Gdiplus@@UAEPAXI@Z 100026f6 f i ico.obj
@@ -235,9 +235,9 @@
  0001:00001ed3       ?StringCchCopyA@@YGJPADIPBD@Z 10002ed3 f i Memory.obj
  0001:00001f33       ?StringCchCopyW@@YGJPA_WIPB_W@Z 10002f33 f i Memory.obj
  0001:00001f9a       ?lstrdup@@YIPADPBD@Z       10002f9a f   Memory.obj
- 0001:00001fd5       ?lstrdup@@YIPA_WPB_W@Z     10002fd5 f   Memory.obj
- 0001:00002012       ?lstrmerge@@YIPA_WPB_W000@Z 10003012 f   Memory.obj
- 0001:000020a1       ?lstrmerge@@YI_NPAPA_WPB_W11@Z 100030a1 f   Memory.obj
+ 0001:00001fd5       ?lstrdup@@YIPA_WPB_WI@Z    10002fd5 f   Memory.obj
+ 0001:00002018       ?lstrmerge@@YIPA_WPB_W000@Z 10003018 f   Memory.obj
+ 0001:000020a7       ?lstrmerge@@YI_NPAPA_WPB_W11@Z 100030a7 f   Memory.obj
  0001:000020e0       _memmove                   100030e0 f   libCRT:memmove.obj
  0001:00002140       _memset                    10003140 f   libCRT:memset.obj
  0001:00002178       _HeapFree@12               10003178 f   kernel32:KERNEL32.dll
@@ -273,7 +273,8 @@
  0001:00002264       __NULL_IMPORT_DESCRIPTOR   10003264     kernel32:KERNEL32.dll
  0002:00000034       ?gnLastWin32Error@@3KA     10004034     ico.obj
  0002:00000038       ?ghModule@@3PAUHINSTANCE__@@A 10004038     ico.obj
- 0002:0000003c       ?ghHeap@@3PAXA             1000403c     Memory.obj
+ 0002:0000003c       ?AssertMsgBox@@3P6IHPB_WI0PAUHWND__@@_N@ZA 1000403c     MAssert.obj
+ 0002:00000040       ?ghHeap@@3PAXA             10004040     Memory.obj
 
  entry point at        0000:00000000
 
