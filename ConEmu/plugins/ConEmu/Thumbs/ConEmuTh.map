@@ -1,6 +1,6 @@
  ConEmuTh
 
- Timestamp is 52f2afe2 (Thu Feb 06 01:40:50 2014)
+ Timestamp is 53162d4e (Tue Mar 04 23:45:18 2014)
 
  Preferred load address is 10000000
 
@@ -143,41 +143,41 @@
  0001:00003a7c       ?SettingsLoadW1900@@YIHPB_WPAK@Z 10004a7c f   ConEmuTh1900.obj
  0001:00003b11       ?SettingsSaveW1900@@YIXPB_WPAK@Z 10004b11 f   ConEmuTh1900.obj
  0001:00003bab       _GetGlobalInfoW@4          10004bab f   ConEmuTh2800.obj
- 0001:00003c3e       ?GetPluginInfoW2800@@YIXPAX@Z 10004c3e f   ConEmuTh2800.obj
- 0001:00003c8f       ?SetStartupInfoW2800@@YIXPAX@Z 10004c8f f   ConEmuTh2800.obj
- 0001:00003d7d       ?OpenW1900@@YIPAXPBX@Z     10004d7d f   ConEmuTh1900.obj
- 0001:00003d7d       ?OpenW2800@@YIPAXPBX@Z     10004d7d f   ConEmuTh2800.obj
- 0001:00003dd5       ?ProcessSynchroEventW3@@YGHPAX@Z 10004dd5 f   ConEmuTh2800.obj
- 0001:00003de7       ?ExitFARW2800@@YIXXZ       10004de7 f   ConEmuTh2800.obj
- 0001:00003e16       ?ShowMessageW2800@@YIHPB_WH@Z 10004e16 f   ConEmuTh2800.obj
- 0001:00003e86       ?ShowMessageW2800@@YIHHH@Z 10004e86 f   ConEmuTh2800.obj
- 0001:00003eb6       ?GetMsgW2800@@YIPB_WH@Z    10004eb6 f   ConEmuTh2800.obj
- 0001:00003ed5       ?PostMacroW2800@@YIXPA_W@Z 10004ed5 f   ConEmuTh2800.obj
- 0001:00003f3a       ?ShowPluginMenuW2800@@YIHXZ 10004f3a f   ConEmuTh2800.obj
- 0001:000040a1       ?FreePanelItemUserData2800@@YIXPAXKP6GHXZ@Z 100050a1 f   ConEmuTh2800.obj
- 0001:000040ca       ?LoadPanelItemInfoW2800@@YIXPAUCeFullPanelInfo@@H@Z 100050ca f   ConEmuTh2800.obj
- 0001:000043c7       ?LoadPanelInfoW2800@@YIHH@Z 100053c7 f   ConEmuTh2800.obj
- 0001:000047d6       ?ReloadPanelsInfoW2800@@YIXXZ 100057d6 f   ConEmuTh2800.obj
- 0001:000047ef       ?SetCurrentPanelItemW2800@@YIXHHH@Z 100057ef f   ConEmuTh2800.obj
- 0001:000048ce       ?CheckPanelSettingsW2800@@YIHH@Z 100058ce f   ConEmuTh2800.obj
- 0001:0000496f       ?ExecuteInMainThreadW2800@@YIXPAUConEmuThSynchroArg@@@Z 1000596f f   ConEmuTh2800.obj
- 0001:00004986       ?GetFarRectW2800@@YIXPAU_SMALL_RECT@@@Z 10005986 f   ConEmuTh2800.obj
- 0001:000049b4       ?CheckFarPanelsW2800@@YI_NXZ 100059b4 f   ConEmuTh2800.obj
- 0001:000049f8       ?SettingsLoadW2800@@YIHPB_WPAK@Z 100059f8 f   ConEmuTh2800.obj
- 0001:00004a83       ?SettingsSaveW2800@@YIXPB_WPAK@Z 10005a83 f   ConEmuTh2800.obj
- 0001:00004b13       ?SettingsLoadOtherW2800@@YIXXZ 10005b13 f   ConEmuTh2800.obj
- 0001:00004b13       ?LoadPanelItemInfoA@@YIXPAUCeFullPanelInfo@@H@Z 10005b13 f   ConEmuThA.obj
- 0001:00004b13       ?OnThreadStopped@?$CQueueProcessor@PAUIMAGE_CACHE_INFO@@@@MAEXXZ 10005b13 f   ImgCache.obj
- 0001:00004b13       __initp_misc_winxfltr      10005b13 f   libcmt:winxfltr.obj
- 0001:00004b13       ?SettingsLoadOtherW1900@@YIXXZ 10005b13 f   ConEmuTh1900.obj
- 0001:00004b14       _GetMinFarVersion@0        10005b14 f   ConEmuThA.obj
- 0001:00004b43       _GetPluginInfo@4           10005b43 f   ConEmuThA.obj
- 0001:00004ba4       _ExitFAR@0                 10005ba4 f   ConEmuThA.obj
- 0001:00004bef       ?ShowMessageA@@YIHPBDH@Z   10005bef f   ConEmuThA.obj
- 0001:00004c1e       ?ShowMessageA@@YIHHH@Z     10005c1e f   ConEmuThA.obj
- 0001:00004c56       ?PostMacroA@@YIXPAD@Z      10005c56 f   ConEmuThA.obj
- 0001:00004cae       ?ShowPluginMenuA@@YIHXZ    10005cae f   ConEmuThA.obj
- 0001:00004e02       ?GetMsgA@@YIPB_WHPA_W@Z    10005e02 f   ConEmuThA.obj
+ 0001:00003c3b       ?GetPluginInfoW2800@@YIXPAX@Z 10004c3b f   ConEmuTh2800.obj
+ 0001:00003c8c       ?SetStartupInfoW2800@@YIXPAX@Z 10004c8c f   ConEmuTh2800.obj
+ 0001:00003d7a       ?OpenW1900@@YIPAXPBX@Z     10004d7a f   ConEmuTh1900.obj
+ 0001:00003d7a       ?OpenW2800@@YIPAXPBX@Z     10004d7a f   ConEmuTh2800.obj
+ 0001:00003dd2       ?ProcessSynchroEventW3@@YGHPAX@Z 10004dd2 f   ConEmuTh2800.obj
+ 0001:00003de4       ?ExitFARW2800@@YIXXZ       10004de4 f   ConEmuTh2800.obj
+ 0001:00003e13       ?ShowMessageW2800@@YIHPB_WH@Z 10004e13 f   ConEmuTh2800.obj
+ 0001:00003e83       ?ShowMessageW2800@@YIHHH@Z 10004e83 f   ConEmuTh2800.obj
+ 0001:00003eb3       ?GetMsgW2800@@YIPB_WH@Z    10004eb3 f   ConEmuTh2800.obj
+ 0001:00003ed2       ?PostMacroW2800@@YIXPA_W@Z 10004ed2 f   ConEmuTh2800.obj
+ 0001:00003f37       ?ShowPluginMenuW2800@@YIHXZ 10004f37 f   ConEmuTh2800.obj
+ 0001:0000409e       ?FreePanelItemUserData2800@@YIXPAXKP6GHXZ@Z 1000509e f   ConEmuTh2800.obj
+ 0001:000040c7       ?LoadPanelItemInfoW2800@@YIXPAUCeFullPanelInfo@@H@Z 100050c7 f   ConEmuTh2800.obj
+ 0001:000043c4       ?LoadPanelInfoW2800@@YIHH@Z 100053c4 f   ConEmuTh2800.obj
+ 0001:000047d3       ?ReloadPanelsInfoW2800@@YIXXZ 100057d3 f   ConEmuTh2800.obj
+ 0001:000047ec       ?SetCurrentPanelItemW2800@@YIXHHH@Z 100057ec f   ConEmuTh2800.obj
+ 0001:000048cb       ?CheckPanelSettingsW2800@@YIHH@Z 100058cb f   ConEmuTh2800.obj
+ 0001:0000496c       ?ExecuteInMainThreadW2800@@YIXPAUConEmuThSynchroArg@@@Z 1000596c f   ConEmuTh2800.obj
+ 0001:00004983       ?GetFarRectW2800@@YIXPAU_SMALL_RECT@@@Z 10005983 f   ConEmuTh2800.obj
+ 0001:000049b1       ?CheckFarPanelsW2800@@YI_NXZ 100059b1 f   ConEmuTh2800.obj
+ 0001:000049f5       ?SettingsLoadW2800@@YIHPB_WPAK@Z 100059f5 f   ConEmuTh2800.obj
+ 0001:00004a80       ?SettingsSaveW2800@@YIXPB_WPAK@Z 10005a80 f   ConEmuTh2800.obj
+ 0001:00004b10       ?SettingsLoadOtherW2800@@YIXXZ 10005b10 f   ConEmuTh2800.obj
+ 0001:00004b10       ?LoadPanelItemInfoA@@YIXPAUCeFullPanelInfo@@H@Z 10005b10 f   ConEmuThA.obj
+ 0001:00004b10       ?OnThreadStopped@?$CQueueProcessor@PAUIMAGE_CACHE_INFO@@@@MAEXXZ 10005b10 f   ImgCache.obj
+ 0001:00004b10       __initp_misc_winxfltr      10005b10 f   libcmt:winxfltr.obj
+ 0001:00004b10       ?SettingsLoadOtherW1900@@YIXXZ 10005b10 f   ConEmuTh1900.obj
+ 0001:00004b11       _GetMinFarVersion@0        10005b11 f   ConEmuThA.obj
+ 0001:00004b40       _GetPluginInfo@4           10005b40 f   ConEmuThA.obj
+ 0001:00004ba1       _ExitFAR@0                 10005ba1 f   ConEmuThA.obj
+ 0001:00004bec       ?ShowMessageA@@YIHPBDH@Z   10005bec f   ConEmuThA.obj
+ 0001:00004c1b       ?ShowMessageA@@YIHHH@Z     10005c1b f   ConEmuThA.obj
+ 0001:00004c53       ?PostMacroA@@YIXPAD@Z      10005c53 f   ConEmuThA.obj
+ 0001:00004cab       ?ShowPluginMenuA@@YIHXZ    10005cab f   ConEmuThA.obj
+ 0001:00004dff       ?GetMsgA@@YIPB_WHPA_W@Z    10005dff f   ConEmuThA.obj
  0001:00004ea2       ?LoadPanelInfoA@@YIHH@Z    10005ea2 f   ConEmuThA.obj
  0001:000051f9       ?ReloadPanelsInfoA@@YIXXZ  100061f9 f   ConEmuThA.obj
  0001:00005212       ?SetCurrentPanelItemA@@YIXHHH@Z 10006212 f   ConEmuThA.obj
@@ -1068,9 +1068,9 @@
  0001:0000260d       ?LoadFarSettingsW995@@YIXPAUCEFarInterfaceSettings@@PAUCEFarPanelSettings@@@Z 1000360d f   ConEmuTh995.obj
  0001:00003316       ?GetFarSetting@@YIHPAXIPB_W@Z 10004316 f   ConEmuTh1900.obj
  0001:0000335c       ?LoadFarSettingsW1900@@YIXPAUCEFarInterfaceSettings@@PAUCEFarPanelSettings@@@Z 1000435c f   ConEmuTh1900.obj
- 0001:0000428e       ?GetFarSetting@@YIHPAXIPB_W@Z 1000528e f   ConEmuTh2800.obj
- 0001:000042d7       ?LoadFarSettingsW2800@@YIXPAUCEFarInterfaceSettings@@PAUCEFarPanelSettings@@@Z 100052d7 f   ConEmuTh2800.obj
- 0001:00004e6b       ?LoadFarSettingsA@@YIXPAUCEFarInterfaceSettings@@PAUCEFarPanelSettings@@@Z 10005e6b f   ConEmuThA.obj
+ 0001:0000428b       ?GetFarSetting@@YIHPAXIPB_W@Z 1000528b f   ConEmuTh2800.obj
+ 0001:000042d4       ?LoadFarSettingsW2800@@YIXPAUCEFarInterfaceSettings@@PAUCEFarPanelSettings@@@Z 100052d4 f   ConEmuTh2800.obj
+ 0001:00004e68       ?LoadFarSettingsA@@YIXPAUCEFarInterfaceSettings@@PAUCEFarPanelSettings@@@Z 10005e68 f   ConEmuThA.obj
  0001:0000dc20       ___DllMainCRTStartup       1000ec20 f   libcmt:dllcrt0.obj
  0001:0000dd39       _fastcopy_I                1000ed39 f   libcmt:p4_memcpy.obj
  0001:0000dea3       _has_osfxsr_set            1000eea3 f   libcmt:cpu_disp.obj
