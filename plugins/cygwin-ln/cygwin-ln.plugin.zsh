@@ -45,8 +45,8 @@ if [[ -n $SYSTEM_IS_CYGWIN ]]; then
         local namespace=$(psy path -F "$arg_link_name")
         local target=$(cygpath -ma ${arg_target} | sed "s/\//\\\\/g")
         local link_name=$(cygpath -ma ${arg_link_name} | sed "s/\//\\\\/g")
-        local symlink_bat="$PSYRENDUST_CONFIG_BASE_PATH/symlink-$namespace.bat"
-        local symlink_vbs="$PSYRENDUST_CONFIG_BASE_PATH/symlink-$namespace.vbs"
+        local symlink_bat="$PSY_SYMLINK/$namespace.bat"
+        local symlink_vbs="$PSY_SYMLINK/$namespace.vbs"
         local cygwin_bat=$(cygpath -ma ${symlink_bat} | sed "s/\//\\\\/g")
         ppinfo "namespace: $namespace"
         ppinfo "target: $target"
@@ -66,11 +66,11 @@ if [[ -n $SYSTEM_IS_CYGWIN ]]; then
         printf "%s" "Set WinScriptHost = Nothing" >> $symlink_vbs
         chmod a+x $symlink_vbs $symlink_bat
         # Create the symlink
-        # cygstart $symlink_vbs
-        # {
-        #   sleep 1
-        #   rm $symlink_vbs $symlink_bat
-        # } &!
+        cygstart $symlink_vbs
+        {
+          sleep 1
+          rm $symlink_vbs $symlink_bat
+        } &!
       fi
     else
       \ln $@

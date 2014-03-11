@@ -9,7 +9,7 @@
 # ppemphasis - purple
 #  ppverbose - prints out message if PRETTY_PRINT_IS_VERBOSE="true"
 # ------------------------------------------------------------------------------
-psyrendust source "$ZSH_CUSTOM/plugins/pretty-print/pretty-print.plugin.zsh"
+psyrendust source "$PSY_PLUGINS/pretty-print/pretty-print.plugin.zsh"
 
 
 
@@ -53,17 +53,16 @@ function _psyrendust-au-get-current-git-remote-sha() {
   _psyrendust-au-log "  - result: $result"
   if [[ $result == *fatal* ]]; then
     _psyrendust-au-log "  - result: is fatal"
-    echo $(_psyrendust-au-set-last-git-update)
   else
     _psyrendust-au-log "  - result: success"
     echo $result
   fi
 }
 
-function _psyrendust-au-set-last-git-update() {
+function _psyrendust-au-set-current-git-sha() {
   cd "${1}"
   result="psyrendust_au_current_local_sha=$(git rev-parse HEAD)"
-  echo "$result" > "$PSYRENDUST_CONFIG_BASE_PATH/last-repo-update-${2}"
+  echo "$result" > "$PSY_UPDATE/current-sha-${2}"
 }
 
 function _psyrendust-au-is-git-repo() {
@@ -118,17 +117,17 @@ while getopts ":a" opt; do
 done
 if [[ -n $has_option ]]; then
   repos=(
-    "Oh My Zsh Psyrendust"
+    "Psyrendust"
     "Oh My Zsh"
-    "zshrc Personal"
-    "zshrc Work"
+    "User"
+    "Work"
   )
 else
   repos=(
-    "Oh My Zsh Psyrendust"
+    "Psyrendust"
     "Oh My Zsh"
-    "zshrc Personal"
-    "zshrc Work"
+    "User"
+    "Work"
   )
 fi
 
@@ -170,10 +169,12 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
       # Create local variables to hold the namespace and the repo's root
       # ------------------------------------------------------------------------
       psyrendust_au_name_space="$(echo $repo | tr '[:upper:]' '[:lower:]' | tr ' ' '-')"
-      psyrendust_au_git_root="$HOME/.${psyrendust_au_name_space}"
-      psyrendust_au_last_repo_update="$PSYRENDUST_CONFIG_BASE_PATH/last-repo-update-${psyrendust_au_name_space}"
+      for psyrendust_au_git_root in $PSY_REPOS/{dev,frameworks,plugins,themes,tools}/$psyrendust_au_name_space; do
+        [[ -d $psyrendust_au_git_root ]] && break
+      done
+      psyrendust_au_last_repo_update="$PSY_UPDATE/current-sha-${psyrendust_au_name_space}"
       psyrendust_au_post_update="$psyrendust_au_git_root/tools/post-update.zsh"
-      psyrendust_au_post_update_run_once="$PSYRENDUST_CONFIG_BASE_PATH/post-update-run-once-${psyrendust_au_name_space}.zsh"
+      psyrendust_au_post_update_run_once="$PSY_RUN_ONCE/post-update-${psyrendust_au_name_space}.zsh"
       _psyrendust-au-log "[$repo] Creating psyrendust_au_name_space=$psyrendust_au_name_space"
       _psyrendust-au-log "[$repo] Creating psyrendust_au_git_root=$psyrendust_au_git_root"
       _psyrendust-au-log "[$repo] Creating psyrendust_au_last_repo_update=$psyrendust_au_last_repo_update"
@@ -190,7 +191,7 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
 
         # Check if we are in a repo
         # ----------------------------------------------------------------------
-        if [[ -n $(_psyrendust-au-is-git-repo "$psyrendust_au_git_root") ]]; then
+        if [[ -n $SYSTEM_IS_VM ]] || [[ -n $(_psyrendust-au-is-git-repo "$psyrendust_au_git_root") ]]; then
           _psyrendust-au-log "[$repo] Is a git repo"
           prprompt -P
 
@@ -201,28 +202,27 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
           else
             # Set last repo update
             _psyrendust-au-log "[$repo] Creating $psyrendust_au_last_repo_update"
-            _psyrendust-au-set-last-git-update "$psyrendust_au_git_root" "$psyrendust_au_name_space"
+            _psyrendust-au-set-current-git-sha "$psyrendust_au_git_root" "$psyrendust_au_name_space"
           fi
           source "$psyrendust_au_last_repo_update"
 
 
           # Set the psyrendust_au_current_local_sha if it doesn't exist
           # --------------------------------------------------------------------
-          if [[ -z "$psyrendust_au_current_local_sha" ]]; then
+          if [[ -z $SYSTEM_IS_VM ]] && [[ -z "$psyrendust_au_current_local_sha" ]]; then
             _psyrendust-au-log "[$repo] \$psyrendust_au_current_local_sha does not exist"
-            _psyrendust-au-set-last-git-update "$psyrendust_au_git_root" "$psyrendust_au_name_space";
+            _psyrendust-au-set-current-git-sha "$psyrendust_au_git_root" "$psyrendust_au_name_space";
             source "$psyrendust_au_last_repo_update"
           fi
 
-          _psyrendust-au-log "[$repo] local SHA: $psyrendust_au_current_local_sha"
+          if [[ -z $SYSTEM_IS_VM ]]; then
+            _psyrendust-au-log "[$repo] local SHA: $psyrendust_au_current_local_sha"
+          fi
 
 
           # Get the current remote SHA
           # --------------------------------------------------------------------
-          if [[ -n $SYSTEM_IS_VM ]]; then
-            psyrendust_au_current_remote_sha=$(cd "$psyrendust_au_git_root" && git rev-parse HEAD)
-            _psyrendust-au-log "[$repo] remote VM SHA: $psyrendust_au_current_remote_sha"
-          else
+          if [[ -z $SYSTEM_IS_VM ]]; then
             psyrendust_au_current_remote_sha=$(_psyrendust-au-get-current-git-remote-sha $psyrendust_au_git_root)
             _psyrendust-au-log "[$repo] remote SHA: $psyrendust_au_current_remote_sha"
           fi
@@ -230,7 +230,7 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
 
           # Compare the local sha against the remote
           # --------------------------------------------------------------------
-          if [[ $psyrendust_au_current_local_sha != $psyrendust_au_current_remote_sha ]]; then
+          if [[ -n $SYSTEM_IS_VM ]] || [[ $psyrendust_au_current_local_sha != $psyrendust_au_current_remote_sha ]]; then
             _psyrendust-au-log "[$repo] Fetching updates..."
             prprompt -P
             if [[ -n $SYSTEM_IS_VM ]]; then
@@ -252,7 +252,7 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
               fi
               _psyrendust-au-log "[$repo] Update successful"
               prprompt -P
-              _psyrendust-au-set-last-git-update "$psyrendust_au_git_root" "$psyrendust_au_name_space"
+              _psyrendust-au-set-current-git-sha "$psyrendust_au_git_root" "$psyrendust_au_name_space"
               # Slow things down since we are only doing file copies
               [[ -n $SYSTEM_IS_VM ]] && sleep 1
             else
@@ -314,8 +314,11 @@ if [[ -n $(_psyrendust-au-has-internet) ]]; then
       _psyrendust-au-log "All updates complete!"
       prprompt -P
     fi
+    _psyrendust-au-log "Closing prprompt"
     prprompt -x
+    _psyrendust-au-log "Sleep 1"
     sleep 1
+    _psyrendust-au-log "psy restartshell"
     psy restartshell
   } &!
 else
@@ -326,15 +329,15 @@ else
   } &!
 fi
 
-unfunction _psyrendust-au-log-delete
-unfunction _psyrendust-au-log
-unfunction _psyrendust-au-log-error
-unfunction _psyrendust-au-has-internet
 unfunction _psyrendust-au-get-current-git-remote-sha
-unfunction _psyrendust-au-set-last-git-update
-unfunction _psyrendust-au-is-git-repo
 unfunction _psyrendust-au-git-cleanup
 unfunction _psyrendust-au-git-update
+unfunction _psyrendust-au-has-internet
+unfunction _psyrendust-au-is-git-repo
+unfunction _psyrendust-au-log
+unfunction _psyrendust-au-log-delete
+unfunction _psyrendust-au-log-error
+unfunction _psyrendust-au-set-current-git-sha
 unset -m psyrendust_au_current_local_sha
 unset -m psyrendust_au_current_remote_sha
 unset -m psyrendust_au_git_root

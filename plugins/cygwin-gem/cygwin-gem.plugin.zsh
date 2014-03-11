@@ -16,7 +16,7 @@
 # Lists all gems and associated executables installed with gem
 # --------------------------------------------------------------------------
 _psyrendust-gem-list() {
-  echo "${$(ls "$RUBY_BIN" | grep ".bat$" | tr "\n" ":")%:}"
+  echo "${$(ls "$PSY_RUBY_BIN" | grep ".bat$" | tr "\n" ":")%:}"
 }
 
 
@@ -54,7 +54,7 @@ _psyrendust-gem-alias() {
     if [[ -n $uninstall_alias ]]; then
       unalias "${gem_file_bat%.bat}"
     else
-      alias "${gem_file_bat%.bat}"="$RUBY_BIN/$gem_file_bat"
+      alias "${gem_file_bat%.bat}"="$PSY_RUBY_BIN/$gem_file_bat"
     fi
   done
   unset gem_file_bats_sm
@@ -72,7 +72,7 @@ _psyrendust-gem-alias() {
 # --------------------------------------------------------------------------
 gem() {
   local gem_file_bats=`_psyrendust-gem-list`
-  "$RUBY_BIN/gem.bat" $@
+  "$PSY_RUBY_BIN/gem.bat" $@
   if [[ -n $(echo $1 | grep "install") ]]; then
     _psyrendust-gem-alias $1 "$gem_file_bats"
   fi

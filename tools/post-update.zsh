@@ -6,22 +6,11 @@
 # ------------------------------------------------------------------------------
 
 
-# Sourcing pretty-print helpers
-#  ppsuccess - green
-#     ppinfo - light cyan
-#  ppwarning - brown
-#   ppdanger - red
-# ppemphasis - purple
-#  ppverbose - prints out message if PRETTY_PRINT_IS_VERBOSE="true"
+
+# Create ZSH backup folder
 # ------------------------------------------------------------------------------
-psyrendust source "$ZSH_CUSTOM/plugins/pretty-print/pretty-print.plugin.zsh"
-
-
-
-# Replace .zshrc
-# ------------------------------------------------------------------------------
-export PSYRENDUST_BACKUP_FOLDER="$ZSHRC_PERSONAL/backup/$(date '+%Y%m%d')"
-mkdir -p "$PSYRENDUST_BACKUP_FOLDER"
+export PSY_BACKUP_FOLDER="$PSY_BACKUP/$(date '+%Y%m%d')"
+[[ -d "$PSY_BACKUP_FOLDER" ]] || mkdir -p "$PSY_BACKUP_FOLDER"
 
 
 
@@ -33,15 +22,26 @@ _psyrendust-procedure-start() {
 
 
 
-# Replace dotfiles
+# Replace config/git
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-replace-dotfiles() {
-  cp "$ZSH_CUSTOM/templates/.gemrc" "$HOME/.gemrc"
-  cp "$ZSH_CUSTOM/templates/.gitignore_global" "${HOME}/.gitignore_global"
-  cp "$ZSH_CUSTOM/templates/.zlogin" "$HOME/.zlogin"
-  cp "$ZSH_CUSTOM/templates/.zprofile" "$HOME/.zprofile"
-  cp "$ZSH_CUSTOM/templates/.zshenv" "$HOME/.zshenv"
-  cp "$ZSH_CUSTOM/templates/.zshrc" "$HOME/.zshrc"
+_psyrendust-procedure-replace-config-git() {
+  cp -aR "$PSY_SRC_TEMPLATES_CONFIG/git/." "$PSY_CONFIG_GIT/"
+}
+
+
+
+# Replace config/win
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-replace-config-win() {
+  cp -aR "$PSY_SRC_TEMPLATES_CONFIG/win/." "$PSY_CONFIG_WIN/"
+}
+
+
+
+# Replace home
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-replace-home() {
+  cp -aR "$PSY_SRC_TEMPLATES/home/." "$HOME/"
 }
 
 
@@ -49,10 +49,10 @@ _psyrendust-procedure-replace-dotfiles() {
 # Restart shell, and kill the current pprocess status
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-source-shell() {
-  if [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/version" ]]; then
+  if [[ -f "$PSY_VERSION/psyrendust.info" ]]; then
     # Remove the previous version file so that it can get recreated after
     # the shell restarts
-    rm "$PSYRENDUST_CONFIG_BASE_PATH/version"
+    rm "$PSY_VERSION/psyrendust.info"
   fi
   {
     sleep 1
@@ -75,9 +75,9 @@ _psyrendust-procedure-waiting() {
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-migrate-existing-gitconfig-includes() {
   if [[ -d "$HOME/.gitconfig-includes" ]]; then
-    [[ -s "$HOME/.gitconfig-includes/user.gitconfig" ]] && cp "$HOME/.gitconfig-includes/user.gitconfig" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/user.gitconfig"
-    [[ -s "$HOME/.gitconfig-includes/github-xero-username.conf" ]] && cp "$HOME/.gitconfig-includes/github-xero-username.conf" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/xero-username"
-    mv "$HOME/.gitconfig-includes" "$PSYRENDUST_BACKUP_FOLDER/.gitconfig-includes"
+    [[ -s "$HOME/.gitconfig-includes/user.gitconfig" ]] && cp -aR "$HOME/.gitconfig-includes/user.gitconfig" "$PSY_CONFIG_GIT/user.gitconfig"
+    [[ -s "$HOME/.gitconfig-includes/github-xero-username.conf" ]] && cp -aR "$HOME/.gitconfig-includes/github-xero-username.conf" "$PSY_CONFIG_GIT/xero-username.zsh"
+    mv "$HOME/.gitconfig-includes" "$PSY_BACKUP_FOLDER/.gitconfig-includes"
   fi
 }
 
@@ -86,14 +86,13 @@ _psyrendust-procedure-migrate-existing-gitconfig-includes() {
 # Install .gitconfig
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-update-gitconfig() {
-  [[ -f "$HOME/.gitconfig" ]] && mv "$HOME/.gitconfig" "$PSYRENDUST_BACKUP_FOLDER/.gitconfig"
+  [[ -f "$HOME/.gitconfig" ]] && mv "$HOME/.gitconfig" "$PSY_BACKUP_FOLDER/.gitconfig"
   if [[ -n $SYSTEM_IS_CYGWIN ]]; then
-    # Replace win .gitconfig
-    cp "$ZSH_CUSTOM/templates/config/git/win.gitconfig" "$HOME/.gitconfig"
+    local system_os="win"
   else
-    # Replace mac .gitconfig
-    cp "$ZSH_CUSTOM/templates/config/git/mac.gitconfig" "$HOME/.gitconfig"
+    local system_os="mac"
   fi
+  cp -aR "$PSY_SRC_TEMPLATES/home-${system_os}/." "$HOME/"
 }
 
 
@@ -103,14 +102,8 @@ _psyrendust-procedure-update-gitconfig() {
 _psyrendust-procedure-install-git-config-templates() {
   if [[ -z $SYSTEM_IS_VM ]]; then
     # Replace git configs
-    [[ -f "$ZSH_CUSTOM/templates/config/git/core.gitconfig" ]] && cp "$ZSH_CUSTOM/templates/config/git/core.gitconfig" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/core.gitconfig"
-    [[ -f "$ZSH_CUSTOM/templates/config/git/diff.gitconfig" ]] && cp "$ZSH_CUSTOM/templates/config/git/diff.gitconfig" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/diff.gitconfig"
-    [[ -f "$ZSH_CUSTOM/templates/config/git/windows.gitconfig" ]] && cp "$ZSH_CUSTOM/templates/config/git/windows.gitconfig" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/windows.gitconfig"
-    if [[ -n $SYSTEM_IS_CYGWIN ]]; then
-      [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/config/git/custom-win.gitconfig" ]] || cp "$ZSH_CUSTOM/templates/config/git/custom-win.gitconfig" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/custom-win.gitconfig"
-    else
-      [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/config/git/custom-mac.gitconfig" ]] || cp "$ZSH_CUSTOM/templates/config/git/custom-mac.gitconfig" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/custom-mac.gitconfig"
-    fi
+    cp -aR "$PSY_SRC_TEMPLATES_CONFIG/git/." "$PSY_CONFIG_GIT/"
+    cp -an "$PSY_SRC_TEMPLATES_CONFIG/git/custom-{mac,win}.gitconfig" "$PSY_CONFIG_GIT/"
   fi
 }
 
@@ -119,9 +112,7 @@ _psyrendust-procedure-install-git-config-templates() {
 # Check to see if config/git/user has been created
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-oh-my-zsh-psyrendust-updates() {
-  if [[ ! -s "$PSYRENDUST_CONFIG_BASE_PATH/config/git/user.gitconfig" ]]; then
-    cp "$ZSH_CUSTOM/templates/config/git/user.gitconfig" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/user.gitconfig"
-  fi
+  cp -an "$PSY_SRC_TEMPLATES_CONFIG/git/user.gitconfig" "$PSY_CONFIG_GIT/user.gitconfig"
 }
 
 
@@ -129,8 +120,8 @@ _psyrendust-procedure-oh-my-zsh-psyrendust-updates() {
 # Check to see if a Git global user.name has been set
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-git-user-name() {
-  psyrendust_config_git_user="$PSYRENDUST_CONFIG_BASE_PATH/config/git/user.gitconfig"
-  if [[ -d $ZSH_CUSTOM ]] && [[ $(git config user.name) == "" ]]; then
+  psyrendust_config_git_user="$PSY_CONFIG_GIT/user.gitconfig"
+  if [[ -d $PSY_CUSTOM ]] && [[ $(git config user.name) == "" ]]; then
     echo
     ppinfo -i "We need to configure your "
     pplightpurple "Git Global user.name"
@@ -152,9 +143,9 @@ _psyrendust-procedure-git-user-name() {
 # Check to see if a Git global user.email has been set
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-git-user-email() {
-  psyrendust_config_git_user="$PSYRENDUST_CONFIG_BASE_PATH/config/git/user.gitconfig"
+  psyrendust_config_git_user="$PSY_CONFIG_GIT/user.gitconfig"
   # Check to see if a Git global user.email has been set
-  if [[ -d $ZSH_CUSTOM ]] && [[ $(git config user.email) == "" ]]; then
+  if [[ -d $PSY_CUSTOM ]] && [[ $(git config user.email) == "" ]]; then
     echo
     ppinfo -i "We need to configure your "
     pplightpurple "Git Global user.email"

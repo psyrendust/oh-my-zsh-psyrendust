@@ -1,17 +1,11 @@
 #!/usr/bin/env zsh
 
 
-# Make sure that the base path has been set
-# ------------------------------------------------------------------------------
-[[ -d $PSYRENDUST_CONFIG_BASE_PATH ]] || PSYRENDUST_CONFIG_BASE_PATH="$HOME/.psyrendust"
-
-
-
 # Create vars to hold the path of our config files
 # ------------------------------------------------------------------------------
-[[ -f $PSYRENDUST_CONFIG_PRPROMPT_ORIGINAL ]] || PSYRENDUST_CONFIG_PRPROMPT_ORIGINAL="$PSYRENDUST_CONFIG_BASE_PATH/config-rprompt-original"
-[[ -f $PSYRENDUST_CONFIG_PRPROMPT_NEW ]] || PSYRENDUST_CONFIG_PRPROMPT_NEW="$PSYRENDUST_CONFIG_BASE_PATH/config-rprompt-new"
-[[ -f $PSYRENDUST_CONFIG_PRPROMPT_STATUS ]] || PSYRENDUST_CONFIG_PRPROMPT_STATUS="$PSYRENDUST_CONFIG_BASE_PATH/config-rprompt-status"
+[[ -f $PSYRENDUST_CONFIG_PRPROMPT_ORIGINAL ]] || PSYRENDUST_CONFIG_PRPROMPT_ORIGINAL="$PSY_RPROMPT/original"
+[[ -f $PSYRENDUST_CONFIG_PRPROMPT_NEW ]] || PSYRENDUST_CONFIG_PRPROMPT_NEW="$PSY_RPROMPT/new"
+[[ -f $PSYRENDUST_CONFIG_PRPROMPT_STATUS ]] || PSYRENDUST_CONFIG_PRPROMPT_STATUS="$PSY_RPROMPT/status"
 [[ -n $PSYRENDUST_CONFIG_PRPROMPT_ID ]] || PSYRENDUST_CONFIG_PRPROMPT_ID="%F{magenta}[ Psyrendust ]%f"
 
 

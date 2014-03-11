@@ -35,20 +35,20 @@
 
 # Create pretty print aliases
 # ----------------------------------------------------------
-for ppfile in $(ls "$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/" | grep "^pretty-print-"); do
+for ppfile in $(ls "$PSY_PLUGINS/pretty-print/" | grep "^pretty-print-"); do
   ppshortname=$(echo $ppfile | cut -d- -f 3 | cut -d. -f 1)
 
   # Create color based aliases
   # --------------------------------------------------------
-  alias "pp$ppshortname"="$ZSH_CUSTOM/plugins/pretty-print/$ppfile"
+  alias "pp$ppshortname"="$PSY_PLUGINS/pretty-print/$ppfile"
 
   # Create status based aliases
   # --------------------------------------------------------
-  [[ $ppshortname = "green" ]]    && alias "ppsuccess"="$ZSH_CUSTOM/plugins/pretty-print/$ppfile"
-  [[ $ppshortname = "cyan" ]]     && alias "ppinfo"="$ZSH_CUSTOM/plugins/pretty-print/$ppfile"
-  [[ $ppshortname = "brown" ]]    && alias "ppwarning"="$ZSH_CUSTOM/plugins/pretty-print/$ppfile"
-  [[ $ppshortname = "red" ]]      && alias "ppdanger"="$ZSH_CUSTOM/plugins/pretty-print/$ppfile"
-  [[ $ppshortname = "purple" ]]   && alias "ppemphasis"="$ZSH_CUSTOM/plugins/pretty-print/$ppfile"
+  [[ $ppshortname = "green" ]]    && alias "ppsuccess"="$PSY_PLUGINS/pretty-print/$ppfile"
+  [[ $ppshortname = "cyan" ]]     && alias "ppinfo"="$PSY_PLUGINS/pretty-print/$ppfile"
+  [[ $ppshortname = "brown" ]]    && alias "ppwarning"="$PSY_PLUGINS/pretty-print/$ppfile"
+  [[ $ppshortname = "red" ]]      && alias "ppdanger"="$PSY_PLUGINS/pretty-print/$ppfile"
+  [[ $ppshortname = "purple" ]]   && alias "ppemphasis"="$PSY_PLUGINS/pretty-print/$ppfile"
 done
 unset ppshortname
 unset ppfile
@@ -75,7 +75,7 @@ function ppverbose() {
 function prettyprint-test-colors() {
   pppurple " " "    Pretty Print Color Based Aliases"
   pppurple "------------------------------------"
-  for ppfile in $(ls "$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/" | grep "^pretty-print-"); do
+  for ppfile in $(ls "$PSY_PLUGINS/pretty-print/" | grep "^pretty-print-"); do
     ppshortname=$(echo $ppfile | cut -d- -f 3 | cut -d. -f 1)
     eval "pp$ppshortname \"pp$ppshortname - testing pretty print\" | awk '{ printf \"%20s %s %s %s %s\\n\", \$1, \$2, \$3, \$4, \$5}'"
   done
@@ -88,7 +88,7 @@ function prettyprint-test-colors() {
   ppemphasis "ppemphasis - testing pretty print" | awk '{ printf "%20s %s %s %s %s\n", $1, $2, $3, $4, $5}'
   pppurple " " " " "        Pretty Print Inline Printing"
   pppurple "------------------------------------"
-  for ppfile in $(ls "$HOME/.oh-my-zsh-psyrendust/plugins/pretty-print/" | grep "^pretty-print-"); do
+  for ppfile in $(ls "$PSY_PLUGINS/pretty-print/" | grep "^pretty-print-"); do
     ppshortname=$(echo $ppfile | cut -d- -f 3 | cut -d. -f 1)
     eval "pp$ppshortname -i \"pp$ppshortname \""
   done

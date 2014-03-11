@@ -34,13 +34,13 @@
 # ppemphasis - purple
 #  ppverbose - prints out message if PRETTY_PRINT_IS_VERBOSE="true"
 # ------------------------------------------------------------------------------
-psyrendust source "$ZSH_CUSTOM/plugins/pretty-print/pretty-print.plugin.zsh"
+psyrendust source "$PSY_PLUGINS/pretty-print/pretty-print.plugin.zsh"
 
 
 
 # Sourcing plog helpers
 # ------------------------------------------------------------------------------
-psyrendust source "$ZSH_CUSTOM/plugins/plog/plog.plugin.zsh"
+psyrendust source "$PSY_PLUGINS/plog/plog.plugin.zsh"
 
 
 

@@ -15,14 +15,14 @@ psyrendust_au_last_epoch_diff=$(( $(psyrendust epoch --get "auto-update") - $(ps
 if [[ ${psyrendust_au_last_epoch_diff} -gt $PSYRENDUST_UPDATE_DAYS ]]; then
   # Load prprompt script
   # ----------------------------------------------------------------------------
-  psyrendust source "$ZSH_CUSTOM/plugins/prprompt/prprompt.plugin.zsh"
+  psyrendust source "$PSY_PLUGINS/prprompt/prprompt.plugin.zsh"
 
 
   # Run auto-update for oh-my-zsh-psyrendust. Updates run asynchronously in the
   # background. The RPROMPT updates every 1 second to display the real-time
   # progress of the auto-update.
   # ----------------------------------------------------------------------------
-  psyrendust source "$ZSH_CUSTOM/tools/auto-update.zsh"
+  psyrendust source "$PSY_SRC_TOOLS/auto-update.zsh"
 
 
   # Update last epoch
@@ -31,6 +31,6 @@ if [[ ${psyrendust_au_last_epoch_diff} -gt $PSYRENDUST_UPDATE_DAYS ]]; then
 else
   # Run any post-update scripts if they exist
   # ----------------------------------------------------------------------------
-  psyrendust source "$ZSH_CUSTOM/tools/run-once.zsh"
+  psyrendust source "$PSY_SRC_TOOLS/run-once.zsh"
 fi
 unset psyrendust_au_last_epoch_diff

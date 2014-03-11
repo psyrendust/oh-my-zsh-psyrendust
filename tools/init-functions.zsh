@@ -20,12 +20,10 @@ psyrendust-mkcygwin() {
 
 # Force run the auto-update script
 psyrendust-update() {
-  [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/auto-update-last-run" ]] && rm "$PSYRENDUST_CONFIG_BASE_PATH/auto-update-last-run";
-  [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/pprocess-post-update" ]] && rm "$PSYRENDUST_CONFIG_BASE_PATH/pprocess-post-update";
-  [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/post-update-procedure-result.conf" ]] && rm "$PSYRENDUST_CONFIG_BASE_PATH/post-update-procedure-result.conf";
-  [[ -f "$PSYRENDUST_CONFIG_BASE_PATH/post-update-progress.conf" ]] && rm "$PSYRENDUST_CONFIG_BASE_PATH/post-update-progress.conf";
-  psyrendust source "$ZSH_CUSTOM/plugins/prprompt/prprompt.plugin.zsh";
-  psyrendust source "$ZSH_CUSTOM/tools/auto-update.zsh"
+  for file ($(ls $PSY_UPDATES/)) rm "$PSY_UPDATES/$file"
+  unset file
+  psyrendust source "$PSY_PLUGINS/prprompt/prprompt.plugin.zsh";
+  psyrendust source "$PSY_SRC_TOOLS/auto-update.zsh"
 }
 
 # Restart the current shell
@@ -37,12 +35,12 @@ psyrendust-restartshell() {
     # close the current tab we are on
     ppemphasis "Restarting iTerm Shell..."
     sleep 1
-    osascript "$ZSH_CUSTOM/tools/restart-iterm.scpt"
+    osascript "$PSY_SRC_TOOLS/restart-iterm.scpt"
   elif [[ -n $SYSTEM_IS_CYGWIN ]]; then
     # If we are running cygwin we can restart the current console
     ppemphasis "Restarting Cygwin Shell..."
     sleep 1
-    cygstart "$ZSH_CUSTOM/tools/restart-cygwin.vbs"
+    cygstart "$PSY_SRC_TOOLS/restart-cygwin.vbs"
   fi
 }
 
@@ -54,9 +52,8 @@ psyrendust-backup() {
   fi
   # Only run if one of the base dev locations was found
   if [[ -n $psyrendust_config_base_development ]]; then
-    rsync -avr "$HOME/.oh-my-zsh-psyrendust/ConEmu/ConEmu.xml" "$psyrendust_config_base_development/ConEmu/ConEmu.xml"
-    rsync -avr "$HOME/.oh-my-zsh-psyrendust/autoHotkeys/" "$psyrendust_config_base_development/autoHotkeys/"
-    rsync -avr "$HOME/.oh-my-zsh-psyrendust/fonts/" "$psyrendust_config_base_development/fonts/"
+    rsync -avr "$PSY_CONFIG_WIN/ConEmu.xml" "$psyrendust_config_base_development/templates/config/win/ConEmu.xml"
+    rsync -avr "$ZSH_CONFIG/autoHotkeys/" "$psyrendust_config_base_development/templates/config/win/"
     psyrendust-mkcygwin "$psyrendust_config_base_development/tools/cygwin-setup.bat"
   fi
 }
@@ -64,7 +61,7 @@ psyrendust-backup() {
 # Get or Set a epoch
 psyrendust-epoch() {
   local arg_flag="$1"
-  local arg_name="$PSYRENDUST_CONFIG_BASE_PATH/currentepoch-${2:-default}"
+  local arg_name="$ZSH_EPOCH/${2:-default}"
   if [[ $arg_flag == "--set" ]]; then
     echo "$(($(date +%s) / 60 / 60 / 24))" > "$arg_name"
   elif [[ $arg_flag == "--get" ]]; then
@@ -82,11 +79,11 @@ psyrendust-npmupdate() {
   # awk -F'@' '{print $1}'       Remove trailing version number "@0.0.0"
   # awk '{print $2}'             Only print the 2nd column which contains the names of the package
   # awk  '!/npm/'                Exclude npm in the final list
-  npm -g ls --depth=0 2>/dev/null | grep "──" | awk -F'@' '{print $1}' | awk '{print $2}' | awk  '!/npm/' > "$PSYRENDUST_CONFIG_BASE_PATH/npm-g-ls"
-  for pkg in $(cat $PSYRENDUST_CONFIG_BASE_PATH/npm-g-ls); do
+  npm -g ls --depth=0 2>/dev/null | grep "──" | awk -F'@' '{print $1}' | awk '{print $2}' | awk  '!/npm/' > "$PSY_CUSTOM/npm-g-ls"
+  for pkg in $(cat $PSY_CUSTOM/npm-g-ls); do
     npm -g update $pkg
   done
-  rm "$PSYRENDUST_CONFIG_BASE_PATH/npm-g-ls"
+  rm "$PSY_CUSTOM/npm-g-ls"
 }
 
 # Helper function: Strips ansi color codes from string
@@ -241,8 +238,8 @@ psyrendust() {
 # Get or set oh-my-zsh-psyrendust version number
 _psyrendust-version() {
   local arg_flag="$1"
-  local arg_target="${2:-oh-my-zsh-psyrendust}"
-  local version_file="$PSYRENDUST_CONFIG_BASE_PATH/version-$arg_target.info"
+  local arg_target="${2:-psyrendust}"
+  local version_file="$PSY_VERSION/$arg_target.info"
   if [[ $arg_flag == "--set" ]]; then
     __psyrendust_helper_git() {
       cd "$ZSH_CUSTOM"
@@ -261,9 +258,9 @@ _psyrendust-version() {
     # Save version info (eg. v0.1.4p244 (2014-03-03 revision g67cfc97))
     local version_string="${version_tag}p${version_commit} (${version_date} revision ${version_sha})"
     # Save version prefix
-    local version_prefix="${2:-oh-my-zsh-psyrendust}"
+    local version_prefix="${2:-psyrendust}"
     # Output version info to a file (eg. oh-my-zsh-psyrendust v0.1.4p244 (2014-03-03 revision g67cfc97))
-    if [[ "$arg_target" == "oh-my-zsh-psyrendust" ]]; then
+    if [[ "$arg_target" == "psyrendust" ]]; then
       echo "pppurple -i \"$version_prefix \"" > "$version_file"
       echo "pplightpurple \"$version_string\"" >> "$version_file"
     else
@@ -273,7 +270,7 @@ _psyrendust-version() {
   else
     # Get the version info, if it doesn't exist create one
     [[ -f "$version_file" ]] || _psyrendust-version --set "$arg_target"
-    [[ "$arg_target" == "oh-my-zsh-psyrendust" ]] && source "$version_file" || cat "$version_file"
+    [[ "$arg_target" == "psyrendust" ]] && source "$version_file" || cat "$version_file"
   fi
 }
 

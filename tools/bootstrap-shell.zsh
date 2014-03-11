@@ -7,54 +7,34 @@
 
 
 
-# Path to your oh-my-zsh configuration
-# ----------------------------------------------------------
-ZSH="$HOME/.oh-my-zsh"
-
-# Set the location of oh-my-zsh-psyrendust
+# Get the location of this script relative to the cwd
 # ------------------------------------------------------------------------------
-export ZSH_CUSTOM="$HOME/.oh-my-zsh-psyrendust"
+bootstrap_shell="$0"
 
-# Set the location of our work zshrc location
-# ------------------------------------------------------------------------------
-export ZSHRC_WORK="$HOME/.zshrc-work"
+# While the filename in $bootstrap_shell is a symlink
+while [ -L "$bootstrap_shell" ]; do
+  # similar to above, but -P forces a change to the physical not symbolic directory
+  bootstrap_shell_cwd="$( cd -P "$( dirname "$bootstrap_shell" )" && pwd )"
 
-# Set the location of our personal zshrc location
+  # Get the value of symbolic link
+  # If $bootstrap_shell is relative (doesn't begin with /), resolve relative
+  # path where symlink lives
+  bootstrap_shell="$(readlink -f "$bootstrap_shell")" && bootstrap_shell="$bootstrap_shell_cwd/$bootstrap_shell"
+done
+bootstrap_shell_cwd="$( cd -P "$( dirname "$bootstrap_shell" )" && pwd )"
+
+
+
+# Source .zprofile to get global paths and vars
 # ------------------------------------------------------------------------------
-export ZSHRC_PERSONAL="$HOME/.zshrc-personal"
+source ${bootstrap_shell_cwd%/*}/templates/.zprofile
+
+
 
 # Make a backup folder if it doesn't exist
 # ------------------------------------------------------------------------------
-export PSYRENDUST_BACKUP_FOLDER="$ZSHRC_PERSONAL/backup/$(date '+%Y%m%d_%H')00"
-[[ -d "$PSYRENDUST_BACKUP_FOLDER" ]] || mkdir -p "$PSYRENDUST_BACKUP_FOLDER"
-
-# Ensure we have a temp folder to work with
-# ------------------------------------------------------------------------------
-export PSYRENDUST_CONFIG_BASE_PATH="$HOME/.psyrendust"
-if [[ ! -d $PSYRENDUST_CONFIG_BASE_PATH ]]; then
-  mkdir -p "$PSYRENDUST_CONFIG_BASE_PATH/config"
-fi
-
-# ------------------------------------------------------------------------------
-# Download a local copy of oh-my-zsh-psyrendust to help get us started
-# ------------------------------------------------------------------------------
-[[ -d "$HOME/.oh-my-zsh-psyrendust" ]] && mv "$HOME/.oh-my-zsh-psyrendust-old"
-git clone https://github.com/psyrendust/oh-my-zsh-psyrendust.git "$HOME/.oh-my-zsh-psyrendust"
-
-
-
-# ------------------------------------------------------------------------------
-# Load up some defaults
-# ------------------------------------------------------------------------------
-# Init system
-if [[ -f "$ZSH_CUSTOM/tools/init-system.zsh" ]]; then
-  source "$ZSH_CUSTOM/tools/init-system.zsh"
-fi
-# Init paths
-if [[ -f "$ZSH_CUSTOM/tools/init-paths.zsh" ]]; then
-  source "$ZSH_CUSTOM/tools/init-paths.zsh"
-fi
-
+export ZSH_BACKUP_FOLDER="$ZSH_BACKUP/$(date '+%Y%m%d')"
+[[ -d "$ZSH_BACKUP_FOLDER" ]] || mkdir -p "$ZSH_BACKUP_FOLDER"
 
 
 
@@ -62,14 +42,14 @@ fi
 # Helper function to check if a formula is installed in homebrew
 # ------------------------------------------------------------------------------
 _brew-is-installed() {
-  echo $(brew list | grep "^${1}$")
+  echo $(brew list 2>/dev/null | grep "^${1}$")
 }
 
 
 # Helper function to check if a formula is tapped in homebrew
 # ------------------------------------------------------------------------------
 _brew-is-tapped() {
-  echo $(brew tap | grep "^${1}$")
+  echo $(brew tap 2>/dev/null | grep "^${1}$")
 }
 
 
@@ -98,40 +78,76 @@ _killname() {
 _psyrendust-procedure-init-vm() {
   if [[ -n $SYSTEM_IS_VM ]]; then
     # Remove any previous symlinks
-    [[ -d "$HOME/.oh-my-zsh-psyrendust" ]] && rm -rf "$HOME/.oh-my-zsh-psyrendust"
+    [[ -d "$ZSH_CONFIG" ]] && rm -rf "$ZSH_CONFIG"
+    [[ -d "$ZSH_REPOS" ]] && rm -rf "$ZSH_REPOS"
     [[ -d "$HOME/.ssh" ]] && rm -rf "$HOME/.ssh"
-    [[ -d "$HOME/.zshrc-personal" ]] && rm -rf "$HOME/.zshrc-personal"
-    [[ -d "$HOME/.zshrc-work" ]] && rm -rf "$HOME/.zshrc-work"
     # Create symlinks
-    ln -sf "$SYSTEM_VM_HOME/.oh-my-zsh-psyrendust" "$HOME/.oh-my-zsh-psyrendust"
-    ln -sf "$SYSTEM_VM_HOME/.ssh" "$HOME/.ssh"
-    ln -sf "$SYSTEM_VM_HOME/.zshrc-personal" "$HOME/.zshrc-personal"
-    ln -sf "$SYSTEM_VM_HOME/.zshrc-work" "$HOME/.zshrc-work"
+    ln -sf "$SYSTEM_VM_HOST/config" "$ZSH_CONFIG"
+    ln -sf "$SYSTEM_VM_HOST/repos" "$ZSH_REPOS"
+    ln -sf "$SYSTEM_VM_HOST/.ssh" "$HOME/.ssh"
   fi
 }
 
 
 
 # Backup your current configuration stuff in
-# "$ZSHRC_PERSONAL/backup/".
+# "$PSY_USER/backup/".
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-backup-configs() {
   ppinfo 'Backup your current configuration stuff'
-  [[ -s $HOME/.gemrc ]] && mv $HOME/.gemrc $PSYRENDUST_BACKUP_FOLDER/.gemrc
-  [[ -s $HOME/.gitconfig ]] && mv $HOME/.gitconfig $PSYRENDUST_BACKUP_FOLDER/.gitconfig
-  [[ -s $HOME/.gitignore_global ]] && mv $HOME/.gitignore_global $PSYRENDUST_BACKUP_FOLDER/.gitignore_global
-  [[ -s $HOME/.zshrc ]] && mv $HOME/.zshrc $PSYRENDUST_BACKUP_FOLDER/.zshrc
-  [[ -d $HOME/.gitconfig-includes ]] && mv $HOME/.gitconfig-includes $PSYRENDUST_BACKUP_FOLDER/.gitconfig-includes
-  [[ -d $PSYRENDUST_CONFIG_BASE_PATH ]] && mv $PSYRENDUST_CONFIG_BASE_PATH $PSYRENDUST_BACKUP_FOLDER/.psyrendust
-  [[ -s /etc/hosts ]] && cp /etc/hosts $PSYRENDUST_BACKUP_FOLDER/hosts
-  [[ -s /etc/auto_master ]] && cp /etc/auto_master $PSYRENDUST_BACKUP_FOLDER/auto_master
-  [[ -s /etc/auto_smb ]] && cp /etc/auto_smb $PSYRENDUST_BACKUP_FOLDER/auto_smb
+  [[ -s $HOME/.gemrc ]] && cp -a $HOME/.gemrc $PSYRENDUST_BACKUP_FOLDER/.gemrc
+  [[ -s $HOME/.gitconfig ]] && cp -a $HOME/.gitconfig $PSYRENDUST_BACKUP_FOLDER/.gitconfig
+  [[ -s $HOME/.gitignore_global ]] && cp -a $HOME/.gitignore_global $PSYRENDUST_BACKUP_FOLDER/.gitignore_global
+  [[ -d $HOME/.gitconfig-includes ]] && cp -a $HOME/.gitconfig-includes $PSYRENDUST_BACKUP_FOLDER/.gitconfig-includes
+  [[ -s $HOME/.zlogin ]] && cp -a $HOME/.zlogin $PSYRENDUST_BACKUP_FOLDER/.zlogin
+  [[ -s $HOME/.zprofile ]] && cp -a $HOME/.zprofile $PSYRENDUST_BACKUP_FOLDER/.zprofile
+  [[ -s $HOME/.zshenv ]] && cp -a $HOME/.zshenv $PSYRENDUST_BACKUP_FOLDER/.zshenv
+  [[ -s $HOME/.zshrc ]] && cp -a $HOME/.zshrc $PSYRENDUST_BACKUP_FOLDER/.zshrc
+  [[ -d $PSY_CONFIG ]] && cp -aR $PSY_CONFIG $PSYRENDUST_BACKUP_FOLDER/.psyrendust
+  [[ -s /etc/hosts ]] && cp -a /etc/hosts $PSYRENDUST_BACKUP_FOLDER/hosts
+  [[ -s /etc/auto_master ]] && cp -a /etc/auto_master $PSYRENDUST_BACKUP_FOLDER/auto_master
+  [[ -s /etc/auto_smb ]] && cp -a /etc/auto_smb $PSYRENDUST_BACKUP_FOLDER/auto_smb
   # a little cleanup
-  [[ -s $HOME/.zlogin ]] && mv $HOME/.zlogin $PSYRENDUST_BACKUP_FOLDER/.zlogin
   [[ -s $HOME/.zsh-update ]] && mv $HOME/.zsh-update $PSYRENDUST_BACKUP_FOLDER/.zsh-update
   [[ -s $HOME/.zsh_history ]] && mv $HOME/.zsh_history $PSYRENDUST_BACKUP_FOLDER/.zsh_history
   rm $HOME/.zcompdump*
   rm $HOME/NUL
+}
+
+
+
+# Copy over template files
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-copy-templates() {
+  ppinfo "Copy over template files"
+  if [[ -n $SYSTEM_IS_CYGWIN ]]; then
+    local system_os="win"
+  else
+    local system_os="mac"
+  fi
+  cp -aR "$PSY_SRC_TEMPLATES/home/." "$HOME/"
+  cp -aR "$PSY_SRC_TEMPLATES/home-${system_os}/." "$HOME/"
+  cp -aR "$PSY_SRC_TEMPLATES_CONFIG/win/." "$PSY_CONFIG_WIN/"
+  cp -aR "$PSY_SRC_TEMPLATES_CONFIG/git/." "$PSY_CONFIG_GIT/"
+  cp -an "$PSY_SRC_TEMPLATES_CONFIG/git/custom-{mac,win}.gitconfig" "$PSY_CONFIG_GIT/"
+}
+
+
+
+# Copy over plugins
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-copy-plugins() {
+  ppinfo "Copy over plugins"
+  cp -aR "$PSY_SRC_PLUGINS/." "$PSY_PLUGINS/"
+}
+
+
+
+# Copy over themes
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-copy-themes() {
+  ppinfo "Copy over themes"
+  cp -aR "$PSY_SRC_THEMES/." "$PSY_THEMES/"
 }
 
 
@@ -151,6 +167,9 @@ _psyrendust-procedure-load-user-data() {
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-ask-replace-hosts-file() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
+  if [[ -f "$psyrendust_pi_config_user_info" ]]; then
+    source "$psyrendust_pi_config_user_info"
+  fi
   if [[ -n "$psyrendust_replace_hosts_file" ]]; then
     ppinfo "Would you like to replace your hosts file [y/n]? "
     read psyrendust_replace_hosts_file
@@ -160,23 +179,18 @@ _psyrendust-procedure-ask-replace-hosts-file() {
 
 
 
-# Copy over git config templates from oh-my-zsh-psyrendust
+# Would you like to replace your /etc/auto_smb file with a new one [y/n]:
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-git-config-templates() {
+_psyrendust-procedure-ask-automount-sugar-for-parallels() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
-  cp "$ZSH_CUSTOM/templates/config/git/core" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/core"
-  cp "$ZSH_CUSTOM/templates/config/git/diff" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/diff"
-  cp "$ZSH_CUSTOM/templates/config/git/windows" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/windows"
-}
-
-
-
-# Check to see if config/git/user has been created
-# ------------------------------------------------------------------------------
-_psyrendust-procedure-config-git-user() {
-  [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
-  if [[ ! -s "$PSYRENDUST_CONFIG_BASE_PATH/config/git/user" ]]; then
-    cp "$ZSH_CUSTOM/templates/config/git/user" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/user"
+  [[ -n $SYSTEM_IS_LINUX ]] && return # Exit if we are in Linux
+  if [[ -f "$psyrendust_pi_config_user_info" ]]; then
+    source "$psyrendust_pi_config_user_info"
+  fi
+  if [[ -n "$psyrendust_replace_auto_smb_file" ]]; then
+    ppquestion "Would you like to replace your /etc/auto_smb file with a new one [y/n]: "
+    read psyrendust_replace_auto_smb_file
+    echo "psyrendust_replace_auto_smb_file=$psyrendust_replace_auto_smb_file" >> $psyrendust_pi_config_user_info
   fi
 }
 
@@ -184,18 +198,22 @@ _psyrendust-procedure-config-git-user() {
 
 # Check to see if a Git global user.name has been set
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-git-user-name() {
+_psyrendust-procedure-ask-git-user-name() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
-  if [[ $(git config user.name) == "" ]]; then
+  if [[ -f "$psyrendust_pi_config_user_info" ]]; then
+    source "$psyrendust_pi_config_user_info"
+  fi
+  if [[ -n "$psy_git_user_name_first" ]]; then
     echo
     ppinfo -i "We need to configure your " && pplightpurple "Git Global user.name"
     ppinfo -i "Please enter your first and last name ["
     pplightpurple -i "Firstname Lastname"
     ppinfo -i "]: "
-    read git_user_name_first git_user_name_last
-    echo "  name = ${git_user_name_first} ${git_user_name_last}" >> "$PSYRENDUST_CONFIG_BASE_PATH/config/git/user"
-    unset git_user_name_first
-    unset git_user_name_last
+    read psy_git_user_name_first psy_git_user_name_last
+    echo "psy_git_user_name_first=\"${psy_git_user_name_first}\"" >> $psyrendust_pi_config_user_info
+    echo "psy_git_user_name_last=\"${psy_git_user_name_last}\"" >> $psyrendust_pi_config_user_info
+    unset psy_git_user_name_first
+    unset psy_git_user_name_last
     echo
   fi
 }
@@ -204,20 +222,66 @@ _psyrendust-procedure-git-user-name() {
 
 # Check to see if a Git global user.email has been set
 # ------------------------------------------------------------------------------
-_psyrendust-procedure-git-user-email() {
+_psyrendust-procedure-ask-git-user-email() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
-  if [[ $(git config user.email) == "" ]]; then
+  if [[ -f "$psyrendust_pi_config_user_info" ]]; then
+    source "$psyrendust_pi_config_user_info"
+  fi
+  if [[ -n "$psy_git_user_email" ]]; then
     echo
     ppinfo -i "We need to configure your "
     pplightpurple "Git Global user.email"
     ppinfo -i "Please enter your work email address ["
     pplightpurple -i "first.last@domain.com"
     ppinfo -i "]: "
-    read git_user_email
-    echo "  email = ${git_user_email}" >> "$PSYRENDUST_CONFIG_BASE_PATH/config/git/user"
+    read psy_git_user_email
+    echo "psy_git_user_email=\"${psy_git_user_email}\"" >> $psyrendust_pi_config_user_info
+    unset psy_git_user_email
+    echo
+  fi
+}
+
+
+# Check to see if config/git/user has been created
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-config-git-user() {
+  [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
+  cp -an "$PSY_SRC_TEMPLATES_CONFIG/blank/user.gitconfig" "$PSY_CONFIG_GIT/user.gitconfig"
+}
+
+
+
+# Set Git global user.name
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-git-user-name() {
+  [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
+  if [[ -f "$psyrendust_pi_config_user_info" ]]; then
+    source "$psyrendust_pi_config_user_info"
+  fi
+  if [[ $(git config user.name) == "" ]]; then
+    echo "  name = ${psy_git_user_name_first} ${psy_git_user_name_last}" >> "$PSY_CONFIG_GIT/user.gitconfig"
+    ppinfo -i "Git config user.name saved to: "
+    pplightcyan "$PSY_CONFIG_GIT/user.gitconfig"
+    unset psy_git_user_name_first
+    unset psy_git_user_name_last
+    echo
+  fi
+}
+
+
+
+# Set Git global user.email
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-git-user-email() {
+  [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
+  if [[ -f "$psyrendust_pi_config_user_info" ]]; then
+    source "$psyrendust_pi_config_user_info"
+  fi
+  if [[ $(git config user.email) == "" ]]; then
+    echo "  email = ${psy_git_user_email}" >> "$PSY_CONFIG_GIT/user.gitconfig"
     ppinfo -i "Git config user.email saved to: "
-    pplightcyan "$PSYRENDUST_CONFIG_BASE_PATH/config/git/user"
-    unset git_user_email
+    pplightcyan "$PSY_CONFIG_GIT/user.gitconfig"
+    unset psy_git_user_email
     echo
   fi
 }
@@ -229,7 +293,7 @@ _psyrendust-procedure-git-user-email() {
 _psyrendust-procedure-install-homebrew() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Checking for homebrew..."
-  if [[ $(which -s brew) != 0 ]]; then
+  if [[ -z $(which -s brew 2>/dev/null) ]]; then
     ppdanger "Homebrew missing. Installing Homebrew..."
     # https://github.com/mxcl/homebrew/wiki/installation
     ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
@@ -476,6 +540,38 @@ _psyrendust-procedure-brew-install-git() {
 
 
 
+# Windows clone git
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-windows-clone-git() {
+  [[ -z $SYSTEM_IS_VM ]] && return # Exit if we are not in a VM
+  ppinfo "Windows clone git"
+  git clone git://git.kernel.org/pub/scm/git/git.git $ZSH_DEV/git
+}
+
+
+
+# Windows make
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-windows-make() {
+  [[ -z $SYSTEM_IS_VM ]] && return # Exit if we are not in a VM
+  ppinfo "Windows: make prefix=/usr/local all"
+  cd $ZSH_DEV/git
+  make prefix=/usr/local all
+}
+
+
+
+# Windows make
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-windows-make() {
+  [[ -z $SYSTEM_IS_VM ]] && return # Exit if we are not in a VM
+  ppinfo "Windows: make prefix=/usr/local install"
+  cd $ZSH_DEV/git
+  make prefix=/usr/local install
+}
+
+
+
 # brew install optipng
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-brew-install-optipng() {
@@ -545,7 +641,7 @@ _psyrendust-procedure-remove-node() {
 _psyrendust-procedure-remove-npm() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   # Remove npm
-  if [[ -z $(which npm | grep "not found") ]]; then
+  if [[ -z $(which -s npm 2>/dev/null) ]]; then
     ppinfo "Remove npm: npm uninstall npm -g"
     npm uninstall npm -g
   fi
@@ -691,7 +787,6 @@ _psyrendust-procedure-brew-cleanup() {
 _psyrendust-procedure-cleanup-old-dotfiles() {
   ppinfo "Cleanup old zsh dotfiles"
   rm "$HOME/.zcompdump*"
-  rm "$HOME/.zlogin"
   rm "$HOME/.zsh-update"
   rm "$HOME/.zsh_history"
 }
@@ -728,49 +823,14 @@ _psyrendust-procedure-install-oh-my-zsh() {
 
 
 
-# Copy over template files to your home folder
-# ------------------------------------------------------------------------------
-_psyrendust-procedure-copy-templates() {
-  ppinfo "Copy over template files to your home folder"
-  [[ -f "$ZSH_CUSTOM/templates/.gemrc" ]] && cp "$ZSH_CUSTOM/templates/.gemrc" "$HOME/.gemrc"
-  [[ -f "$ZSH_CUSTOM/templates/.gitignore_global" ]] && cp "$ZSH_CUSTOM/templates/.gitignore_global" "${HOME}/.gitignore_global"
-  [[ -f "$ZSH_CUSTOM/templates/.zlogin" ]] && cp "$ZSH_CUSTOM/templates/.zlogin" "$HOME/.zlogin"
-  [[ -f "$ZSH_CUSTOM/templates/.zprofile" ]] && cp "$ZSH_CUSTOM/templates/.zprofile" "$HOME/.zprofile"
-  [[ -f "$ZSH_CUSTOM/templates/.zshenv" ]] && cp "$ZSH_CUSTOM/templates/.zshenv" "$HOME/.zshenv"
-  [[ -f "$ZSH_CUSTOM/templates/.zshrc" ]] && cp "$ZSH_CUSTOM/templates/.zshrc" "$HOME/.zshrc"
-  if [[ -n $SYSTEM_IS_CYGWIN ]]; then
-    # Replace win .gitconfig
-    [[ -s "$ZSH_CUSTOM/templates/config/git/gitconfig-win" ]] && cp "$ZSH_CUSTOM/templates/config/git/gitconfig-win" "$HOME/.gitconfig"
-  else
-    # Replace mac .gitconfig
-    [[ -s "$ZSH_CUSTOM/templates/config/git/gitconfig-mac" ]] && cp "$ZSH_CUSTOM/templates/config/git/gitconfig-mac" "$HOME/.gitconfig"
-  fi
-  if [[ -n $SYSTEM_IS_VM ]]; then
-    # Symlink git configs
-    ln -sf "$SYSTEM_VM_HOME/.psyrendust/config/git" "$PSYRENDUST_CONFIG_BASE_PATH/config/git"
-  else
-    # Replace git configs
-    cp "$ZSH_CUSTOM/templates/config/git/core" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/core"
-    cp "$ZSH_CUSTOM/templates/config/git/diff" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/diff"
-    cp "$ZSH_CUSTOM/templates/config/git/windows" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/windows"
-    if [[ -n $SYSTEM_IS_CYGWIN ]]; then
-      cp "$ZSH_CUSTOM/templates/config/git/custom-win" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/custom-win"
-    else
-      cp "$ZSH_CUSTOM/templates/config/git/custom-mac" "$PSYRENDUST_CONFIG_BASE_PATH/config/git/custom-mac"
-    fi
-  fi
-}
-
-
-
 # Install fonts DroidSansMono and Inconsolata
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-install-mac-fonts() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Install fonts DroidSansMono and Inconsolata"
   [[ -d "$HOME/Library/Fonts" ]] || mkdir -p "$HOME/Library/Fonts"
-  cp "$ZSH_CUSTOM/fonts/DroidSansMono.ttf" "$HOME/Library/Fonts/DroidSansMono.ttf"
-  cp "$ZSH_CUSTOM/fonts/Inconsolata.otf" "$HOME/Library/Fonts/Inconsolata.otf"
+  cp -a "$PSY_SRC_FONTS/mac/DroidSansMono.ttf" "$HOME/Library/Fonts/DroidSansMono.ttf"
+  cp -a "$PSY_SRC_FONTS/mac/Inconsolata.otf" "$HOME/Library/Fonts/Inconsolata.otf"
 }
 
 
@@ -781,8 +841,8 @@ _psyrendust-procedure-install-win-fonts() {
   if [[ -n $SYSTEM_IS_CYGWIN ]]; then
     ppinfo "Install fonts DroidSansMono and ErlerDingbats"
     [[ -d "/cygdrive/c/Windows/Fonts" ]] || mkdir -p "/cygdrive/c/Windows/Fonts"
-    [[ -f "$HOME/.oh-my-zsh-psyrendust/fonts/win/DROIDSAM.TTF" ]] && cp "$HOME/.oh-my-zsh-psyrendust/fonts/win/DROIDSAM.TTF" "/cygdrive/c/Windows/Fonts/DROIDSAM.TTF"
-    [[ -f "$HOME/.oh-my-zsh-psyrendust/fonts/win/ErlerDingbats.ttf" ]] && cp "$HOME/.oh-my-zsh-psyrendust/fonts/win/ErlerDingbats.ttf" "/cygdrive/c/Windows/Fonts/ErlerDingbats.ttf"
+    cp -a "$PSY_SRC_FONTS/win/DROIDSAM.TTF" "/cygdrive/c/Windows/Fonts/DROIDSAM.TTF"
+    cp -a "$PSY_SRC_FONTS/win/ErlerDingbats.ttf" "/cygdrive/c/Windows/Fonts/ErlerDingbats.ttf"
   fi
 }
 
@@ -793,7 +853,7 @@ _psyrendust-procedure-install-win-fonts() {
 _psyrendust-procedure-install-zsh-work() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Clone zshrc-work"
-  git clone https://github.dev.xero.com/dev-larryg/zshrc-xero.git "$ZSHRC_WORK"
+  git clone https://github.dev.xero.com/dev-larryg/zshrc-xero.git "$PSY_WORK"
 }
 
 
@@ -803,9 +863,8 @@ _psyrendust-procedure-install-zsh-work() {
 _psyrendust-procedure-zshrc-personal-starter() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   ppinfo "Install zshrc-personal starter template"
-  [[ -d "$ZSHRC_PERSONAL" ]] && mkdir -p "$ZSHRC_PERSONAL"
-  cp "$ZSH_CUSTOM/templates/.zshrc-personal" "$ZSHRC_PERSONAL/.zshrc"
-  cp "$ZSH_CUSTOM/templates/.zshrc-personal-custom" "$ZSHRC_PERSONAL/.zshrc-custom"
+  [[ -d "$PSY_USER" ]] && mkdir -p "$PSY_USER"
+  cp -aR "$PSY_TEMPLATES/user/." "$PSY_USER/"
 }
 
 
@@ -814,9 +873,9 @@ _psyrendust-procedure-zshrc-personal-starter() {
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-create-post-update() {
   ppinfo "Create post-updates"
-  [[ -f "$ZSH_CUSTOM/tools/post-update.zsh" ]] && cp "$ZSH_CUSTOM/tools/post-update.zsh" "$PSYRENDUST_CONFIG_BASE_PATH/post-update-run-once-oh-my-zsh-psyrendust.zsh"
-  [[ -f "$ZSHRC_PERSONAL/tools/post-update.zsh" ]] && cp "$ZSHRC_PERSONAL/tools/post-update.zsh" "$PSYRENDUST_CONFIG_BASE_PATH/post-update-run-once-zshrc-personal.zsh"
-  [[ -f "$ZSHRC_WORK/tools/post-update.zsh" ]] && cp "$ZSHRC_WORK/tools/post-update.zsh" "$PSYRENDUST_CONFIG_BASE_PATH/post-update-run-once-zshrc-work.zsh"
+  [[ -f "$PSY_SRC_TOOLS/post-update.zsh" ]] && cp -a "$PSY_SRC_TOOLS/post-update.zsh" "$PSY_RUN_ONCE/post-update-oh-my-zsh-psyrendust.zsh"
+  [[ -f "$PSY_USER/tools/post-update.zsh" ]] && cp -a "$PSY_USER/tools/post-update.zsh" "$PSY_RUN_ONCE/post-update-zshrc-personal.zsh"
+  [[ -f "$PSY_WORK/tools/post-update.zsh" ]] && cp -a "$PSY_WORK/tools/post-update.zsh" "$PSY_RUN_ONCE/post-update-zshrc-work.zsh"
 }
 
 
@@ -848,7 +907,7 @@ _psyrendust-procedure-switch-to-terminal() {
     ppwarning "You seem to be running this script from iTerm.app."
     ppwarning "Opening Terminal.app to install iTerm.app preferences."
     sleep 4
-    osascript "$ZSH_CUSTOM/tools/bootstrap-shell-to-term.zsh"
+    osascript "$PSY_SRC_TOOLS/bootstrap-shell-to-term.zsh"
     exit 1
   fi
 }
@@ -860,12 +919,12 @@ _psyrendust-procedure-switch-to-terminal() {
 _psyrendust-procedure-install-iterm2-preferences() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   if [[ "$TERM_PROGRAM" == "Apple_Terminal"]]; then
-    if [[ -f "$ZSH_CUSTOM/templates/com.googlecode.iterm2.plist" ]]; then
+    if [[ -f "$PSY_TEMPLATES/com.googlecode.iterm2.plist" ]]; then
       ppinfo "Installing iTerm2 default preference and theme"
       if [[ -d "${HOME}/Library/Preferences" ]]; then
         mkdir -p "${HOME}/Library/Preferences"
       fi
-      cp "$ZSHRC_PERSONAL/templates/com.googlecode.iterm2.plist" "${HOME}/Library/Preferences/com.googlecode.iterm2.plist"
+      cp -a "$PSY_SRC_TEMPLATES_CONFIG/iterm/com.googlecode.iterm2.plist" "$HOME/Library/Preferences/com.googlecode.iterm2.plist"
     fi
   fi
 }
@@ -880,7 +939,7 @@ _psyrendust-procedure-switch-to-iterm2() {
     ppwarning "You seem to be running this script from Terminal.app."
     ppwarning "Opening iTerm.app to pick up where we left off."
     sleep 4
-    osascript "$ZSH_CUSTOM/tools/bootstrap-shell-to-iterm.zsh"
+    osascript "$PSY_SRC_TOOLS/bootstrap-shell-to-iterm.zsh"
     exit 1
   fi
 }
@@ -891,9 +950,12 @@ _psyrendust-procedure-switch-to-iterm2() {
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-install-hosts-file() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
+  if [[ -f "$psyrendust_pi_config_user_info" ]]; then
+    source "$psyrendust_pi_config_user_info"
+  fi
   if [[ $psyrendust_replace_hosts_file = [Yy] ]]; then
     ppinfo 'install a default hosts file'
-    sudo cp "$ZSHRC_WORK/templates/hosts" "/etc/hosts"
+    sudo cp -a "$PSY_WORK/templates/hosts" "/etc/hosts"
   fi
 }
 
@@ -904,13 +966,13 @@ _psyrendust-procedure-install-hosts-file() {
 _psyrendust-procedure-automount-sugar-for-parallels() {
   [[ -n $SYSTEM_IS_VM ]] && return # Exit if we are in a VM
   [[ -n $SYSTEM_IS_LINUX ]] && return # Exit if we are in Linux
-  ppquestion "Would you like to replace your /etc/auto_smb file with a new one [y/n]: "
-  read replaceautosmbfile
-
-  if [[ $replaceautosmbfile = [Yy] ]]; then
+  if [[ -f "$psyrendust_pi_config_user_info" ]]; then
+    source "$psyrendust_pi_config_user_info"
+  fi
+  if [[ $psyrendust_replace_auto_smb_file = [Yy] ]]; then
     ppinfo 'add some automount sugar for Parallels'
-    sudo cp "$ZSHRC_WORK/templates/auto_master" "/private/etc/auto_master"
-    sudo cp "$ZSHRC_WORK/templates/auto_smb" "/private/etc/auto_smb"
+    sudo cp -a "$PSY_WORK/templates/auto_master" "/private/etc/auto_master"
+    sudo cp -a "$PSY_WORK/templates/auto_smb" "/private/etc/auto_smb"
   fi
 }
 
@@ -1011,16 +1073,20 @@ _psyrendust-procedure-check-ruby-version() {
 
 # Load up gem helper function
 # ------------------------------------------------------------------------------
-psyrendust source --cygwin "$ZSH_CUSTOM/tools/init-post-settings.zsh"
+_psyrendust-procedure-gem-update() {
+  psyrendust source --cygwin "$PSY_SRC_TOOLS/init-post-settings.zsh"
+}
 
 
 
-# Update and install some gems
+# Update gems
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-gem-update() {
   ppinfo 'gem update --system'
   gem update --system
 }
+# Install latest gems for sass and compass dev
+# ------------------------------------------------------------------------------
 _psyrendust-procedure-gem-install-rails() {
   ppinfo 'gem install rails'
   gem install rails
@@ -1034,8 +1100,56 @@ _psyrendust-procedure-gem-install-compass() {
   gem install compass --pre
 }
 _psyrendust-procedure-gem-install-sass() {
-  ppinfo 'gem install sass --pre'
-  gem install sass --pre
+  ppinfo 'gem install sass'
+  gem install sass
+}
+# Install latest gem for man file generator
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-gem-install-ronn() {
+  ppinfo 'gem install ronn'
+  gem install ronn
+}
+# Install latest gems for jekyll and markdown development
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-gem-install-jekyll() {
+  ppinfo 'gem install jekyll'
+  gem install jekyll
+}
+_psyrendust-procedure-gem-install-rdiscount() {
+  ppinfo 'gem install rdiscount'
+  gem install rdiscount
+}
+_psyrendust-procedure-gem-install-redcarpet() {
+  ppinfo 'gem install redcarpet'
+  gem install redcarpet
+}
+_psyrendust-procedure-gem-install-RedCloth() {
+  ppinfo 'gem install RedCloth'
+  gem install RedCloth
+}
+_psyrendust-procedure-gem-install-rdoc() {
+  ppinfo 'gem install rdoc'
+  gem install rdoc -v 3.6.1
+}
+_psyrendust-procedure-gem-install-org-ruby() {
+  ppinfo 'gem install org-ruby'
+  gem install org-ruby
+}
+_psyrendust-procedure-gem-install-creole() {
+  ppinfo 'gem install creole'
+  gem install creole
+}
+_psyrendust-procedure-gem-install-wikicloth() {
+  ppinfo 'gem install wikicloth'
+  gem install wikicloth
+}
+_psyrendust-procedure-gem-install-asciidoctor() {
+  ppinfo 'gem install asciidoctor'
+  gem install asciidoctor
+}
+_psyrendust-procedure-gem-install-rake() {
+  ppinfo 'gem install rake'
+  gem install rake
 }
 
 
@@ -1080,14 +1194,14 @@ _psyrendust-procedure-npm-install-grunt-cli() {
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-remove-grunt-init-plugins() {
   ppinfo "Remove all grunt-init plugins and start over"
-  if [[ -d "$HOME/.grunt-init" ]]; then
-    gruntinitplugins=$(ls "$HOME/.grunt-init")
+  if [[ -d "$PSY_GRUNT_INIT" ]]; then
+    gruntinitplugins=$(ls "$PSY_GRUNT_INIT")
     for i in ${gruntinitplugins[@]}
     do
-      rm -rf "$HOME/.grunt-init/$i"
+      rm -rf "$PSY_GRUNT_INIT/$i"
     done
   else
-    mkdir "$HOME/.grunt-init"
+    mkdir "$PSY_GRUNT_INIT"
   fi
 }
 
@@ -1097,7 +1211,7 @@ _psyrendust-procedure-remove-grunt-init-plugins() {
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-add-grunt-init-gruntfile() {
   ppinfo "Add gruntfile plugin for grunt-init"
-  git clone https://github.com/gruntjs/grunt-init-gruntfile.git "${HOME}/.grunt-init/gruntfile"
+  git clone https://github.com/gruntjs/grunt-init-gruntfile.git "$PSY_GRUNT_INIT/gruntfile"
 }
 
 
@@ -1106,7 +1220,7 @@ _psyrendust-procedure-add-grunt-init-gruntfile() {
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-add-grunt-init-commonjs() {
   ppinfo "Add commonjs plugin for grunt-init"
-  git clone https://github.com/gruntjs/grunt-init-commonjs.git "${HOME}/.grunt-init/commonjs"
+  git clone https://github.com/gruntjs/grunt-init-commonjs.git "$PSY_GRUNT_INIT/commonjs"
 }
 
 
@@ -1115,7 +1229,7 @@ _psyrendust-procedure-add-grunt-init-commonjs() {
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-add-grunt-init-gruntplugin() {
   ppinfo "Add gruntplugin plugin for grunt-init"
-  git clone https://github.com/gruntjs/grunt-init-gruntplugin.git "${HOME}/.grunt-init/gruntplugin"
+  git clone https://github.com/gruntjs/grunt-init-gruntplugin.git "$PSY_GRUNT_INIT/gruntplugin"
 }
 
 
@@ -1124,7 +1238,7 @@ _psyrendust-procedure-add-grunt-init-gruntplugin() {
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-add-grunt-init-jquery() {
   ppinfo "Add jquery plugin for grunt-init"
-  git clone https://github.com/gruntjs/grunt-init-jquery.git "${HOME}/.grunt-init/jquery"
+  git clone https://github.com/gruntjs/grunt-init-jquery.git "$PSY_GRUNT_INIT/jquery"
 }
 
 
@@ -1133,7 +1247,7 @@ _psyrendust-procedure-add-grunt-init-jquery() {
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-add-grunt-init-node() {
   ppinfo "Add node plugin for grunt-init"
-  git clone https://github.com/gruntjs/grunt-init-node.git "${HOME}/.grunt-init/node"
+  git clone https://github.com/gruntjs/grunt-init-node.git "$PSY_GRUNT_INIT/node"
 }
 
 
@@ -1150,7 +1264,7 @@ _psyrendust-procedure-install-easy-install() {
 
 
 
-# for the c alias (syntax highlighted cat)
+# Installing Pygments for the c alias (syntax highlighted cat)
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-install-pygments() {
   ppinfo 'Installing Pygments for the c alias (syntax highlighted cat)'
@@ -1158,6 +1272,19 @@ _psyrendust-procedure-install-pygments() {
     easy_install Pygments
   else
     sudo easy_install Pygments
+  fi
+}
+
+
+
+# Installing Docutils: Documentation Utilities for jekyll and markdown development
+# ------------------------------------------------------------------------------
+_psyrendust-procedure-install-pygments() {
+  ppinfo 'Installing Docutils: Documentation Utilities'
+  if [[ -n $SYSTEM_IS_VM ]]; then
+    easy_install docutils
+  else
+    sudo easy_install docutils
   fi
 }
 
@@ -1262,6 +1389,6 @@ fi
 # ppemphasis - purple
 #  ppverbose - prints out message if PRETTY_PRINT_IS_VERBOSE="true"
 # ------------------------------------------------------------------------------
-if [[ -s "$ZSH_CUSTOM/tools/psyrendust-procedure-init.zsh" ]]; then
-  source "$ZSH_CUSTOM/tools/psyrendust-procedure-init.zsh" $0
+if [[ -s "$PSY_SRC_TOOLS/psyrendust-procedure-init.zsh" ]]; then
+  source "$PSY_SRC_TOOLS/psyrendust-procedure-init.zsh" $0
 fi

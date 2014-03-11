@@ -2,8 +2,8 @@
 
 # Create psyrendust log symlinks
 # ----------------------------------------------------------
-alias plog="$ZSH_CUSTOM/plugins/plog/plog-log.zsh"
+alias plog="$PSY_PLUGINS/plog/plog-log.zsh"
 
 # Add path for this man page to manpath
 # --------------------------------------------------------
-export MANPATH="$ZSH_CUSTOM/plugins/plog:$MANPATH"
+export MANPATH="$PSY_PLUGINS/plog:$MANPATH"
