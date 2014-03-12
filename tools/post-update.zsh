@@ -75,8 +75,6 @@ _psyrendust-procedure-waiting() {
 # ------------------------------------------------------------------------------
 _psyrendust-procedure-migrate-existing-gitconfig-includes() {
   if [[ -d "$HOME/.gitconfig-includes" ]]; then
-    [[ -s "$HOME/.gitconfig-includes/user.gitconfig" ]] && cp -aR "$HOME/.gitconfig-includes/user.gitconfig" "$PSY_CONFIG_GIT/user.gitconfig"
-    [[ -s "$HOME/.gitconfig-includes/github-xero-username.conf" ]] && cp -aR "$HOME/.gitconfig-includes/github-xero-username.conf" "$PSY_CONFIG_GIT/xero-username.zsh"
     mv "$HOME/.gitconfig-includes" "$PSY_BACKUP_FOLDER/.gitconfig-includes"
   fi
 }
