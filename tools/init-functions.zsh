@@ -53,7 +53,7 @@ psyrendust-backup() {
   # Only run if one of the base dev locations was found
   if [[ -n $psyrendust_config_base_development ]]; then
     rsync -avr "$PSY_CONFIG_WIN/ConEmu.xml" "$psyrendust_config_base_development/templates/config/win/ConEmu.xml"
-    rsync -avr "$ZSH_CONFIG/autoHotkeys/" "$psyrendust_config_base_development/templates/config/win/"
+    rsync -avr "$PSY_CONFIG_WIN/AutoHotkey.ahk" "$psyrendust_config_base_development/templates/config/win/AutoHotkey.ahk"
     psyrendust-mkcygwin "$psyrendust_config_base_development/tools/cygwin-setup.bat"
   fi
 }
@@ -61,7 +61,7 @@ psyrendust-backup() {
 # Get or Set a epoch
 psyrendust-epoch() {
   local arg_flag="$1"
-  local arg_name="$ZSH_EPOCH/${2:-default}"
+  local arg_name="$PSY_EPOCH/${2:-default}"
   if [[ $arg_flag == "--set" ]]; then
     echo "$(($(date +%s) / 60 / 60 / 24))" > "$arg_name"
   elif [[ $arg_flag == "--get" ]]; then
@@ -242,7 +242,7 @@ _psyrendust-version() {
   local version_file="$PSY_VERSION/$arg_target.info"
   if [[ $arg_flag == "--set" ]]; then
     __psyrendust_helper_git() {
-      cd "$ZSH_CUSTOM"
+      cd "$PSY_PSYRENDUST"
       echo "$(git $@)"
     }
     # Get the version string from git (eg. v0.1.4-248-g5840656)
