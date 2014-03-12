@@ -1,16 +1,16 @@
 # Init plugins
-if [[ -s "$ZSH_TOOLS/init-plugins.zsh" ]]; then
-  source "$ZSH_TOOLS/init-plugins.zsh"
+if [[ -s "$PSY_TOOLS/init-plugins.zsh" ]]; then
+  source "$PSY_TOOLS/init-plugins.zsh"
 fi
 
 # Init aliases
-if [[ -s "$ZSH_TOOLS/init-aliases.zsh" ]]; then
-  source "$ZSH_TOOLS/init-aliases.zsh"
+if [[ -s "$PSY_TOOLS/init-aliases.zsh" ]]; then
+  source "$PSY_TOOLS/init-aliases.zsh"
 fi
 
 # Init functions
-if [[ -s "$ZSH_TOOLS/init-functions.zsh" ]]; then
-  source "$ZSH_TOOLS/init-functions.zsh"
+if [[ -s "$PSY_TOOLS/init-functions.zsh" ]]; then
+  source "$PSY_TOOLS/init-functions.zsh"
 fi
 
 
@@ -21,13 +21,13 @@ fi
 # this file.
 # ------------------------------------------------------------------------------
 # Load custom work zshrc
-if [[ -s "$ZSH_WORK/.zshrc" ]]; then
-  source "$ZSH_WORK/.zshrc"
+if [[ -s "$PSY_WORK/.zshrc" ]]; then
+  source "$PSY_WORK/.zshrc"
 fi
 
 # Load custom user zshrc
-if [[ -s "$ZSH_USER/.zshrc" ]]; then
-  source "$ZSH_USER/.zshrc"
+if [[ -s "$PSY_USER/.zshrc" ]]; then
+  source "$PSY_USER/.zshrc"
 fi
 
 
@@ -42,13 +42,13 @@ fi
 # ------------------------------------------------------------------------------
 # Post initialization
 # ------------------------------------------------------------------------------
-if [[ -s "$ZSH_TOOLS/init-post-settings.zsh" ]]; then
-  source "$ZSH_TOOLS/init-post-settings.zsh"
+if [[ -s "$PSY_TOOLS/init-post-settings.zsh" ]]; then
+  source "$PSY_TOOLS/init-post-settings.zsh"
 fi
 
 # Last run helper functions
-if [[ -s "$ZSH_TOOLS/last-run.zsh" ]]; then
-  source "$ZSH_TOOLS/last-run.zsh"
+if [[ -s "$PSY_TOOLS/last-run.zsh" ]]; then
+  source "$PSY_TOOLS/last-run.zsh"
 fi
 
 # Output our version number

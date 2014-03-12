@@ -9,25 +9,28 @@
 
 # Get the location of this script relative to the cwd
 # ------------------------------------------------------------------------------
-bootstrap_shell="$0"
+psy_migrate="$0"
 
-# While the filename in $bootstrap_shell is a symlink
-while [ -L "$bootstrap_shell" ]; do
+# While the filename in $psy_migrate is a symlink
+while [ -L "$psy_migrate" ]; do
   # similar to above, but -P forces a change to the physical not symbolic directory
-  bootstrap_shell_cwd="$( cd -P "$( dirname "$bootstrap_shell" )" && pwd )"
+  psy_migrate_cwd="$( cd -P "$( dirname "$psy_migrate" )" && pwd )"
 
   # Get the value of symbolic link
-  # If $bootstrap_shell is relative (doesn't begin with /), resolve relative
+  # If $psy_migrate is relative (doesn't begin with /), resolve relative
   # path where symlink lives
-  bootstrap_shell="$(readlink -f "$bootstrap_shell")" && bootstrap_shell="$bootstrap_shell_cwd/$bootstrap_shell"
+  psy_migrate="$(readlink -f "$psy_migrate")" && psy_migrate="$psy_migrate_cwd/$psy_migrate"
 done
-bootstrap_shell_cwd="$( cd -P "$( dirname "$bootstrap_shell" )" && pwd )"
+psy_migrate_cwd="$( cd -P "$( dirname "$psy_migrate" )" && pwd )"
+psy_migrate_root="${psy_migrate_cwd%/*}"
 
-
+# Copy over home templates
+# ------------------------------------------------------------------------------
+cp -aR "$psy_migrate_root/templates/home/." "$HOME/"
 
 # Source .zprofile to get global paths and vars
 # ------------------------------------------------------------------------------
-source ${bootstrap_shell_cwd%/*}/templates/.zprofile
+source $HOME/.zprofile
 
 
 

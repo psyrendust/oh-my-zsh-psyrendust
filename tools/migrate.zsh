@@ -28,7 +28,7 @@ psy_migrate_root="${psy_migrate_cwd%/*}"
 
 # Source .zprofile to get global paths and vars
 # ------------------------------------------------------------------------------
-source $psy_migrate_root/templates/.zprofile
+source $psy_migrate_root/templates/home/.zprofile
 
 
 # Copy over plugins, templates, and themes
