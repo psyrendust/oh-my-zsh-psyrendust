@@ -103,7 +103,7 @@ _psyrendust-procedure-install-git-config-templates() {
   if [[ -z $SYSTEM_IS_VM ]]; then
     # Replace git configs
     cp -aR "$PSY_SRC_TEMPLATES_CONFIG/git/." "$PSY_CONFIG_GIT/"
-    cp -an "$PSY_SRC_TEMPLATES_CONFIG/blank/custom-{mac,win}.gitconfig" "$PSY_CONFIG_GIT/"
+    cp -an "$PSY_SRC_TEMPLATES_CONFIG/blank/custom-"{mac,win}.gitconfig "$PSY_CONFIG_GIT/"
   fi
 }
 

@@ -42,7 +42,7 @@ cp -aR "$PSY_SRC_TEMPLATES/home/." "$HOME/"
 cp -aR "$PSY_SRC_TEMPLATES/home-${system_os}/." "$HOME/"
 cp -aR "$PSY_SRC_TEMPLATES_CONFIG/win/." "$PSY_CONFIG_WIN/"
 cp -aR "$PSY_SRC_TEMPLATES_CONFIG/git/." "$PSY_CONFIG_GIT/"
-cp -an "$PSY_SRC_TEMPLATES_CONFIG/blank/custom-{mac,win}.gitconfig" "$PSY_CONFIG_GIT/"
+cp -an "$PSY_SRC_TEMPLATES_CONFIG/blank/custom-"{mac,win}.gitconfig "$PSY_CONFIG_GIT/"
 cp -aR "$PSY_SRC_PLUGINS/." "$PSY_PLUGINS/"
 cp -aR "$PSY_SRC_THEMES/." "$PSY_THEMES/"
 
