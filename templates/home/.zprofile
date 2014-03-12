@@ -140,7 +140,6 @@ for psyrendust_default_path in "${(k)psyrendust_default_paths[@]}"; do
   if [[ ! -d $default_path ]]; then
     mkdir -p "$default_path"
   fi
-  echo "default_path: $psyrendust_default_path : $default_path"
   unset default_path
 done
 unset psyrendust_default_paths{s,}
