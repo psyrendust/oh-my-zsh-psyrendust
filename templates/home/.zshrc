@@ -1,16 +1,16 @@
 # Init plugins
-if [[ -s "$PSY_TOOLS/init-plugins.zsh" ]]; then
-  source "$PSY_TOOLS/init-plugins.zsh"
+if [[ -s "$PSY_SRC_TOOLS/init-plugins.zsh" ]]; then
+  source "$PSY_SRC_TOOLS/init-plugins.zsh"
 fi
 
 # Init aliases
-if [[ -s "$PSY_TOOLS/init-aliases.zsh" ]]; then
-  source "$PSY_TOOLS/init-aliases.zsh"
+if [[ -s "$PSY_SRC_TOOLS/init-aliases.zsh" ]]; then
+  source "$PSY_SRC_TOOLS/init-aliases.zsh"
 fi
 
 # Init functions
-if [[ -s "$PSY_TOOLS/init-functions.zsh" ]]; then
-  source "$PSY_TOOLS/init-functions.zsh"
+if [[ -s "$PSY_SRC_TOOLS/init-functions.zsh" ]]; then
+  source "$PSY_SRC_TOOLS/init-functions.zsh"
 fi
 
 
@@ -42,13 +42,13 @@ fi
 # ------------------------------------------------------------------------------
 # Post initialization
 # ------------------------------------------------------------------------------
-if [[ -s "$PSY_TOOLS/init-post-settings.zsh" ]]; then
-  source "$PSY_TOOLS/init-post-settings.zsh"
+if [[ -s "$PSY_SRC_TOOLS/init-post-settings.zsh" ]]; then
+  source "$PSY_SRC_TOOLS/init-post-settings.zsh"
 fi
 
 # Last run helper functions
-if [[ -s "$PSY_TOOLS/last-run.zsh" ]]; then
-  source "$PSY_TOOLS/last-run.zsh"
+if [[ -s "$PSY_SRC_TOOLS/last-run.zsh" ]]; then
+  source "$PSY_SRC_TOOLS/last-run.zsh"
 fi
 
 # Output our version number
