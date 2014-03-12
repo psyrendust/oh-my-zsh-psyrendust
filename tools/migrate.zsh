@@ -29,6 +29,7 @@ psy_migrate_root="${psy_migrate_cwd%/*}"
 # Source .zprofile to get global paths and vars
 # ------------------------------------------------------------------------------
 source $psy_migrate_root/templates/home/.zprofile
+source $psy_migrate_root/tools/init-functions.zsh
 
 
 # Copy over plugins, templates, and themes
@@ -47,3 +48,8 @@ cp -aR "$PSY_SRC_PLUGINS/." "$PSY_PLUGINS/"
 cp -aR "$PSY_SRC_THEMES/." "$PSY_THEMES/"
 
 unset system_os
+
+[[ -f "$PSY_SRC_TOOLS/post-update.zsh" ]] && cp -a "$PSY_SRC_TOOLS/post-update.zsh" "$PSY_RUN_ONCE/post-update-oh-my-zsh-psyrendust.zsh"
+[[ -f "$PSY_USER/tools/post-update.zsh" ]] && cp -a "$PSY_USER/tools/post-update.zsh" "$PSY_RUN_ONCE/post-update-zshrc-personal.zsh"
+[[ -f "$PSY_WORK/tools/post-update.zsh" ]] && cp -a "$PSY_WORK/tools/post-update.zsh" "$PSY_RUN_ONCE/post-update-zshrc-work.zsh"
+
