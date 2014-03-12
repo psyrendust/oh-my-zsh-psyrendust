@@ -10,12 +10,6 @@ alias chownusrlocal="find /usr/local -maxdepth 2 -user root -exec sudo chown -R 
 alias npmlist="npm -g ls --depth=0 2>NUL"
 
 
-# Replacing oh-my-zsh aliases
-alias cp='cp'
-alias rm='rm'
-alias mv='mv'
-
-
 
 # ------------------------------------------------------------------------------
 # Add some OS related configuration

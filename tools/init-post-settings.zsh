@@ -38,6 +38,13 @@ if [[ -n $SYSTEM_IS_MAC ]]; then
 fi
 
 
+
+# Replacing oh-my-zsh aliases
+alias cp='cp'
+alias rm='rm'
+alias mv='mv'
+
+
 # ------------------------------------------------------------------------------
 # Apply psyrendust's own completion.
 # ------------------------------------------------------------------------------
