@@ -53,3 +53,4 @@ unset system_os
 [[ -f "$PSY_USER/tools/post-update.zsh" ]] && cp -a "$PSY_USER/tools/post-update.zsh" "$PSY_RUN_ONCE/post-update-zshrc-personal.zsh"
 [[ -f "$PSY_WORK/tools/post-update.zsh" ]] && cp -a "$PSY_WORK/tools/post-update.zsh" "$PSY_RUN_ONCE/post-update-zshrc-work.zsh"
 
+psyrendust-restartshell
